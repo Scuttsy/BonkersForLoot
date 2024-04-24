@@ -326,6 +326,10 @@ MonoBehaviour:
   _playerCollider: {fileID: 4470274845388541000}
   _pointerPivot: {fileID: 7848671297918863599}
   _playerGFX: {fileID: 3965921741289151473}
+  _playerRigidbody: {fileID: 8587798844516945497}
+  _forceStrength: 225
+  _minVelocityToMove: 1
+  _controllerDeadZone: 0
 --- !u!54 &8587798844516945497
 Rigidbody:
   m_ObjectHideFlags: 0

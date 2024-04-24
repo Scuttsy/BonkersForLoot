@@ -15,25 +15,36 @@ public class PlayerMovementController : MonoBehaviour
     [Header("Settings")]
     [SerializeField] private float _forceStrength;
     [SerializeField] private float _minVelocityToMove;
+    [Range(0,1)]
+    [SerializeField] private float _controllerDeadZone;
+    [SerializeField] private float _fireCooldown;
 
     private float _horizontalInput;
     private float _verticalInput;
 
+    private bool _readyToFire = true;
+
     void Update()
     {
-        //Vector3 centeredMousePos = Input.mousePosition - new Vector3(Screen.width/2f,Screen.height/2f,0);
-        //Vector3 pointerRotation = new Vector3(0,Mathf.Atan2(centeredMousePos.x, centeredMousePos.y) * Mathf.Rad2Deg, 0);
-        //_pointerPivot.eulerAngles = pointerRotation;
+        _horizontalInput = Input.GetAxis("Horizontal");
+        _verticalInput = Input.GetAxis("Vertical");
 
-        Vector3 pointerRotation = new Vector3();
+        // Checking if the input is non-zero, if it isn't we keep the old input direction.
+        if (Mathf.Abs(_horizontalInput) > _controllerDeadZone || Mathf.Abs(_verticalInput) > _controllerDeadZone)
+        {
+            Vector3 pointerRotation = new Vector3(0,Mathf.Atan2(_horizontalInput, _verticalInput) * Mathf.Rad2Deg, 0);
+            _pointerPivot.eulerAngles = pointerRotation;
+        }
+        Debug.Log("" + _horizontalInput + ", " + _verticalInput);
 
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetAxis("Fire2") > 0.5f && _readyToFire)
         {
             if (_playerRigidbody.velocity.magnitude < _minVelocityToMove)
             {
+                _readyToFire = false;
                 _playerGFX.forward = _pointerPivot.forward;
-                Debug.Log(_playerGFX.forward.normalized * _forceStrength);
                 _playerRigidbody.AddForce(_playerGFX.forward.normalized * _forceStrength, ForceMode.Impulse);
+                Invoke(nameof(SetReadyToFire), 0.25f);
             }
             else
             {
@@ -43,12 +54,12 @@ public class PlayerMovementController : MonoBehaviour
         
 
         // Exiting play mode in editor without repressing the play button
-        if (Input.GetAxis("Cancel") > 0.5f)
-        {
-#if UNITY_EDITOR
-            EditorApplication.isPlaying = false;
-#endif
-        }
+//        if (Input.GetAxis("Cancel") > 0.5f)
+//        {
+//#if UNITY_EDITOR
+//            EditorApplication.isPlaying = false;
+//#endif
+//        }
     }
 
     void OnCollisionEnter(Collision collision)
@@ -60,5 +71,10 @@ public class PlayerMovementController : MonoBehaviour
         //    Vector3 castStartPos = _playerGFX.forward
         //    Physics.Linecast()
         }
+    }
+
+    void SetReadyToFire()
+    {
+        _readyToFire = true;
     }
 }

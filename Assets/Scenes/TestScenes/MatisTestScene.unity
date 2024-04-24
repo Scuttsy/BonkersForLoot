@@ -5449,11 +5449,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 60, y: 30, z: 0}
---- !u!54 &1962406178 stripped
-Rigidbody:
-  m_CorrespondingSourceObject: {fileID: 8587798844516945497, guid: 3d75e294a0e51854fb6e5932675e24a0, type: 3}
-  m_PrefabInstance: {fileID: 496127967924205248}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2069452883
 GameObject:
   m_ObjectHideFlags: 0
@@ -5609,16 +5604,8 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1172988620289556248, guid: 3d75e294a0e51854fb6e5932675e24a0, type: 3}
-      propertyPath: _forceStrength
-      value: 225
-      objectReference: {fileID: 0}
-    - target: {fileID: 1172988620289556248, guid: 3d75e294a0e51854fb6e5932675e24a0, type: 3}
-      propertyPath: _playerRigidbody
-      value: 
-      objectReference: {fileID: 1962406178}
-    - target: {fileID: 1172988620289556248, guid: 3d75e294a0e51854fb6e5932675e24a0, type: 3}
-      propertyPath: _minVelocityToMove
-      value: 1
+      propertyPath: _controllerDeadZone
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 2579293452366807332, guid: 3d75e294a0e51854fb6e5932675e24a0, type: 3}
       propertyPath: m_Name
