@@ -23,11 +23,20 @@ public class PlayerMovementController : MonoBehaviour
     private float _verticalInput;
 
     private bool _readyToFire = true;
+    private Vector3 _previousPosition;
 
     void Update()
     {
         _horizontalInput = Input.GetAxis("Horizontal");
         _verticalInput = Input.GetAxis("Vertical");
+
+        Vector3 tempPosition = transform.position;
+        tempPosition.y = 0;
+
+        if ((tempPosition - _previousPosition).magnitude > 0)
+            _playerGFX.forward = (tempPosition - _previousPosition).normalized;
+        else
+            //TODO: if standing still player suddenly faces world forward.
 
         // Checking if the input is non-zero, if it isn't we keep the old input direction.
         if (Mathf.Abs(_horizontalInput) > _controllerDeadZone || Mathf.Abs(_verticalInput) > _controllerDeadZone)
@@ -54,23 +63,14 @@ public class PlayerMovementController : MonoBehaviour
         
 
         // Exiting play mode in editor without repressing the play button
-//        if (Input.GetAxis("Cancel") > 0.5f)
-//        {
-//#if UNITY_EDITOR
-//            EditorApplication.isPlaying = false;
-//#endif
-//        }
-    }
-
-    void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject.tag == "BouncyWall")
+        if (Input.GetAxis("Cancel") > 0.5f)
         {
-            Vector3 tempVelocity = _playerRigidbody.velocity;
-            _playerRigidbody.velocity = Vector3.zero;
-        //    Vector3 castStartPos = _playerGFX.forward
-        //    Physics.Linecast()
+#if UNITY_EDITOR
+            EditorApplication.isPlaying = false;
+#endif
         }
+
+        _previousPosition = tempPosition;
     }
 
     void SetReadyToFire()
