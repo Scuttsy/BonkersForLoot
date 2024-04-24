@@ -16,18 +16,16 @@ public class PlayerMovementController : MonoBehaviour
     [SerializeField] private float _forceStrength;
     [SerializeField] private float _minVelocityToMove;
 
-
-    void Start()
-    {
-        Cursor.lockState = CursorLockMode.Confined;
-        Cursor.visible = true;
-    }
+    private float _horizontalInput;
+    private float _verticalInput;
 
     void Update()
     {
-        Vector3 centeredMousePos = Input.mousePosition - new Vector3(Screen.width/2f,Screen.height/2f,0);
-        Vector3 pointerRotation = new Vector3(0,Mathf.Atan2(centeredMousePos.x, centeredMousePos.y) * Mathf.Rad2Deg, 0);
-        _pointerPivot.eulerAngles = pointerRotation;
+        //Vector3 centeredMousePos = Input.mousePosition - new Vector3(Screen.width/2f,Screen.height/2f,0);
+        //Vector3 pointerRotation = new Vector3(0,Mathf.Atan2(centeredMousePos.x, centeredMousePos.y) * Mathf.Rad2Deg, 0);
+        //_pointerPivot.eulerAngles = pointerRotation;
+
+        Vector3 pointerRotation = new Vector3();
 
         if (Input.GetMouseButtonDown(0))
         {
@@ -44,7 +42,8 @@ public class PlayerMovementController : MonoBehaviour
         }
         
 
-        if (Input.GetKeyDown(KeyCode.Escape))
+        // Exiting play mode in editor without repressing the play button
+        if (Input.GetAxis("Cancel") > 0.5f)
         {
 #if UNITY_EDITOR
             EditorApplication.isPlaying = false;
