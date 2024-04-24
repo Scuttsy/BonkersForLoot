@@ -244,6 +244,11 @@ MonoBehaviour:
   _playerCollider: {fileID: 14906226}
   _pointerPivot: {fileID: 0}
   _playerGFX: {fileID: 0}
+  _playerRigidbody: {fileID: 0}
+  _forceStrength: 0
+  _minVelocityToMove: 0
+  _controllerDeadZone: 0
+  _fireCooldown: 0
 --- !u!1 &50373975
 GameObject:
   m_ObjectHideFlags: 0
@@ -646,10 +651,26 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1129460071950568935, guid: cbc4a0df9ea35214d8aba11d71b7f023, type: 3}
+      propertyPath: m_Height
+      value: 2.7
+      objectReference: {fileID: 0}
     - target: {fileID: 1309778442714988359, guid: cbc4a0df9ea35214d8aba11d71b7f023, type: 3}
       propertyPath: m_Mesh
       value: 
-      objectReference: {fileID: -3507483592745337155, guid: 8808380a95db54c49a12fcbc5503ae44, type: 3}
+      objectReference: {fileID: 5708475742855230896, guid: 726a46d580eb8ab4b9ccb4233c34f046, type: 3}
+    - target: {fileID: 2167292395341730451, guid: cbc4a0df9ea35214d8aba11d71b7f023, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 91.176895
+      objectReference: {fileID: 0}
+    - target: {fileID: 2167292395341730451, guid: cbc4a0df9ea35214d8aba11d71b7f023, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 91.176895
+      objectReference: {fileID: 0}
+    - target: {fileID: 2167292395341730451, guid: cbc4a0df9ea35214d8aba11d71b7f023, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 91.176895
+      objectReference: {fileID: 0}
     - target: {fileID: 2167292395341730451, guid: cbc4a0df9ea35214d8aba11d71b7f023, type: 3}
       propertyPath: m_LocalRotation.w
       value: 0.5
@@ -678,6 +699,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: -90
       objectReference: {fileID: 0}
+    - target: {fileID: 6650071068733650487, guid: cbc4a0df9ea35214d8aba11d71b7f023, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 3187767296151263382, guid: 726a46d580eb8ab4b9ccb4233c34f046, type: 3}
     - target: {fileID: 9200252088739664453, guid: cbc4a0df9ea35214d8aba11d71b7f023, type: 3}
       propertyPath: m_Name
       value: Player
@@ -710,6 +735,11 @@ MonoBehaviour:
   _playerCollider: {fileID: 0}
   _pointerPivot: {fileID: 0}
   _playerGFX: {fileID: 0}
+  _playerRigidbody: {fileID: 0}
+  _forceStrength: 0
+  _minVelocityToMove: 0
+  _controllerDeadZone: 0
+  _fireCooldown: 0
 --- !u!1 &1699618216
 GameObject:
   m_ObjectHideFlags: 0
