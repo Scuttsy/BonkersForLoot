@@ -6,9 +6,15 @@ using UnityEngine;
 
 public class PlayerMovementController : MonoBehaviour
 {
+    [Header("References")]
     [SerializeField] private Collider _playerCollider;
     [SerializeField] private Transform _pointerPivot;
     [SerializeField] private Transform _playerGFX;
+    [SerializeField] private Rigidbody _playerRigidbody;
+
+    [Header("Settings")]
+    [SerializeField] private float _forceStrength;
+    [SerializeField] private float _minVelocityToMove;
 
 
     void Start()
@@ -25,15 +31,35 @@ public class PlayerMovementController : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0))
         {
-            _playerGFX.forward = _pointerPivot.forward;
-
+            if (_playerRigidbody.velocity.magnitude < _minVelocityToMove)
+            {
+                _playerGFX.forward = _pointerPivot.forward;
+                Debug.Log(_playerGFX.forward.normalized * _forceStrength);
+                _playerRigidbody.AddForce(_playerGFX.forward.normalized * _forceStrength, ForceMode.Impulse);
+            }
+            else
+            {
+                Debug.Log("Too much speed");
+            }
         }
+        
 
         if (Input.GetKeyDown(KeyCode.Escape))
         {
 #if UNITY_EDITOR
             EditorApplication.isPlaying = false;
 #endif
+        }
+    }
+
+    void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.tag == "BouncyWall")
+        {
+            Vector3 tempVelocity = _playerRigidbody.velocity;
+            _playerRigidbody.velocity = Vector3.zero;
+        //    Vector3 castStartPos = _playerGFX.forward
+        //    Physics.Linecast()
         }
     }
 }
