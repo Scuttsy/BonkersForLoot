@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 // !!! There should be an empty object in the gameplayscene with this script attached. !!!
@@ -11,8 +12,10 @@ using UnityEngine.UI;
 
 public class GameplayScene : MonoBehaviour
 {
-    private float _timeRemaining = 30f; // In Seconds!
+    private float _timeRemaining = 10f; // In Seconds!
     [SerializeField] private TextMeshProUGUI _timerText;
+
+    private WinnerDecider _winnerDecider = new WinnerDecider();
     private void Awake()
     {
         // Create Player list in GameSettings before other script's starts are called
@@ -33,19 +36,24 @@ public class GameplayScene : MonoBehaviour
             return;
         }
 
+        DisplayTime();
+
         // Check if time has run out
         if (_timeRemaining < 0)
         {
-            //To-do Switch to game over scene
             GameSettings.GameIsInProgress = false;
-            Debug.Log("Game over");
+            _winnerDecider.DecideWinner();
+
+            // Set DontDestroyOnLoad for WinningPlayer 
+            // so that we can acces it and its fields in the gameOverScene.
+            DontDestroyOnLoad(GameSettings.WinningPlayer);
+
+            SceneManager.LoadScene("GameOverScene");
         }
         else
         {
             _timeRemaining -= Time.deltaTime;
         }
-
-        DisplayTime();
     }
 
     private void DisplayTime()

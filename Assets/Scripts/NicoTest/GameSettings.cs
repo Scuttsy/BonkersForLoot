@@ -7,5 +7,5 @@ public class GameSettings : MonoBehaviour
     public static bool GameIsInProgress = false;
 
     public static List<Player> PlayersInGame;
-    public static Player WnningPlayer;
+    public static Player WinningPlayer;
 }
