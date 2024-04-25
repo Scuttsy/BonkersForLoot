@@ -5,6 +5,9 @@ TagManager:
   serializedVersion: 2
   tags:
   - BouncyWall
+  - NoBounce
+  - OutOfBounds
+  - RotatingTile
   layers:
   - Default
   - TransparentFX

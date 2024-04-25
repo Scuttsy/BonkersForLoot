@@ -9,6 +9,7 @@ public class PlayerMovementController : MonoBehaviour
     [Header("References")]
     [SerializeField] private Collider _playerCollider;
     [SerializeField] private Transform _pointerPivot;
+    [SerializeField] private MeshRenderer _pointer;
     [SerializeField] private Transform _playerGFX;
     [SerializeField] private Rigidbody _playerRigidbody;
 
@@ -18,6 +19,7 @@ public class PlayerMovementController : MonoBehaviour
     [Range(0,1)]
     [SerializeField] private float _controllerDeadZone;
     [SerializeField] private float _fireCooldown;
+    [SerializeField] private bool _usingMouse;
 
     private float _horizontalInput;
     private float _verticalInput;
@@ -42,10 +44,14 @@ public class PlayerMovementController : MonoBehaviour
             //TODO: if standing still player suddenly faces world forward.
         }
 
+        if (_usingMouse)
         //TODO: remove mouse controls
-        Vector3 centeredMousePos = Input.mousePosition - new Vector3(Screen.width/2f,Screen.height/2f,0);
-        Vector3 pointerRotationMouse = new Vector3(0,Mathf.Atan2(centeredMousePos.x, centeredMousePos.y) * Mathf.Rad2Deg, 0);
-        _pointerPivot.eulerAngles = pointerRotationMouse;
+        {
+            Vector3 centeredMousePos = Input.mousePosition - new Vector3(Screen.width/2f,Screen.height/2f,0);
+            Vector3 pointerRotationMouse = new Vector3(0,Mathf.Atan2(centeredMousePos.x, centeredMousePos.y) * Mathf.Rad2Deg, 0);
+            _pointerPivot.eulerAngles = pointerRotationMouse;
+        }
+
 
         // Checking if the input is non-zero, if it isn't we keep the old input direction.
         if (Mathf.Abs(_horizontalInput) > _controllerDeadZone || Mathf.Abs(_verticalInput) > _controllerDeadZone)
@@ -59,7 +65,7 @@ public class PlayerMovementController : MonoBehaviour
         {
             if (_playerRigidbody.velocity.magnitude < _minVelocityToMove)
             {
-
+                _pointer.enabled = true;
                 _readyToFire = false;
                 _playerGFX.forward = _pointerPivot.forward;
                 _playerRigidbody.AddForce(_playerGFX.forward.normalized * _forceStrength, ForceMode.Impulse);
@@ -67,7 +73,8 @@ public class PlayerMovementController : MonoBehaviour
             }
             else
             {
-
+                //TODO: set this to be false always unless its moving fast enough, maybe move into "SetReadyToFire"
+                _pointer.enabled = false;
                 Debug.Log("Too much speed");
             }
         }
@@ -93,6 +100,8 @@ public class PlayerMovementController : MonoBehaviour
     {
         if (collision.gameObject.tag == "NoBounce")
         {
+            //TODO: rotation sometimes still changes
+            //TODO: sometimes character is too far into the wall, causing them to be stuck twice
             _playerRigidbody.velocity = Vector3.zero;
         }
 
