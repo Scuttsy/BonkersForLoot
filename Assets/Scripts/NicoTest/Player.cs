@@ -6,6 +6,7 @@ public class Player : MonoBehaviour
 {
     public int UnclaimedLoot = 0;
     public int Score = 0;
+    public string PlayerName = "(Default Name)";
 
     // Start is called before the first frame update
     void Start()
