@@ -12,6 +12,7 @@ public class PlayerMovementController : MonoBehaviour
     [SerializeField] private MeshRenderer _pointer;
     [SerializeField] private Transform _playerGFX;
     [SerializeField] private Rigidbody _playerRigidbody;
+    [SerializeField] private Player _playerScript;
 
     [Header("Settings")]
     [SerializeField] private float _forceStrength;
@@ -59,24 +60,22 @@ public class PlayerMovementController : MonoBehaviour
             Vector3 pointerRotation = new Vector3(0, Mathf.Atan2(_horizontalInput, _verticalInput) * Mathf.Rad2Deg, 0);
             _pointerPivot.eulerAngles = pointerRotation;
         }
-        //Debug.Log("" + _horizontalInput + ", " + _verticalInput);
 
-        if (Input.GetAxis("Fire2") > 0.5f && _readyToFire)
+        if (_playerRigidbody.velocity.magnitude < _minVelocityToMove)
         {
-            if (_playerRigidbody.velocity.magnitude < _minVelocityToMove)
+            _pointer.enabled = true;
+            if (Input.GetAxis("Fire2") > 0.5f && _readyToFire)
             {
                 _pointer.enabled = true;
                 _readyToFire = false;
                 _playerGFX.forward = _pointerPivot.forward;
                 _playerRigidbody.AddForce(_playerGFX.forward.normalized * _forceStrength, ForceMode.Impulse);
-                Invoke(nameof(SetReadyToFire), 0.25f);
+                Invoke(nameof(ResetFire), 0.25f);
             }
-            else
-            {
-                //TODO: set this to be false always unless its moving fast enough, maybe move into "SetReadyToFire"
-                _pointer.enabled = false;
-                Debug.Log("Too much speed");
-            }
+        }
+        else
+        {
+            _pointer.enabled = false;
         }
         
 
@@ -91,7 +90,7 @@ public class PlayerMovementController : MonoBehaviour
         _previousPosition = tempPosition;
     }
 
-    void SetReadyToFire()
+    void ResetFire()
     {
         _readyToFire = true;
     }
@@ -107,8 +106,28 @@ public class PlayerMovementController : MonoBehaviour
 
         if (collision.gameObject.tag == "OutOfBounds")
         {
-            //TODO: add code to spawn at the spawn points, taking into consideration the positions of the other player
             transform.position = Vector3.up / 2;
+            _playerRigidbody.velocity = Vector3.zero;
+            //TODO: add code to spawn at the spawn points, taking into consideration the positions of the other player
+            //TODO: currently checks furthest total distance, but it might be better to check largest individual distances
+            //float furthestDistance = 0f;
+            //Spawnpoint furthestSpawnpoint;
+            //foreach (Spawnpoint spawnpoint in GameSettings.Spawnpoints)
+            //{
+            //    float totalDistanceFromPlayers = 0;
+            //    foreach (Player player in GameSettings.PlayersInGame)
+            //    {
+            //        if (player == this._playerScript) continue;
+            //        totalDistanceFromPlayers +=
+            //            Vector3.Distance(spawnpoint.transform.position, player.transform.position);
+            //    }
+
+            //    if (totalDistanceFromPlayers > furthestDistance)
+            //    {
+            //        furthestDistance = totalDistanceFromPlayers;
+            //        furthestSpawnpoint = spawnpoint;
+            //    }
+            //}
         }
     }
 

@@ -288,11 +288,6 @@ Mesh:
     offset: 0
     size: 0
     path: 
---- !u!136 &199021517 stripped
-CapsuleCollider:
-  m_CorrespondingSourceObject: {fileID: 1129460071950568935, guid: 3d75e294a0e51854fb6e5932675e24a0, type: 3}
-  m_PrefabInstance: {fileID: 496127967924205248}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &307961218
 GameObject:
   m_ObjectHideFlags: 0
@@ -6049,10 +6044,10 @@ PrefabInstance:
       propertyPath: _debugCube
       value: 
       objectReference: {fileID: 0}
-    - target: {fileID: 1172988620289556248, guid: 3d75e294a0e51854fb6e5932675e24a0, type: 3}
-      propertyPath: _playerCollider
-      value: 
-      objectReference: {fileID: 199021517}
+    - target: {fileID: 2295349984629494832, guid: 3d75e294a0e51854fb6e5932675e24a0, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2579293452366807332, guid: 3d75e294a0e51854fb6e5932675e24a0, type: 3}
       propertyPath: m_Name
       value: PlayerGFX
