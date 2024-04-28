@@ -12,6 +12,7 @@ using UnityEngine.UI;
 
 public class GameplayScene : MonoBehaviour
 {
+    [SerializeField]
     private float _timeRemaining = 10f; // In Seconds!
     [SerializeField] private TextMeshProUGUI _timerText;
 
@@ -61,6 +62,7 @@ public class GameplayScene : MonoBehaviour
         float minutes = Mathf.FloorToInt(_timeRemaining / 60);
         float seconds = Mathf.FloorToInt(_timeRemaining % 60);
 
-        _timerText.text = $"{minutes}:{seconds}";
+        if (_timerText != null)
+            _timerText.text = $"{minutes}:{seconds}";
     }
 }

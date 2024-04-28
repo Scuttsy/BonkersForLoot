@@ -124,7 +124,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3965921741289151473}
-  - component: {fileID: 1129460071950568935}
+  - component: {fileID: 8787480432676933196}
   m_Layer: 0
   m_Name: PlayerPivot
   m_TagString: Untagged
@@ -149,7 +149,7 @@ Transform:
   - {fileID: 640876903212901677}
   m_Father: {fileID: 856005145528362927}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!136 &1129460071950568935
+--- !u!136 &8787480432676933196
 CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -338,6 +338,89 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &5558177702823188935
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3244058910394604644}
+  - component: {fileID: 8147275219080481697}
+  m_Layer: 0
+  m_Name: Main Camera
+  m_TagString: MainCamera
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3244058910394604644
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5558177702823188935}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: 20, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 856005145528362927}
+  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
+--- !u!20 &8147275219080481697
+Camera:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5558177702823188935}
+  m_Enabled: 1
+  serializedVersion: 2
+  m_ClearFlags: 1
+  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_projectionMatrixMode: 1
+  m_GateFitMode: 2
+  m_FOVAxisMode: 0
+  m_Iso: 200
+  m_ShutterSpeed: 0.005
+  m_Aperture: 16
+  m_FocusDistance: 10
+  m_FocalLength: 50
+  m_BladeCount: 5
+  m_Curvature: {x: 2, y: 11}
+  m_BarrelClipping: 0.25
+  m_Anamorphism: 0
+  m_SensorSize: {x: 36, y: 24}
+  m_LensShift: {x: 0, y: 0}
+  m_NormalizedViewPortRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 1
+    height: 1
+  near clip plane: 0.3
+  far clip plane: 1000
+  field of view: 4
+  orthographic: 1
+  orthographic size: 8
+  m_Depth: -1
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_RenderingPath: -1
+  m_TargetTexture: {fileID: 0}
+  m_TargetDisplay: 0
+  m_TargetEye: 3
+  m_HDR: 1
+  m_AllowMSAA: 1
+  m_AllowDynamicResolution: 0
+  m_ForceIntoRT: 0
+  m_OcclusionCulling: 1
+  m_StereoConvergence: 10
+  m_StereoSeparation: 0.022
 --- !u!1 &9200252088739664453
 GameObject:
   m_ObjectHideFlags: 0
@@ -349,6 +432,8 @@ GameObject:
   - component: {fileID: 856005145528362927}
   - component: {fileID: 1172988620289556248}
   - component: {fileID: 8587798844516945497}
+  - component: {fileID: 6139210573302760375}
+  - component: {fileID: 2169207396154533104}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -371,6 +456,7 @@ Transform:
   m_Children:
   - {fileID: 3965921741289151473}
   - {fileID: 7848671297918863599}
+  - {fileID: 3244058910394604644}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1172988620289556248
@@ -385,11 +471,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62ecd6fde4d1c794a8502e84003a459b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerCollider: {fileID: 1129460071950568935}
+  _playerCollider: {fileID: 0}
   _pointerPivot: {fileID: 7848671297918863599}
   _pointer: {fileID: 2295349984629494832}
   _playerGFX: {fileID: 3965921741289151473}
   _playerRigidbody: {fileID: 8587798844516945497}
+  _playerScript: {fileID: 6139210573302760375}
   _forceStrength: 225
   _minVelocityToMove: 1
   _controllerDeadZone: 0.5
@@ -422,3 +509,124 @@ Rigidbody:
   m_Interpolate: 1
   m_Constraints: 112
   m_CollisionDetection: 1
+--- !u!114 &6139210573302760375
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9200252088739664453}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d36e45a8d21c4ef42bc41ddd75cbe286, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  UnclaimedLoot: 0
+  Score: 0
+  PlayerName: (Default Name)
+--- !u!114 &2169207396154533104
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9200252088739664453}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Actions: {fileID: -944628639613478452, guid: bd67dafebe372c14ea9b29a8c1fa1bfb, type: 3}
+  m_NotificationBehavior: 0
+  m_UIInputModule: {fileID: 0}
+  m_DeviceLostEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_DeviceRegainedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ControlsChangedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ActionEvents:
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1172988620289556248}
+        m_TargetAssemblyTypeName: PlayerMovementController, Assembly-CSharp
+        m_MethodName: OnAim
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 8cbd1be6-f3f0-4404-ae2d-317b894aa1b3
+    m_ActionName: Player/Aim[/DualShock4GamepadHID/leftStick,/DualShock4GamepadHID1/leftStick,/DualShock4GamepadHID2/leftStick,/DualShock4GamepadHID3/leftStick]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: a1003290-e3ce-4a65-af7b-2d4485c12444
+    m_ActionName: Player/Look[/DualShock4GamepadHID/rightStick,/DualShock4GamepadHID1/rightStick,/DualShock4GamepadHID2/rightStick,/DualShock4GamepadHID3/rightStick]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1172988620289556248}
+        m_TargetAssemblyTypeName: PlayerMovementController, Assembly-CSharp
+        m_MethodName: OnFire
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 5b7876bb-b1ba-4201-b12e-3f1c9d375715
+    m_ActionName: Player/Fire[/DualShock4GamepadHID/buttonSouth,/DualShock4GamepadHID1/buttonSouth,/DualShock4GamepadHID2/buttonSouth,/DualShock4GamepadHID3/buttonSouth]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 97717bd0-33cb-42dd-8c3e-5b07babc28f6
+    m_ActionName: UI/Navigate[/DualShock4GamepadHID/leftStick/up,/DualShock4GamepadHID1/leftStick/up,/DualShock4GamepadHID2/leftStick/up,/DualShock4GamepadHID3/leftStick/up,/DualShock4GamepadHID/rightStick/up,/DualShock4GamepadHID1/rightStick/up,/DualShock4GamepadHID2/rightStick/up,/DualShock4GamepadHID3/rightStick/up,/DualShock4GamepadHID/leftStick/down,/DualShock4GamepadHID1/leftStick/down,/DualShock4GamepadHID2/leftStick/down,/DualShock4GamepadHID3/leftStick/down,/DualShock4GamepadHID/rightStick/down,/DualShock4GamepadHID1/rightStick/down,/DualShock4GamepadHID2/rightStick/down,/DualShock4GamepadHID3/rightStick/down,/DualShock4GamepadHID/leftStick/left,/DualShock4GamepadHID1/leftStick/left,/DualShock4GamepadHID2/leftStick/left,/DualShock4GamepadHID3/leftStick/left,/DualShock4GamepadHID/rightStick/left,/DualShock4GamepadHID1/rightStick/left,/DualShock4GamepadHID2/rightStick/left,/DualShock4GamepadHID3/rightStick/left,/DualShock4GamepadHID/leftStick/right,/DualShock4GamepadHID1/leftStick/right,/DualShock4GamepadHID2/leftStick/right,/DualShock4GamepadHID3/leftStick/right,/DualShock4GamepadHID/rightStick/right,/DualShock4GamepadHID1/rightStick/right,/DualShock4GamepadHID2/rightStick/right,/DualShock4GamepadHID3/rightStick/right,/DualShock4GamepadHID/dpad,/DualShock4GamepadHID1/dpad,/DualShock4GamepadHID2/dpad,/DualShock4GamepadHID3/dpad,/Keyboard/w,/Keyboard/upArrow,/Keyboard/s,/Keyboard/downArrow,/Keyboard/a,/Keyboard/leftArrow,/Keyboard/d,/Keyboard/rightArrow]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: daeeab8c-b1e1-4db4-822b-4c1ffcaef384
+    m_ActionName: UI/Submit[/Keyboard/enter,/DualShock4GamepadHID/buttonSouth,/DualShock4GamepadHID1/buttonSouth,/DualShock4GamepadHID2/buttonSouth,/DualShock4GamepadHID3/buttonSouth]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 5ede99ce-ea9a-42b8-aa0b-122e951e7b84
+    m_ActionName: UI/Cancel[/Keyboard/escape,/DualShock4GamepadHID/buttonEast,/DualShock4GamepadHID1/buttonEast,/DualShock4GamepadHID2/buttonEast,/DualShock4GamepadHID3/buttonEast]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: f78a7220-0fa8-48be-8f4e-ad534a582456
+    m_ActionName: UI/Point[/Mouse/position,/Pen/position]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 456880b7-c148-4057-87b1-9bbaa5535acb
+    m_ActionName: UI/Click[/Mouse/leftButton,/Pen/tip]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 8eca13ff-8b94-4824-a326-279f91721355
+    m_ActionName: UI/ScrollWheel[/Mouse/scroll]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 1bd92d93-226b-4413-bbaa-f497c49a8a9e
+    m_ActionName: UI/MiddleClick[/Mouse/middleButton]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 700b3742-b98b-4c9f-97f1-d37f4ff9b0a8
+    m_ActionName: UI/RightClick[/Mouse/rightButton]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: df2a8297-5023-46db-ba94-7c98191cb0b4
+    m_ActionName: UI/TrackedDevicePosition
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 0f2a0a63-5adf-4d3b-870a-b594a2671ca2
+    m_ActionName: UI/TrackedDeviceOrientation
+  m_NeverAutoSwitchControlSchemes: 1
+  m_DefaultControlScheme: 
+  m_DefaultActionMap: Player
+  m_SplitScreenIndex: -1
+  m_Camera: {fileID: 8147275219080481697}

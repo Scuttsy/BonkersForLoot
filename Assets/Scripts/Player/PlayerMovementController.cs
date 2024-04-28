@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.UIElements;
+using UnityEngine.InputSystem;
 
 public class PlayerMovementController : MonoBehaviour
 {
@@ -28,21 +28,50 @@ public class PlayerMovementController : MonoBehaviour
     private bool _readyToFire = true;
     private Vector3 _previousPosition;
 
+
+    private InputActionAsset inputAsset;
+    private InputActionMap player;
+
+    private InputAction _aim;
+    private InputAction _fire;
+    private bool _shouldFire;
+
+    void Awake()
+    {
+        inputAsset = this.GetComponent<PlayerInput>().actions;
+        player = inputAsset.FindActionMap("Player");
+    }
+
+    void OnEnable()
+    {
+        player.FindAction("Fire").started += OnFire;
+        _aim = player.FindAction("Aim");
+        player.Enable();
+    }
+
+    void OnDisable()
+    {
+        player.FindAction("Fire").started -= OnFire;
+        player.Disable();
+    }
+
+    public void OnFire(InputAction.CallbackContext ctx)
+    {
+        _shouldFire = ctx.action.IsPressed();
+    }
+
+
     void Update()
     {
-        _horizontalInput = Input.GetAxis("Horizontal");
-        _verticalInput = Input.GetAxis("Vertical");
+        _horizontalInput = _aim.ReadValue<Vector2>().x;
+        _verticalInput = _aim.ReadValue<Vector2>().y;
 
         Vector3 tempPosition = transform.position;
         tempPosition.y = 0;
 
-        if ((tempPosition - _previousPosition).magnitude > 0.001f)
+        if ((tempPosition - _previousPosition).magnitude > 0.01f)
         {
             _playerGFX.forward = (tempPosition - _previousPosition).normalized;
-        }
-        else
-        {   
-            //TODO: if standing still player suddenly faces world forward.
         }
 
         if (_usingMouse)
@@ -64,9 +93,9 @@ public class PlayerMovementController : MonoBehaviour
         if (_playerRigidbody.velocity.magnitude < _minVelocityToMove)
         {
             _pointer.enabled = true;
-            if (Input.GetAxis("Fire2") > 0.5f && _readyToFire)
+            if (_readyToFire && _shouldFire)
             {
-                _pointer.enabled = true;
+                _shouldFire = false;
                 _readyToFire = false;
                 _playerGFX.forward = _pointerPivot.forward;
                 _playerRigidbody.AddForce(_playerGFX.forward.normalized * _forceStrength, ForceMode.Impulse);
@@ -99,35 +128,40 @@ public class PlayerMovementController : MonoBehaviour
     {
         if (collision.gameObject.tag == "NoBounce")
         {
-            //TODO: rotation sometimes still changes
-            //TODO: sometimes character is too far into the wall, causing them to be stuck twice
             _playerRigidbody.velocity = Vector3.zero;
         }
 
         if (collision.gameObject.tag == "OutOfBounds")
         {
-            transform.position = Vector3.up / 2;
             _playerRigidbody.velocity = Vector3.zero;
-            //TODO: add code to spawn at the spawn points, taking into consideration the positions of the other player
-            //TODO: currently checks furthest total distance, but it might be better to check largest individual distances
-            //float furthestDistance = 0f;
-            //Spawnpoint furthestSpawnpoint;
-            //foreach (Spawnpoint spawnpoint in GameSettings.Spawnpoints)
-            //{
-            //    float totalDistanceFromPlayers = 0;
-            //    foreach (Player player in GameSettings.PlayersInGame)
-            //    {
-            //        if (player == this._playerScript) continue;
-            //        totalDistanceFromPlayers +=
-            //            Vector3.Distance(spawnpoint.transform.position, player.transform.position);
-            //    }
 
-            //    if (totalDistanceFromPlayers > furthestDistance)
-            //    {
-            //        furthestDistance = totalDistanceFromPlayers;
-            //        furthestSpawnpoint = spawnpoint;
-            //    }
-            //}
+            // respawn mechanic taking into consideration the positions of the other player,
+            // it calculates per spawnpoint the closest distance, and then gets the furthest spawmpoint;
+            SpawnPointData closestSpawnPoint = new SpawnPointData(null, 0);
+            foreach (SpawnPoint spawnPoint in GameSettings.SpawnPointList)
+            {
+                float closestDistance = float.MaxValue;
+                foreach (Player player in GameSettings.PlayersInGame)
+                {
+                    if (player == this._playerScript) continue;
+                    float distance =
+                        Vector3.Distance(spawnPoint.transform.position, player.transform.position);
+                    if (distance < closestDistance)
+                    {
+                        closestDistance = distance;
+                    }
+                }
+
+                if (closestDistance > closestSpawnPoint.FurthestDistanceToPlayer)
+                {
+                    closestSpawnPoint.FurthestDistanceToPlayer = closestDistance;
+                    closestSpawnPoint.SpawnPointName = spawnPoint;
+                }
+            }
+
+            if (closestSpawnPoint.SpawnPointName == null)
+                throw new System.AccessViolationException("SpawnPoint was null");
+            transform.position = closestSpawnPoint.SpawnPointName.transform.position;
         }
 
         //tryout players bouncing
@@ -151,3 +185,4 @@ public class PlayerMovementController : MonoBehaviour
         }
     }
 }
+
