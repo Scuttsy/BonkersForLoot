@@ -129,6 +129,17 @@ public class PlayerMovementController : MonoBehaviour
             //    }
             //}
         }
+
+        //tryout players bouncing
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            Vector3 collisionNormal = collision.contacts[0].normal;
+            float collisionAngle = Vector3.Angle(_playerRigidbody.velocity, collision.relativeVelocity);
+
+            Vector3 newDirection = Vector3.Reflect(_playerRigidbody.velocity, collisionNormal).normalized;
+
+            _playerRigidbody.velocity = newDirection * _forceStrength * Mathf.Cos(collisionAngle * Mathf.Deg2Rad);
+        }
     }
 
     private void OnTriggerEnter(Collider other)
