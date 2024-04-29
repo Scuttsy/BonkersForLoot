@@ -1,22 +1,27 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class GameSettings : MonoBehaviour
 {
     public static bool GameIsInProgress = false;
 
-    public static List<Player> PlayersInGame;
-    public static Player WinningPlayer;
+    public static List<PlayerInput> PlayersInGame;
+    public static GameObject WinningPlayer;
 
-    public static SpawnPoint[] SpawnPointList;
-    public SpawnPoint SpawnPointA;
-    public SpawnPoint SpawnPointB;
-    public SpawnPoint SpawnPointC;
-    public SpawnPoint SpawnPointD;
+    public static List<Transform> SpawnPointList;
+    public Transform SpawnPointA;
+    public Transform SpawnPointB;
+    public Transform SpawnPointC;
+    public Transform SpawnPointD;
 
     void Awake()
     {
-        SpawnPointList = new SpawnPoint[] { SpawnPointA, SpawnPointB, SpawnPointC, SpawnPointD };
+        SpawnPointList = new List<Transform>();
+        SpawnPointList.Add(SpawnPointA);
+        SpawnPointList.Add(SpawnPointB);
+        SpawnPointList.Add(SpawnPointC);
+        SpawnPointList.Add(SpawnPointD);
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
@@ -12,7 +13,7 @@ public class PlayerMovementController : MonoBehaviour
     [SerializeField] private MeshRenderer _pointer;
     [SerializeField] private Transform _playerGFX;
     [SerializeField] private Rigidbody _playerRigidbody;
-    [SerializeField] private Player _playerScript;
+    [SerializeField] private PlayerInput _playerInput;
 
     [Header("Settings")]
     [SerializeField] private float _forceStrength;
@@ -25,41 +26,47 @@ public class PlayerMovementController : MonoBehaviour
     private float _horizontalInput;
     private float _verticalInput;
 
+    private bool _shouldFire;
     private bool _readyToFire = true;
     private Vector3 _previousPosition;
 
-
     private InputActionAsset inputAsset;
-    private InputActionMap player;
+    private InputActionMap _player;
 
     private InputAction _aim;
     private InputAction _fire;
-    private bool _shouldFire;
 
     void Awake()
     {
         inputAsset = this.GetComponent<PlayerInput>().actions;
-        player = inputAsset.FindActionMap("Player");
+        _player = inputAsset.FindActionMap("Player");
     }
 
     void OnEnable()
     {
-        player.FindAction("Fire").started += OnFire;
-        _aim = player.FindAction("Aim");
-        player.Enable();
+        _player.FindAction("Fire").started += OnFire;
+        _player.FindAction("Stop").started += OnStop;
+        _aim = _player.FindAction("Aim");
+        _player.Enable();
     }
 
     void OnDisable()
     {
-        player.FindAction("Fire").started -= OnFire;
-        player.Disable();
+        _player.FindAction("Fire").started -= OnFire;
+        _player.FindAction("Stop").started -= OnStop;
+        _player.Disable();
     }
 
     public void OnFire(InputAction.CallbackContext ctx)
     {
         _shouldFire = ctx.action.IsPressed();
     }
-
+    public void OnStop(InputAction.CallbackContext ctx)
+    {
+#if UNITY_EDITOR
+        EditorApplication.isPlaying = false;
+#endif
+    }
 
     void Update()
     {
@@ -67,7 +74,7 @@ public class PlayerMovementController : MonoBehaviour
         _verticalInput = _aim.ReadValue<Vector2>().y;
 
         Vector3 tempPosition = transform.position;
-        tempPosition.y = 0;
+        tempPosition.y = 0.5f;
 
         if ((tempPosition - _previousPosition).magnitude > 0.01f)
         {
@@ -107,15 +114,6 @@ public class PlayerMovementController : MonoBehaviour
             _pointer.enabled = false;
         }
         
-
-        // Exiting play mode in editor without repressing the play button
-        if (Input.GetAxis("Cancel") > 0.5f)
-        {
-#if UNITY_EDITOR
-            EditorApplication.isPlaying = false;
-#endif
-        }
-
         _previousPosition = tempPosition;
     }
 
@@ -133,35 +131,7 @@ public class PlayerMovementController : MonoBehaviour
 
         if (collision.gameObject.tag == "OutOfBounds")
         {
-            _playerRigidbody.velocity = Vector3.zero;
-
-            // respawn mechanic taking into consideration the positions of the other player,
-            // it calculates per spawnpoint the closest distance, and then gets the furthest spawmpoint;
-            SpawnPointData closestSpawnPoint = new SpawnPointData(null, 0);
-            foreach (SpawnPoint spawnPoint in GameSettings.SpawnPointList)
-            {
-                float closestDistance = float.MaxValue;
-                foreach (Player player in GameSettings.PlayersInGame)
-                {
-                    if (player == this._playerScript) continue;
-                    float distance =
-                        Vector3.Distance(spawnPoint.transform.position, player.transform.position);
-                    if (distance < closestDistance)
-                    {
-                        closestDistance = distance;
-                    }
-                }
-
-                if (closestDistance > closestSpawnPoint.FurthestDistanceToPlayer)
-                {
-                    closestSpawnPoint.FurthestDistanceToPlayer = closestDistance;
-                    closestSpawnPoint.SpawnPointName = spawnPoint;
-                }
-            }
-
-            if (closestSpawnPoint.SpawnPointName == null)
-                throw new System.AccessViolationException("SpawnPoint was null");
-            transform.position = closestSpawnPoint.SpawnPointName.transform.position;
+            Respawn();
         }
 
         //tryout players bouncing
@@ -174,6 +144,40 @@ public class PlayerMovementController : MonoBehaviour
 
             _playerRigidbody.velocity = newDirection * _forceStrength * Mathf.Cos(collisionAngle * Mathf.Deg2Rad);
         }
+    }
+
+    public void Respawn()
+    {
+        _playerRigidbody.velocity = Vector3.zero;
+
+        // respawn mechanic taking into consideration the positions of the other player,
+        // it calculates per spawnpoint the closest distance, and then gets the furthest spawmpoint;
+        SpawnPointData closestSpawnPoint = new SpawnPointData(null, 0);
+        foreach (Transform spawnPoint in GameSettings.SpawnPointList)
+        {
+            float closestDistance = float.MaxValue;
+            foreach (PlayerInput player in GameSettings.PlayersInGame)
+            {
+                if (player == this._playerInput) continue;
+                float distance =
+                    Vector3.Distance(spawnPoint.transform.position, player.transform.position);
+                if (distance < closestDistance)
+                {
+                    closestDistance = distance;
+                }
+            }
+
+            if (closestDistance > closestSpawnPoint.FurthestDistanceToPlayer)
+            {
+                closestSpawnPoint.FurthestDistanceToPlayer = closestDistance;
+                closestSpawnPoint.SpawnPointName = spawnPoint;
+            }
+        }
+
+        if (closestSpawnPoint.SpawnPointName == null)
+            throw new System.AccessViolationException("SpawnPoint was null");
+        transform.position = closestSpawnPoint.SpawnPointName.transform.position;
+        Debug.Log("Respawned.");
     }
 
     private void OnTriggerEnter(Collider other)
