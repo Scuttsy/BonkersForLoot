@@ -471,12 +471,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62ecd6fde4d1c794a8502e84003a459b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerCollider: {fileID: 0}
+  _playerCollider: {fileID: 8787480432676933196}
   _pointerPivot: {fileID: 7848671297918863599}
   _pointer: {fileID: 2295349984629494832}
   _playerGFX: {fileID: 3965921741289151473}
   _playerRigidbody: {fileID: 8587798844516945497}
-  _playerScript: {fileID: 6139210573302760375}
+  _playerInput: {fileID: 2169207396154533104}
   _forceStrength: 225
   _minVelocityToMove: 1
   _controllerDeadZone: 0.5

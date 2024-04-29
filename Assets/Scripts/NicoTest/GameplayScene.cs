@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -20,7 +21,7 @@ public class GameplayScene : MonoBehaviour
     private void Awake()
     {
         // Create Player list in GameSettings before other script's starts are called
-        GameSettings.PlayersInGame = new List<Player>();
+        GameSettings.PlayersInGame = new List<PlayerInput>();
     }
 
     // Start is called before the first frame update

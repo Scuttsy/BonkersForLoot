@@ -12,9 +12,9 @@ public class SpawnPoint : MonoBehaviour
 }
 public struct SpawnPointData
 {
-    public SpawnPoint SpawnPointName;
+    public Transform SpawnPointName;
     public float FurthestDistanceToPlayer;
-    public SpawnPointData(SpawnPoint spawnPoint, float furthestDistanceToPlayer )
+    public SpawnPointData(Transform spawnPoint, float furthestDistanceToPlayer )
     {
         SpawnPointName = spawnPoint;
         FurthestDistanceToPlayer = furthestDistanceToPlayer;
