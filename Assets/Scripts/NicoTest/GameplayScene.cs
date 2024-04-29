@@ -14,7 +14,7 @@ using UnityEngine.UI;
 public class GameplayScene : MonoBehaviour
 {
     [SerializeField]
-    private float _timeRemaining = 10f; // In Seconds!
+    private float _timeRemaining = 20f; // In Seconds!
     [SerializeField] private TextMeshProUGUI _timerText;
 
     private WinnerDecider _winnerDecider = new WinnerDecider();

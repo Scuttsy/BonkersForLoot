@@ -5763,10 +5763,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cca1543797f19e4685178bf7276e3cd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SpawnPointA: {fileID: 1107472246}
-  SpawnPointB: {fileID: 1406107936}
-  SpawnPointC: {fileID: 1325400520}
-  SpawnPointD: {fileID: 1565469978}
+  SpawnPointA: {fileID: 0}
+  SpawnPointB: {fileID: 0}
+  SpawnPointC: {fileID: 0}
+  SpawnPointD: {fileID: 0}
 --- !u!4 &1220618310
 Transform:
   m_ObjectHideFlags: 0
@@ -6066,7 +6066,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1c53ae4842bed54c806561f67f88608, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerLayers: []
   _playerInputManager: {fileID: 1444502704}
 --- !u!114 &1444502707
 MonoBehaviour:

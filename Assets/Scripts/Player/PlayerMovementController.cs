@@ -30,22 +30,26 @@ public class PlayerMovementController : MonoBehaviour
     private bool _readyToFire = true;
     private Vector3 _previousPosition;
 
-    private InputActionAsset inputAsset;
+    private InputActionAsset _inputAsset;
     private InputActionMap _player;
 
     private InputAction _aim;
     private InputAction _fire;
+    private InputAction _reset;
+
+    private bool _hasStarted = false;
 
     void Awake()
     {
-        inputAsset = this.GetComponent<PlayerInput>().actions;
-        _player = inputAsset.FindActionMap("Player");
+        _inputAsset = this.GetComponent<PlayerInput>().actions;
+        _player = _inputAsset.FindActionMap("Player");
     }
 
     void OnEnable()
     {
         _player.FindAction("Fire").started += OnFire;
         _player.FindAction("Stop").started += OnStop;
+        _player.FindAction("SetPosition").started += OnSetPosition;
         _aim = _player.FindAction("Aim");
         _player.Enable();
     }
@@ -54,6 +58,7 @@ public class PlayerMovementController : MonoBehaviour
     {
         _player.FindAction("Fire").started -= OnFire;
         _player.FindAction("Stop").started -= OnStop;
+        _player.FindAction("SetPosition").started -= OnSetPosition;
         _player.Disable();
     }
 
@@ -66,6 +71,17 @@ public class PlayerMovementController : MonoBehaviour
 #if UNITY_EDITOR
         EditorApplication.isPlaying = false;
 #endif
+    }
+
+    public void OnSetPosition(InputAction.CallbackContext ctx)
+    {
+        for (int i = 0; i < GameSettings.PlayersInGame.Count; i++)
+        {
+            var player = GameSettings.PlayersInGame[i];
+            player.gameObject.transform.position = GameSettings.SpawnPointList[i].position;
+            player.gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
+        }
+        _hasStarted = true;
     }
 
     void Update()

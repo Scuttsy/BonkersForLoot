@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class RotatingTile : MonoBehaviour
 {
-    [SerializeField] private Collider _tileOverlapTrigger;
     [SerializeField] private float _rotationSpeed;
     void Update()
     {

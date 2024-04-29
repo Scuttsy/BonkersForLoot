@@ -71,6 +71,15 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""SetPosition"",
+                    ""type"": ""Button"",
+                    ""id"": ""53bc7782-de72-47d0-991a-b6cf617f47cc"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -126,6 +135,17 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Join"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6cd11a73-b48b-41cc-893b-4d36edd0452d"",
+                    ""path"": ""<Gamepad>/dpad/up"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SetPosition"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -426,6 +446,7 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
         m_Player_Fire = m_Player.FindAction("Fire", throwIfNotFound: true);
         m_Player_Stop = m_Player.FindAction("Stop", throwIfNotFound: true);
         m_Player_Join = m_Player.FindAction("Join", throwIfNotFound: true);
+        m_Player_SetPosition = m_Player.FindAction("SetPosition", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -504,6 +525,7 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Fire;
     private readonly InputAction m_Player_Stop;
     private readonly InputAction m_Player_Join;
+    private readonly InputAction m_Player_SetPosition;
     public struct PlayerActions
     {
         private @PlayerInputs m_Wrapper;
@@ -513,6 +535,7 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
         public InputAction @Fire => m_Wrapper.m_Player_Fire;
         public InputAction @Stop => m_Wrapper.m_Player_Stop;
         public InputAction @Join => m_Wrapper.m_Player_Join;
+        public InputAction @SetPosition => m_Wrapper.m_Player_SetPosition;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -537,6 +560,9 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
             @Join.started += instance.OnJoin;
             @Join.performed += instance.OnJoin;
             @Join.canceled += instance.OnJoin;
+            @SetPosition.started += instance.OnSetPosition;
+            @SetPosition.performed += instance.OnSetPosition;
+            @SetPosition.canceled += instance.OnSetPosition;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -556,6 +582,9 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
             @Join.started -= instance.OnJoin;
             @Join.performed -= instance.OnJoin;
             @Join.canceled -= instance.OnJoin;
+            @SetPosition.started -= instance.OnSetPosition;
+            @SetPosition.performed -= instance.OnSetPosition;
+            @SetPosition.canceled -= instance.OnSetPosition;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -698,6 +727,7 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
         void OnFire(InputAction.CallbackContext context);
         void OnStop(InputAction.CallbackContext context);
         void OnJoin(InputAction.CallbackContext context);
+        void OnSetPosition(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {
