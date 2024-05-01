@@ -22,6 +22,7 @@ public class GameplayScene : MonoBehaviour
     {
         // Create Player list in GameSettings before other script's starts are called
         GameSettings.PlayersInGame = new List<PlayerInput>();
+        GameSettings.LootSpawnPoints = new List<LootSpawnPoint>();
     }
 
     // Start is called before the first frame update
