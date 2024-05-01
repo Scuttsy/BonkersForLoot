@@ -10,6 +10,9 @@ public class GameSettings : MonoBehaviour
     public static List<PlayerInput> PlayersInGame;
     public static GameObject WinningPlayer;
 
+    public static List<LootSpawnPoint> LootSpawnPoints;
+    public static int LootOnMap;
+
     public static List<Transform> SpawnPointList;
     public Transform SpawnPointA;
     public Transform SpawnPointB;
