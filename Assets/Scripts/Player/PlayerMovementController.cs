@@ -1,9 +1,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Numerics;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using static UnityEngine.EventSystems.EventTrigger;
+using Vector2 = UnityEngine.Vector2;
+using Vector3 = UnityEngine.Vector3;
 
 public class PlayerMovementController : MonoBehaviour
 {
@@ -32,12 +36,18 @@ public class PlayerMovementController : MonoBehaviour
 
     private InputActionAsset _inputAsset;
     private InputActionMap _player;
-
     private InputAction _aim;
     private InputAction _fire;
     private InputAction _reset;
 
-    private bool _hasStarted = false;
+    private bool _isOnRail;
+    private Vector3 _entryVelocity;
+
+    private bool _hasShotRay;
+    private float _distanceFromOutOfBounds;
+
+    private bool _hasRecentlyFired;
+
 
     void Awake()
     {
@@ -66,6 +76,7 @@ public class PlayerMovementController : MonoBehaviour
     {
         _shouldFire = ctx.action.IsPressed();
     }
+
     public void OnStop(InputAction.CallbackContext ctx)
     {
 #if UNITY_EDITOR
@@ -81,21 +92,12 @@ public class PlayerMovementController : MonoBehaviour
             player.gameObject.transform.position = GameSettings.SpawnPointList[i].position;
             player.gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
         }
-        _hasStarted = true;
     }
 
     void Update()
     {
-        _horizontalInput = _aim.ReadValue<Vector2>().x;
-        _verticalInput = _aim.ReadValue<Vector2>().y;
-
-        Vector3 tempPosition = transform.position;
-        tempPosition.y = 0.5f;
-
-        if ((tempPosition - _previousPosition).magnitude > 0.01f)
-        {
-            _playerGFX.forward = (tempPosition - _previousPosition).normalized;
-        }
+        GetAimingInput();
+        Vector3 tempPosition = SetPlayerFacing();
 
         if (_usingMouse)
         //TODO: remove mouse controls
@@ -105,32 +107,74 @@ public class PlayerMovementController : MonoBehaviour
             _pointerPivot.eulerAngles = pointerRotationMouse;
         }
 
+        KeepOldInputIfNoInput();
+        Fire();
+        SetPlayerScaleBasedOnHeight();
 
+        _shouldFire = false;
+        _previousPosition = tempPosition;
+    }
+
+    private void SetPlayerScaleBasedOnHeight()
+    {
+        if (!(transform.position.y < 0)) return;
+        if (!_hasShotRay)
+        {
+            Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit);
+            _hasShotRay = true;
+            _distanceFromOutOfBounds = hit.distance;
+        }
+
+        _playerGFX.localScale = Vector3.Lerp(Vector3.one, Vector3.one / 10,
+            Mathf.Abs(transform.position.y)/ _distanceFromOutOfBounds);
+    }
+
+    private void Fire()
+    {
+        if (_playerRigidbody.velocity.magnitude < _minVelocityToMove)
+        {
+            _pointer.enabled = true;
+            if (!_readyToFire || !_shouldFire) return;
+            _readyToFire = false;
+            _hasRecentlyFired = true;
+            _playerGFX.forward = _pointerPivot.forward;
+            _playerRigidbody.AddForce(_playerGFX.forward.normalized * _forceStrength, ForceMode.Impulse);
+            Invoke(nameof(ResetFire), 0.25f);
+            Invoke(nameof(ResetHasRecentlyFired), 0.10f);
+        }
+        else
+        {
+            _pointer.enabled = false;
+        }
+    }
+
+    private void KeepOldInputIfNoInput()
+    {
         // Checking if the input is non-zero, if it isn't we keep the old input direction.
         if (Mathf.Abs(_horizontalInput) > _controllerDeadZone || Mathf.Abs(_verticalInput) > _controllerDeadZone)
         {
             Vector3 pointerRotation = new Vector3(0, Mathf.Atan2(_horizontalInput, _verticalInput) * Mathf.Rad2Deg, 0);
             _pointerPivot.eulerAngles = pointerRotation;
         }
+    }
 
-        if (_playerRigidbody.velocity.magnitude < _minVelocityToMove)
+    private Vector3 SetPlayerFacing()
+    {
+        Vector3 tempPosition = transform.position;
+        tempPosition.y = 0.5f;
+
+        if ((tempPosition - _previousPosition).magnitude > 0.01f)
         {
-            _pointer.enabled = true;
-            if (_readyToFire && _shouldFire)
-            {
-                _shouldFire = false;
-                _readyToFire = false;
-                _playerGFX.forward = _pointerPivot.forward;
-                _playerRigidbody.AddForce(_playerGFX.forward.normalized * _forceStrength, ForceMode.Impulse);
-                Invoke(nameof(ResetFire), 0.25f);
-            }
+            _playerGFX.forward = (tempPosition - _previousPosition).normalized;
         }
-        else
-        {
-            _pointer.enabled = false;
-        }
-        
-        _previousPosition = tempPosition;
+
+        return tempPosition;
+    }
+
+    private void GetAimingInput()
+    {
+        _horizontalInput = _aim.ReadValue<Vector2>().x;
+        _verticalInput = _aim.ReadValue<Vector2>().y;
     }
 
     void ResetFire()
@@ -138,10 +182,16 @@ public class PlayerMovementController : MonoBehaviour
         _readyToFire = true;
     }
 
+    void ResetHasRecentlyFired()
+    {
+        _hasRecentlyFired = false;
+    }
+
     void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.tag == "NoBounce")
+        if (collision.gameObject.CompareTag("NoBounce"))
         {
+            if (_hasRecentlyFired) return;
             _playerRigidbody.velocity = Vector3.zero;
         }
 
@@ -165,6 +215,9 @@ public class PlayerMovementController : MonoBehaviour
     public void Respawn()
     {
         _playerRigidbody.velocity = Vector3.zero;
+        _playerGFX.localScale = Vector3.one;
+        _distanceFromOutOfBounds = float.MaxValue;
+        _hasShotRay = false;
 
         // respawn mechanic taking into consideration the positions of the other player,
         // it calculates per spawnpoint the closest distance, and then gets the furthest spawmpoint;
@@ -193,16 +246,57 @@ public class PlayerMovementController : MonoBehaviour
         if (closestSpawnPoint.SpawnPointName == null)
             throw new System.AccessViolationException("SpawnPoint was null");
         transform.position = closestSpawnPoint.SpawnPointName.transform.position;
-        Debug.Log("Respawned.");
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.tag == "RotatingTile")
+        if (other.CompareTag("RotatingTile"))
         {
-            Vector3 playerVelocity = other.transform.forward * _playerRigidbody.velocity.magnitude;
-            _playerRigidbody.velocity = playerVelocity;
+            RotatingTile rotatingTileScript = other.GetComponent<RotatingTile>();
+            rotatingTileScript.PlayerYeeter.rotation = _playerGFX.rotation;
+            rotatingTileScript.LaunchPlayer(_playerRigidbody);
         }
+
+        if (other.CompareTag("StartGuardRail"))
+        {
+            _isOnRail = !_isOnRail;
+            GuardRail guardRailScript = other.transform.GetComponentInParent<GuardRail>();
+            if (_isOnRail)
+            {
+                StartRail(guardRailScript);
+            }
+            else
+            {
+                StopRail(guardRailScript);
+            }
+        }
+    }
+
+    private void StartRail(GuardRail guardRailScript)
+    {
+        float entry1DistanceFromPlayer = Vector3.Distance(guardRailScript.EntryPoint1.position, transform.position);
+        float entry2DistanceFromPlayer = Vector3.Distance(guardRailScript.EntryPoint2.position, transform.position);
+
+        guardRailScript.StartsAt1 = entry1DistanceFromPlayer < entry2DistanceFromPlayer;
+        guardRailScript.SetStartingAngle();
+        _entryVelocity = _playerRigidbody.velocity;
+        _playerRigidbody.velocity = Vector3.zero;
+        guardRailScript.StartAnimation = true;
+        guardRailScript.PlayerTransform = transform;
+        _playerCollider.isTrigger = true;
+    }
+
+    private void StopRail(GuardRail guardRailScript)
+    {
+        _playerRigidbody.velocity = (guardRailScript.StartsAt1 ? guardRailScript.EntryPoint2.forward : guardRailScript.EntryPoint1.forward) * _entryVelocity.magnitude * 1.1f;
+        guardRailScript.StartAnimation = false;
+        guardRailScript.PlayerTransform = null;
+        Invoke(nameof(DelayedColliderReactivation),0.11f);
+    }
+
+    private void DelayedColliderReactivation()
+    {
+        _playerCollider.isTrigger = false;
     }
 }
 

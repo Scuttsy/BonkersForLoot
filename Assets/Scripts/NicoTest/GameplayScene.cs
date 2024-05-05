@@ -79,6 +79,7 @@ public class GameplayScene : MonoBehaviour
             return;
         }
 
+        if (_unClaimedScoresTexts.Count <= 0 || _scoresTexts.Count <= 0) return;
 
         // This Block of code is really bad for performance
         // and should be moved to awake once the pre game lobby gets implemented!

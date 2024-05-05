@@ -8,6 +8,8 @@ TagManager:
   - NoBounce
   - OutOfBounds
   - RotatingTile
+  - StartGuardRail
+  - RotatingCenter
   layers:
   - Default
   - TransparentFX
