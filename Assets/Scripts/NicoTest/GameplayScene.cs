@@ -63,7 +63,7 @@ public class GameplayScene : MonoBehaviour
             // Set DontDestroyOnLoad for WinningPlayer 
             // so that we can acces it and its fields in the gameOverScene.
             DontDestroyOnLoad(GameSettings.WinningPlayer);
-
+            GameSettings.WinningPlayer.GetComponent<Rigidbody>().velocity = new Vector3(0,0,0);
             SceneManager.LoadScene("GameOverScene");
         }
         else
@@ -109,6 +109,15 @@ public class GameplayScene : MonoBehaviour
         float seconds = Mathf.FloorToInt(_timeRemaining % 60);
 
         if (_timerText != null)
-            _timerText.text = $"{minutes}:{seconds}";
+        {
+            if (seconds < 10)
+            {
+                _timerText.text = $"{minutes}:0{seconds}";
+            }
+            else
+            {
+                _timerText.text = $"{minutes}:{seconds}";
+            }
+        }
     }
 }
