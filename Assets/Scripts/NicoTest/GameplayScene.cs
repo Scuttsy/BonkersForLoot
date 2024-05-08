@@ -39,7 +39,6 @@ public class GameplayScene : MonoBehaviour
     void Start()
     {
         GameSettings.GameIsInProgress = true;
-        SetUIStartOfGame();
     }
 
     // Update is called once per frame
@@ -52,6 +51,7 @@ public class GameplayScene : MonoBehaviour
 
         DisplayTime();
         DisplayScores();
+        SetUIStartOfGame();
         // Check if time has run out
         if (_timeRemaining < 0)
         {
