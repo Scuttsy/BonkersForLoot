@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -17,7 +15,6 @@ public class PlayerMovementController : MonoBehaviour
     [SerializeField] private Transform _playerGFX;
     [SerializeField] private Rigidbody _playerRigidbody;
     [SerializeField] private PlayerInput _playerInput;
-    [SerializeField] private GameObject _CoinPrefab;
 
     [Header("Settings")]
     [SerializeField] private float _forceStrength;
@@ -26,7 +23,6 @@ public class PlayerMovementController : MonoBehaviour
     [SerializeField] private float _controllerDeadZone;
     [SerializeField] private float _fireCooldown;
     [SerializeField] private bool _usingMouse;
-    [SerializeField] private int _numCoinsImpact = 2;
 
     private float _horizontalInput;
     private float _verticalInput;
@@ -63,6 +59,8 @@ public class PlayerMovementController : MonoBehaviour
         _player.FindAction("SetPosition").started += OnSetPosition;
         _aim = _player.FindAction("Aim");
         _player.Enable();
+
+        transform.rotation = Quaternion.LookRotation(new Vector3(0,90,0));
     }
 
     void OnDisable()
@@ -210,36 +208,6 @@ public class PlayerMovementController : MonoBehaviour
             Vector3 newDirection = Vector3.Reflect(_playerRigidbody.velocity, collisionNormal).normalized;
 
             _playerRigidbody.velocity = newDirection * _forceStrength * Mathf.Cos(collisionAngle * Mathf.Deg2Rad);
-
-            //Coins explode
-            int collidingPlayerScore = collision.gameObject.GetComponent<Player>().Score;
-            int playerScore = gameObject.GetComponent<Player>().Score;
-
-            int coins = _numCoinsImpact <= collidingPlayerScore ? _numCoinsImpact : collidingPlayerScore;
-            collision.gameObject.GetComponent<Player>().Score -= coins;
-            ExplodeCoins(collision.transform, coins);
-            coins = _numCoinsImpact <= playerScore ? _numCoinsImpact : playerScore;
-            ExplodeCoins(transform, coins);
-        }
-    }
-
-    private void ExplodeCoins(Transform collision, int coins)
-    {
-        Vector3 targetPosition = Vector3.zero;
-        Ray ray;
-        GameObject coin;
-        for (int i = 0; i < coins - 1; i++)
-        {
-            do
-            {
-                coin = Instantiate(_CoinPrefab, collision.position, Quaternion.identity);
-                Vector2 pos = UnityEngine.Random.insideUnitCircle;
-                targetPosition = new Vector3(pos.x * 2f, transform.position.y, pos.y * 2f);
-
-                ray = new Ray(transform.position, targetPosition);
-            } while (Physics.Raycast(ray, (targetPosition - transform.position).magnitude));
-
-            coin.GetComponent<Loot>()._ExplodeTarget = targetPosition;
         }
     }
 
