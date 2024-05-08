@@ -24,8 +24,8 @@ public class ToggleCamOnPlayerJoin : MonoBehaviour
 
     private void ToggleCamera(PlayerInput player)
     {
-        _camera.gameObject.SetActive(false);
-        _noPlayerLight.gameObject.SetActive(false);
+        if (_camera != null) _camera.gameObject.SetActive(false);
+        if (_noPlayerLight != null) _noPlayerLight.gameObject.SetActive(true);
     }
 
 }

@@ -33,10 +33,9 @@ public class PlayerManager : MonoBehaviour
 
         GameSettings.PlayersInGame.Add(player);
         var playerindex = GameSettings.PlayersInGame.Count - 1;
-        player.gameObject.transform.position = GameSettings.SpawnPointList[playerindex].transform.position;
-        //Debug.Log("" + GameSettings.PlayersInGame[playerindex].gameObject + ", " + playerindex + ", " + GameSettings.SpawnPointList[playerindex].transform.position); 
-        //player.gameObject.GetComponent<PlayerMovementController>().Respawn();
-        
+        //player.gameObject.transform.position += Vector3.forward * GameSettings.PlayersInGame.Count * 2;
+
+
         Debug.Log("Player Added");
     }
 }

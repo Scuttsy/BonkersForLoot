@@ -21,5 +21,6 @@ public class CustomSceneManager : MonoBehaviour
     private void SwitchScene()
     {
         UnityEngine.SceneManagement.SceneManager.LoadScene(NextSceneName);
+        PlayerMovementController.StartGame();
     }
 }

@@ -8,7 +8,7 @@ public class GameSettings : MonoBehaviour
 {
     public static bool GameIsInProgress = false;
 
-    public static int PlayersRequiredToStart = 1;
+    public static int PlayersRequiredToStart = 4;
 
     public static List<PlayerInput> PlayersInGame;
     public static GameObject FirstPlace;

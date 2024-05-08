@@ -56,18 +56,36 @@ public class PlayerMovementController : MonoBehaviour
     {
         _player.FindAction("Fire").started += OnFire;
         _player.FindAction("Stop").started += OnStop;
-        _player.FindAction("SetPosition").started += OnSetPosition;
+        //_player.FindAction("SetPosition").started += OnSetPosition;
         _aim = _player.FindAction("Aim");
         _player.Enable();
 
-        transform.rotation = Quaternion.LookRotation(new Vector3(0,90,0));
+        switch (GameSettings.PlayersInGame.Count)
+        {
+            case 1:
+                Debug.Log("player1");
+                transform.rotation = Quaternion.LookRotation(new Vector3(0,90,0));
+                break;
+            case 2:
+                Debug.Log("player2");
+                transform.position += Vector3.right * 5;
+                break;
+            case 3:
+                Debug.Log("player3");
+                transform.position += Vector3.forward * 5;
+                break;
+            case 4:
+                Debug.Log("player4");
+                transform.position += Vector3.left * 5;
+                break;
+        }
     }
 
     void OnDisable()
     {
         _player.FindAction("Fire").started -= OnFire;
         _player.FindAction("Stop").started -= OnStop;
-        _player.FindAction("SetPosition").started -= OnSetPosition;
+        //_player.FindAction("SetPosition").started -= OnSetPosition;
         _player.Disable();
     }
 
@@ -81,6 +99,16 @@ public class PlayerMovementController : MonoBehaviour
 #if UNITY_EDITOR
         EditorApplication.isPlaying = false;
 #endif
+    }
+
+    public static void StartGame()
+    {
+        for (int i = 0; i < GameSettings.PlayersInGame.Count; i++)
+        {
+            var player = GameSettings.PlayersInGame[i];
+            player.gameObject.transform.position = GameSettings.SpawnPointList[i].position;
+            player.gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
+        }
     }
 
     public void OnSetPosition(InputAction.CallbackContext ctx)
@@ -200,15 +228,15 @@ public class PlayerMovementController : MonoBehaviour
         }
 
         //tryout players bouncing
-        if (collision.gameObject.CompareTag("Player"))
-        {
-            Vector3 collisionNormal = collision.contacts[0].normal;
-            float collisionAngle = Vector3.Angle(_playerRigidbody.velocity, collision.relativeVelocity);
+        //if (collision.gameObject.CompareTag("Player"))
+        //{
+        //    Vector3 collisionNormal = collision.contacts[0].normal;
+        //    float collisionAngle = Vector3.Angle(_playerRigidbody.velocity, collision.relativeVelocity);
 
-            Vector3 newDirection = Vector3.Reflect(_playerRigidbody.velocity, collisionNormal).normalized;
+        //    Vector3 newDirection = Vector3.Reflect(_playerRigidbody.velocity, collisionNormal).normalized;
 
-            _playerRigidbody.velocity = newDirection * _forceStrength * Mathf.Cos(collisionAngle * Mathf.Deg2Rad);
-        }
+        //    _playerRigidbody.velocity = newDirection * _forceStrength * Mathf.Cos(collisionAngle * Mathf.Deg2Rad);
+        //}
     }
 
     public void Respawn()
