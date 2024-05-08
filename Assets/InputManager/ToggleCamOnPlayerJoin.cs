@@ -10,6 +10,8 @@ public class ToggleCamOnPlayerJoin : MonoBehaviour
     private PlayerInputManager _playerInputManager;
     [SerializeField]
     private Camera _camera;
+    [SerializeField]
+    private Light _noPlayerLight;
 
     private void OnEnable()
     {
@@ -23,6 +25,7 @@ public class ToggleCamOnPlayerJoin : MonoBehaviour
     private void ToggleCamera(PlayerInput player)
     {
         _camera.gameObject.SetActive(false);
+        _noPlayerLight.gameObject.SetActive(false);
     }
 
 }

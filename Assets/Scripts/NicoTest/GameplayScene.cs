@@ -23,9 +23,6 @@ public class GameplayScene : MonoBehaviour
     private WinnerDecider _winnerDecider = new WinnerDecider();
     private void Awake()
     {
-        // Create Player list in GameSettings before other script's starts are called
-        GameSettings.PlayersInGame = new List<PlayerInput>();
-        GameSettings.LootSpawnPoints = new List<LootSpawnPoint>();
 
         foreach (TextMeshProUGUI text in _unClaimedScoresTexts)
         {
