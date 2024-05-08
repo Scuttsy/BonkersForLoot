@@ -17,5 +17,8 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/TestScenes/MatthiasTestScene.unity
     guid: 5980b85c6b3fa2349805f2341a2e7592
+  - enabled: 1
+    path: Assets/Scenes/WorkingDemoMap.unity
+    guid: 1025eedd70a07534191cbfd8349206ce
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: b09728ab4f9338842844660b6ebde846, type: 2}

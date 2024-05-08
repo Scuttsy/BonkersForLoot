@@ -8,7 +8,9 @@ public class GameSettings : MonoBehaviour
     public static bool GameIsInProgress = false;
 
     public static List<PlayerInput> PlayersInGame;
-    public static GameObject WinningPlayer;
+    public static GameObject FirstPlace;
+    public static GameObject SecondPlace;
+    public static GameObject ThirdPlace;
 
     public static List<LootSpawnPoint> LootSpawnPoints;
     public static int LootOnMap;

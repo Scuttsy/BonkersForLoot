@@ -23,9 +23,6 @@ public class GameplayScene : MonoBehaviour
     private WinnerDecider _winnerDecider = new WinnerDecider();
     private void Awake()
     {
-        // Create Player list in GameSettings before other script's starts are called
-        GameSettings.PlayersInGame = new List<PlayerInput>();
-        GameSettings.LootSpawnPoints = new List<LootSpawnPoint>();
 
         foreach (TextMeshProUGUI text in _unClaimedScoresTexts)
         {
@@ -60,10 +57,16 @@ public class GameplayScene : MonoBehaviour
             GameSettings.GameIsInProgress = false;
             _winnerDecider.DecideWinner();
 
-            // Set DontDestroyOnLoad for WinningPlayer 
+            // Set DontDestroyOnLoad for TOP 3 players
             // so that we can acces it and its fields in the gameOverScene.
-            DontDestroyOnLoad(GameSettings.WinningPlayer);
-            GameSettings.WinningPlayer.GetComponent<Rigidbody>().velocity = new Vector3(0,0,0);
+
+            //DontDestroyOnLoad(GameSettings.FirstPlayer); 
+            //DontDestroyOnLoad(GameSettings.SecondPlace);
+            //DontDestroyOnLoad(GameSettings.ThirdPlace);
+
+            GameSettings.FirstPlace.GetComponent<Rigidbody>().velocity = new Vector3(0,0,0);
+            GameSettings.SecondPlace.GetComponent<Rigidbody>().velocity = new Vector3(0,0,0);
+            GameSettings.ThirdPlace.GetComponent<Rigidbody>().velocity = new Vector3(0,0,0);
             SceneManager.LoadScene("GameOverScene");
         }
         else

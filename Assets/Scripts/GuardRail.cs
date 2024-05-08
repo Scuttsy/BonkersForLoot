@@ -7,7 +7,9 @@ public class GuardRail : MonoBehaviour
     public Transform RailPivot;
     public Transform EntryPoint1;
     public Transform EntryPoint2;
-    public float AnimSpeed = 200f;
+    [HideInInspector]
+    public float AnimSpeed;
+    public float AnimSpeedMultiplier = 15f;
 
     [HideInInspector]
     public bool StartsAt1;
@@ -22,8 +24,8 @@ public class GuardRail : MonoBehaviour
 
     private void Start()
     {
-        _startAngle += 180f + transform.position.y;
-        _endAngle += 180f + transform.position.y;
+        _startAngle += 180f + transform.eulerAngles.y;
+        _endAngle += 180f + transform.eulerAngles.y;
     }
 
     public void SetStartingAngle()
