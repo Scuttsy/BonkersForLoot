@@ -41,7 +41,7 @@ public class PlayerMovementController : MonoBehaviour
     private InputAction _reset;
 
     private bool _isOnRail;
-    private float _entryVelocity;
+    private Vector3 _entryVelocity;
 
     private bool _hasShotRay;
     private float _distanceFromOutOfBounds;
@@ -279,18 +279,16 @@ public class PlayerMovementController : MonoBehaviour
 
         guardRailScript.StartsAt1 = entry1DistanceFromPlayer < entry2DistanceFromPlayer;
         guardRailScript.SetStartingAngle();
-        _entryVelocity = _playerRigidbody.velocity.magnitude;
-        Debug.Log(_entryVelocity + ", " + _entryVelocity * 20f); //TODO: remove debug.log
+        _entryVelocity = _playerRigidbody.velocity;
         _playerRigidbody.velocity = Vector3.zero;
         guardRailScript.StartAnimation = true;
         guardRailScript.PlayerTransform = transform;
-        guardRailScript.AnimSpeed = _entryVelocity * guardRailScript.AnimSpeedMultiplier;
         _playerCollider.isTrigger = true;
     }
 
     private void StopRail(GuardRail guardRailScript)
     {
-        _playerRigidbody.velocity = (guardRailScript.StartsAt1 ? guardRailScript.EntryPoint2.forward : guardRailScript.EntryPoint1.forward) * _entryVelocity * 1.1f;
+        _playerRigidbody.velocity = (guardRailScript.StartsAt1 ? guardRailScript.EntryPoint2.forward : guardRailScript.EntryPoint1.forward) * _entryVelocity.magnitude * 1.1f;
         guardRailScript.StartAnimation = false;
         guardRailScript.PlayerTransform = null;
         Invoke(nameof(DelayedColliderReactivation),0.11f);

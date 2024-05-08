@@ -1,9 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class StartingGameScript : MonoBehaviour
 {
+    public PlayerInput PlayerInput;
+
     public int requiredPlayerCount = 5;
     private int currentPlayerCount = 0;
     private float countdownTimer = 5f;
@@ -11,6 +14,11 @@ public class StartingGameScript : MonoBehaviour
 
     public delegate void CountdownFinished();
     public static event CountdownFinished OnCountdownFinished;
+
+    private void Start()
+    {
+        PlayerInput = GetComponent<PlayerInput>();
+    }
 
     private void OnTriggerEnter(Collider other)
     {
@@ -53,6 +61,11 @@ public class StartingGameScript : MonoBehaviour
             currentPlayerCount = 0;
             countingDown = false;
             CancelInvoke("CountDown");
+
+            foreach (PlayerInput player in GameSettings.PlayersInGame)
+            {
+                DontDestroyOnLoad(player);
+            }
 
             OnCountdownFinished?.Invoke();
         }
