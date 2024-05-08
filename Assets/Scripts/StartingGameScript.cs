@@ -7,7 +7,7 @@ public class StartingGameScript : MonoBehaviour
 {
     public PlayerInput PlayerInput;
 
-    public int requiredPlayerCount = 5;
+    //public int requiredPlayerCount = 5;
     private int currentPlayerCount = 0;
     private float countdownTimer = 5f;
     private bool countingDown = false;
@@ -26,7 +26,7 @@ public class StartingGameScript : MonoBehaviour
         {
             currentPlayerCount++;
 
-            if (currentPlayerCount >= requiredPlayerCount && !countingDown)
+            if (currentPlayerCount >= GameSettings.PlayersRequiredToStart && !countingDown)
             {
                 countingDown = true;
                 InvokeRepeating("CountDown", 1f, 1f);
@@ -40,7 +40,7 @@ public class StartingGameScript : MonoBehaviour
         {
             currentPlayerCount--;
 
-            if (currentPlayerCount < requiredPlayerCount && countingDown)
+            if (currentPlayerCount < GameSettings.PlayersRequiredToStart && countingDown)
             {
                 countingDown = false;
                 CancelInvoke("CountDown");

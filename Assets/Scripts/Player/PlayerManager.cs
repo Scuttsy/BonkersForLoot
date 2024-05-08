@@ -26,6 +26,11 @@ public class PlayerManager : MonoBehaviour
 
     private void AddPlayer(PlayerInput player)
     {
+        if (GameSettings.PlayersInGame.Count >= GameSettings.PlayersRequiredToStart)
+        {
+            return;
+        }
+
         GameSettings.PlayersInGame.Add(player);
         var playerindex = GameSettings.PlayersInGame.Count - 1;
         player.gameObject.transform.position = GameSettings.SpawnPointList[playerindex].transform.position;
