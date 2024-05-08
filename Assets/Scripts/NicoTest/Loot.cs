@@ -5,6 +5,9 @@ using UnityEngine;
 public class Loot : MonoBehaviour
 {
     private GameObject _parent;
+    [SerializeField] private float _floatSpeed = 1.0f; //the time in seconds that the coin should take to bounce up and down
+    [SerializeField] private float _explodeSpeed = 1.0f;
+    public Vector3 _ExplodeTarget = Vector3.zero; //The place that the coin tries to move to 
     private void Awake()
     {
         GameSettings.LootOnMap++; // Add 1 to loot on map when created
@@ -43,6 +46,12 @@ public class Loot : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (_ExplodeTarget != Vector3.zero)
+        {
+            Vector3 velocity = (_ExplodeTarget - transform.position).normalized;
+            float speed = Mathf.Min(_explodeSpeed, (_ExplodeTarget - transform.position).magnitude);
+            transform.position += velocity * speed * Time.deltaTime;
+
+        }
     }
 }
