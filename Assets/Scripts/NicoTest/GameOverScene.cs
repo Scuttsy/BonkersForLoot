@@ -34,13 +34,26 @@ public class GameOverScene : MonoBehaviour
 
     private void SetPlayerPositions()
     {
-        GameSettings.FirstPlace.transform.rotation = new Quaternion(0, 0, 0, 0);
-        GameSettings.SecondPlace.transform.rotation = new Quaternion(0, 0, 0, 0);
-        GameSettings.ThirdPlace.transform.rotation = new Quaternion(0, 0, 0, 0);
+        if (GameSettings.FirstPlace != null)
+        {
+            GameSettings.FirstPlace.transform.rotation = new Quaternion(0, 0, 0, 0);
+            GameSettings.FirstPlace.transform.position = _winnerPos.position;
+        }
 
-        GameSettings.FirstPlace.transform.position = _winnerPos.position;
-        GameSettings.SecondPlace.transform.position = _secondPos.position;
-        GameSettings.ThirdPlace.transform.position = _thirdPos.position;
+        if (GameSettings.SecondPlace != null)
+        {
+            GameSettings.SecondPlace.transform.rotation = new Quaternion(0, 0, 0, 0);
+            GameSettings.SecondPlace.transform.position = _secondPos.position;
+        }
+
+        if (GameSettings.ThirdPlace != null)
+        {
+            GameSettings.ThirdPlace.transform.rotation = new Quaternion(0, 0, 0, 0);
+            GameSettings.ThirdPlace.transform.position = _thirdPos.position;
+        }
+
+
+
     }
 
     // Update is called once per frame

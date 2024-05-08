@@ -20,7 +20,6 @@ public class WinnerDecider
             if (_currentFirstPlace == null)
             {
                 _currentFirstPlace = player.gameObject;
-                return;
             }
 
             // If the next player has a higher score than the current first place.
@@ -53,7 +52,6 @@ public class WinnerDecider
                     if (_currentThirdPlace == null)
                     {
                         _currentThirdPlace = player.gameObject;
-                        return;
                     }
 
                     // If the next player score is bigger than the third place
