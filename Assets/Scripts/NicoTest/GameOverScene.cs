@@ -13,9 +13,9 @@ public class GameOverScene : MonoBehaviour
     void Start()
     {
         // Set Winning player in UI
-        if ( _winnerText != null && GameSettings.WinningPlayer != null)
+        if ( _winnerText != null && GameSettings.FirstPlayer != null)
         {
-            _winnerText.text = $"The winner is: {GameSettings.WinningPlayer.name}";
+            _winnerText.text = $"The winner is: {GameSettings.FirstPlayer.name}";
         }
 
         else
