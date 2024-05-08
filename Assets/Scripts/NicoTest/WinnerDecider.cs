@@ -65,7 +65,7 @@ public class WinnerDecider
             }
         }
         
-        GameSettings.FirstPlayer = _currentFirstPlace;
+        GameSettings.FirstPlace = _currentFirstPlace;
         GameSettings.SecondPlace = _currentSecondPlace;
         GameSettings.ThirdPlace = _currentThirdPlace;
     }

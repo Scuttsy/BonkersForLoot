@@ -8,7 +8,7 @@ public class GameSettings : MonoBehaviour
     public static bool GameIsInProgress = false;
 
     public static List<PlayerInput> PlayersInGame;
-    public static GameObject FirstPlayer;
+    public static GameObject FirstPlace;
     public static GameObject SecondPlace;
     public static GameObject ThirdPlace;
 

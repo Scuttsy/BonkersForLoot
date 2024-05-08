@@ -64,7 +64,9 @@ public class GameplayScene : MonoBehaviour
             //DontDestroyOnLoad(GameSettings.SecondPlace);
             //DontDestroyOnLoad(GameSettings.ThirdPlace);
 
-            GameSettings.FirstPlayer.GetComponent<Rigidbody>().velocity = new Vector3(0,0,0);
+            GameSettings.FirstPlace.GetComponent<Rigidbody>().velocity = new Vector3(0,0,0);
+            GameSettings.SecondPlace.GetComponent<Rigidbody>().velocity = new Vector3(0,0,0);
+            GameSettings.ThirdPlace.GetComponent<Rigidbody>().velocity = new Vector3(0,0,0);
             SceneManager.LoadScene("GameOverScene");
         }
         else
