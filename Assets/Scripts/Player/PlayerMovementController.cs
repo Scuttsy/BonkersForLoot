@@ -1,7 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Numerics;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -62,6 +59,8 @@ public class PlayerMovementController : MonoBehaviour
         _player.FindAction("SetPosition").started += OnSetPosition;
         _aim = _player.FindAction("Aim");
         _player.Enable();
+
+        transform.rotation = Quaternion.LookRotation(new Vector3(0,90,0));
     }
 
     void OnDisable()

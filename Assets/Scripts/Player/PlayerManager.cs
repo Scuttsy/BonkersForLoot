@@ -13,6 +13,7 @@ public class PlayerManager : MonoBehaviour
 
     public static PlayerInput[] PlayersInGame;
 
+
     private void OnEnable()
     {
         _playerInputManager.onPlayerJoined += AddPlayer;
