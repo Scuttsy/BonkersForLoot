@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -9,19 +10,37 @@ using UnityEngine;
 public class GameOverScene : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI _winnerText;
+
+    [SerializeField] private Transform _winnerPos;
+    [SerializeField] private Transform _secondPos;
+    [SerializeField] private Transform _thirdPos;
     // Start is called before the first frame update
     void Start()
     {
+        GameSettings.GameIsInProgress = false;
+        SetPlayerPositions();
+
         // Set Winning player in UI
-        if ( _winnerText != null && GameSettings.FirstPlayer != null)
+        if ( _winnerText != null && GameSettings.FirstPlace != null)
         {
-            _winnerText.text = $"The winner is: {GameSettings.FirstPlayer.name}";
+            _winnerText.text = $"The winner is: {GameSettings.FirstPlace.name}";
         }
 
         else
         {
             Debug.Log("Something is Null in winner text");
         }
+    }
+
+    private void SetPlayerPositions()
+    {
+        GameSettings.FirstPlace.transform.rotation = new Quaternion(0, 0, 0, 0);
+        GameSettings.SecondPlace.transform.rotation = new Quaternion(0, 0, 0, 0);
+        GameSettings.ThirdPlace.transform.rotation = new Quaternion(0, 0, 0, 0);
+
+        GameSettings.FirstPlace.transform.position = _winnerPos.position;
+        GameSettings.SecondPlace.transform.position = _secondPos.position;
+        GameSettings.ThirdPlace.transform.position = _thirdPos.position;
     }
 
     // Update is called once per frame
