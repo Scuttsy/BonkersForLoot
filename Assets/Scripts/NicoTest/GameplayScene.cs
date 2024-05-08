@@ -39,6 +39,7 @@ public class GameplayScene : MonoBehaviour
     void Start()
     {
         GameSettings.GameIsInProgress = true;
+        SetUIStartOfGame();
     }
 
     // Update is called once per frame
@@ -83,10 +84,10 @@ public class GameplayScene : MonoBehaviour
         }
 
         if (_unClaimedScoresTexts.Count <= 0 || _scoresTexts.Count <= 0) return;
+    }
 
-        // This Block of code is really bad for performance
-        // and should be moved to awake once the pre game lobby gets implemented!
-
+    private void SetUIStartOfGame()
+    {
         for (int i = 0; i < GameSettings.PlayersInGame.Count; i++)
         {
             _unClaimedScoresTexts[i].gameObject.SetActive(true);
@@ -95,7 +96,7 @@ public class GameplayScene : MonoBehaviour
 
         for (int i = 0; i < GameSettings.PlayersInGame.Count; i++)
         {
-            _unClaimedScoresTexts[i].text = 
+            _unClaimedScoresTexts[i].text =
                 $"Unclaimed: {GameSettings.PlayersInGame[i].gameObject.GetComponent<Player>().UnclaimedLoot}";
         }
 

@@ -1,11 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class GameSettings : MonoBehaviour
 {
     public static bool GameIsInProgress = false;
+
+    public static int PlayersRequiredToStart = 1;
 
     public static List<PlayerInput> PlayersInGame;
     public static GameObject FirstPlace;
