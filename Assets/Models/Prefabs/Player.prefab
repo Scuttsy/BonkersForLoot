@@ -586,7 +586,7 @@ MonoBehaviour:
   _playerGFX: {fileID: 3965921741289151473}
   _playerRigidbody: {fileID: 8587798844516945497}
   _playerInput: {fileID: 2169207396154533104}
-  _forceStrength: 225
+  _forceStrength: 300
   _minVelocityToMove: 1
   _controllerDeadZone: 0.5
   _fireCooldown: 0.25

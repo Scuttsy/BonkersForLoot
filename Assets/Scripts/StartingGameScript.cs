@@ -15,14 +15,9 @@ public class StartingGameScript : MonoBehaviour
     public delegate void CountdownFinished();
     public static event CountdownFinished OnCountdownFinished;
 
-    private void Start()
-    {
-        PlayerInput = GetComponent<PlayerInput>();
-        PlayerManager.AddPlayer(PlayerInput);
-    }
-
     private void OnTriggerEnter(Collider other)
     {
+
         if (other.CompareTag("Player"))
         {
             currentPlayerCount++;

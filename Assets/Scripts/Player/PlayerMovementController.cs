@@ -49,6 +49,7 @@ public class PlayerMovementController : MonoBehaviour
 
     void Awake()
     {
+        GameSettings.PlayersInGame.Add(GetComponent<PlayerInput>());
         _inputAsset = this.GetComponent<PlayerInput>().actions;
         _player = _inputAsset.FindActionMap("Player");
     }
@@ -163,6 +164,17 @@ public class PlayerMovementController : MonoBehaviour
         {
             _pointer.enabled = false;
         }
+    }
+
+    public void Fire(Vector3 direction)
+    {
+            _pointer.enabled = true;
+
+            _playerGFX.forward = direction;
+            _playerRigidbody.AddForce(_playerGFX.forward.normalized * _playerRigidbody.velocity.magnitude, ForceMode.Impulse);
+            Invoke(nameof(ResetFire), 0.25f);
+            Invoke(nameof(ResetHasRecentlyFired), 0.10f);
+       
     }
 
     private void KeepOldInputIfNoInput()
