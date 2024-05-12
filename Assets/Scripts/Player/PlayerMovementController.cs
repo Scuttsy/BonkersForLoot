@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -60,25 +61,16 @@ public class PlayerMovementController : MonoBehaviour
         _aim = _player.FindAction("Aim");
         _player.Enable();
 
-        switch (GameSettings.PlayersInGame.Count)
+    }
+
+    public void SetPlayerStartingPosition(int playerCount)
+    {
+        if (playerCount == 0)
         {
-            case 1:
-                Debug.Log("player1");
-                transform.rotation = Quaternion.LookRotation(new Vector3(0,90,0));
-                break;
-            case 2:
-                Debug.Log("player2");
-                transform.position += Vector3.right * 5;
-                break;
-            case 3:
-                Debug.Log("player3");
-                transform.position += Vector3.forward * 5;
-                break;
-            case 4:
-                Debug.Log("player4");
-                transform.position += Vector3.left * 5;
-                break;
+            _playerGFX.rotation = Quaternion.LookRotation(new Vector3(0,90,0));
         }
+        _playerRigidbody.position = GameSettings.SpawnPointList[playerCount].position;
+        Debug.Log("player" + (playerCount + 1) + ", " + GameSettings.SpawnPointList[playerCount].position);
     }
 
     void OnDisable()
@@ -103,11 +95,9 @@ public class PlayerMovementController : MonoBehaviour
 
     public static void StartGame()
     {
-        for (int i = 0; i < GameSettings.PlayersInGame.Count; i++)
+        foreach (var player in GameSettings.PlayersInGame)
         {
-            var player = GameSettings.PlayersInGame[i];
-            player.gameObject.transform.position = GameSettings.SpawnPointList[i].position;
-            player.gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
+            player.gameObject.GetComponent<PlayerMovementController>().SetPlayerStartingPosition(GameSettings.PlayersInGame.Count - 1);
         }
     }
 
