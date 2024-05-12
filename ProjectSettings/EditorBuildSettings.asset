@@ -6,19 +6,19 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/TestScenes/NicoTestScene.unity
-    guid: 06dc11d0e819d8741817a853526cf495
-  - enabled: 1
-    path: Assets/Scenes/GameOverScene.unity
-    guid: b7d4a0dc89aaaf74b8a8cb1254048213
-  - enabled: 1
     path: Assets/Scenes/Lobby.unity
     guid: a9778fa691486d04e88ac5c8c27e1e9f
   - enabled: 1
-    path: Assets/Scenes/TestScenes/MatthiasTestScene.unity
-    guid: 5980b85c6b3fa2349805f2341a2e7592
-  - enabled: 1
     path: Assets/Scenes/WorkingDemoMap.unity
     guid: 1025eedd70a07534191cbfd8349206ce
+  - enabled: 1
+    path: Assets/Scenes/GameOverScene.unity
+    guid: bf140107aaff1e746b4cca4db264196f
+  - enabled: 0
+    path: Assets/Scenes/TestScenes/NicoTestScene.unity
+    guid: 023f252ca7dc973419d3af907d001fb0
+  - enabled: 0
+    path: Assets/Scenes/TestScenes/MatthiasTestScene.unity
+    guid: 5980b85c6b3fa2349805f2341a2e7592
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: b09728ab4f9338842844660b6ebde846, type: 2}

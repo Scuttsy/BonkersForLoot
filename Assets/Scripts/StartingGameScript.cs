@@ -18,6 +18,7 @@ public class StartingGameScript : MonoBehaviour
     private void Start()
     {
         PlayerInput = GetComponent<PlayerInput>();
+        PlayerManager.AddPlayer(PlayerInput);
     }
 
     private void OnTriggerEnter(Collider other)

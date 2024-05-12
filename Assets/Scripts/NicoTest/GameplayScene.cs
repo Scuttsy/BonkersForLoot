@@ -26,11 +26,13 @@ public class GameplayScene : MonoBehaviour
 
         foreach (TextMeshProUGUI text in _unClaimedScoresTexts)
         {
+            if (text != null)
             text.gameObject.SetActive(false);
         }
 
         foreach (TextMeshProUGUI text in _scoresTexts)
         {
+            if (text != null)
             text.gameObject.SetActive(false);
         }
     }
@@ -50,18 +52,20 @@ public class GameplayScene : MonoBehaviour
         }
 
         DisplayTime();
-        DisplayScores();
+        //DisplayScores();
         SetUIStartOfGame();
         // Check if time has run out
         if (_timeRemaining < 0)
         {
             GameSettings.GameIsInProgress = false;
+
+            //Winner is decided
             _winnerDecider.DecideWinner();
 
             // Set DontDestroyOnLoad for TOP 3 players
             // so that we can acces it and its fields in the gameOverScene.
 
-            //DontDestroyOnLoad(GameSettings.FirstPlayer); 
+            //DontDestroyOnLoad(GameSettings.FirstPlace);
             //DontDestroyOnLoad(GameSettings.SecondPlace);
             //DontDestroyOnLoad(GameSettings.ThirdPlace);
 
@@ -100,12 +104,12 @@ public class GameplayScene : MonoBehaviour
 
     private void SetUIStartOfGame()
     {
+        Debug.Log($"Players in Game: {GameSettings.PlayersInGame.Count}");
         for (int i = 0; i < GameSettings.PlayersInGame.Count; i++)
         {
             _unClaimedScoresTexts[i].gameObject.SetActive(true);
             _scoresTexts[i].gameObject.SetActive(true);
         }
-
         for (int i = 0; i < GameSettings.PlayersInGame.Count; i++)
         {
             _unClaimedScoresTexts[i].text =
@@ -124,6 +128,7 @@ public class GameplayScene : MonoBehaviour
         float minutes = Mathf.FloorToInt(_timeRemaining / 60);
         float seconds = Mathf.FloorToInt(_timeRemaining % 60);
 
+        _timerText.enabled = false;
         if (_timerText != null)
         {
             if (seconds < 10)
@@ -135,5 +140,6 @@ public class GameplayScene : MonoBehaviour
                 _timerText.text = $"{minutes}:{seconds}";
             }
         }
+        _timerText.enabled = true;
     }
 }

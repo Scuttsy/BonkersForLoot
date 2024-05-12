@@ -17,6 +17,7 @@ public class PlayerManager : MonoBehaviour
     private void OnEnable()
     {
         _playerInputManager.onPlayerJoined += AddPlayer;
+
     }
 
     private void OnDisable()
@@ -24,7 +25,7 @@ public class PlayerManager : MonoBehaviour
         _playerInputManager.onPlayerLeft -= AddPlayer;
     }
 
-    private void AddPlayer(PlayerInput player)
+    public static void AddPlayer(PlayerInput player)
     {
         if (GameSettings.PlayersInGame.Count >= GameSettings.PlayersRequiredToStart)
         {

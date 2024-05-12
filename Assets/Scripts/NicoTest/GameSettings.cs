@@ -8,7 +8,7 @@ public class GameSettings : MonoBehaviour
 {
     public static bool GameIsInProgress = false;
 
-    public static int PlayersRequiredToStart = 4;
+    public static int PlayersRequiredToStart;
 
     public static List<PlayerInput> PlayersInGame;
     public static GameObject FirstPlace;
@@ -26,6 +26,8 @@ public class GameSettings : MonoBehaviour
 
     void Awake()
     {
+        PlayersRequiredToStart = PlayersInGame.Count;
+
         SpawnPointList = new List<Transform>();
         SpawnPointList.Add(SpawnPointA);
         SpawnPointList.Add(SpawnPointB);
