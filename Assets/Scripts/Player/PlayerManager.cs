@@ -32,9 +32,10 @@ public class PlayerManager : MonoBehaviour
         //    return;
         //}
 
-        GameSettings.PlayersInGame.Add(player);
-        GameSettings.PlayersRequiredToStart = Mathf.Max(GameSettings.MinimumPlayersRequiredToStart, GameSettings.PlayersInGame.Count);
-        player.gameObject.GetComponent<PlayerMovementController>().SetPlayerStartingPosition(GameSettings.PlayersInGame.Count - 1);
+        //GameSettings.PlayersInGame.Add(player);
+        GameSettings.PlayersRequiredToStart = 4;
+       // GameSettings.PlayersRequiredToStart = Mathf.Max(GameSettings.MinimumPlayersRequiredToStart, GameSettings.PlayersInGame.Count);
+        //player.gameObject.GetComponent<PlayerMovementController>().SetPlayerStartingPosition(GameSettings.PlayersInGame.Count - 1);
         //var playerindex = GameSettings.PlayersInGame.Count - 1;
         //player.gameObject.transform.position += Vector3.forward * GameSettings.PlayersInGame.Count * 2;
 

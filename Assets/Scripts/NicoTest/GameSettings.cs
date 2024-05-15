@@ -8,14 +8,10 @@ public class GameSettings : MonoBehaviour
 {
     public static bool GameIsInProgress = false;
 
-<<<<<<< Updated upstream
     public static int MinimumPlayersRequiredToStart = 1;
     public static int PlayersRequiredToStart = 4;
 
-    public static List<PlayerInput> PlayersInGame;
-=======
     public static List<PlayerInput> PlayersInGame = new List<PlayerInput>();
->>>>>>> Stashed changes
     public static GameObject FirstPlace;
     public static GameObject SecondPlace;
     public static GameObject ThirdPlace;

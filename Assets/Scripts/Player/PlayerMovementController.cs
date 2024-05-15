@@ -1,8 +1,5 @@
 using System;
-<<<<<<< Updated upstream
 using System.Collections;
-=======
->>>>>>> Stashed changes
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -18,6 +15,7 @@ public class PlayerMovementController : MonoBehaviour
     [SerializeField] private Transform _playerGFX;
     [SerializeField] private Rigidbody _playerRigidbody;
     [SerializeField] private PlayerInput _playerInput;
+    [SerializeField] private GameObject _coinPrefab;
 
     [Header("Settings")]
     [SerializeField] private float _forceStrength;
@@ -54,6 +52,7 @@ public class PlayerMovementController : MonoBehaviour
         GameSettings.PlayersInGame.Add(GetComponent<PlayerInput>());
         _inputAsset = this.GetComponent<PlayerInput>().actions;
         _player = _inputAsset.FindActionMap("Player");
+        SetPlayerStartingPosition(GameSettings.PlayersInGame.Count - 1);
     }
 
     void OnEnable()
@@ -239,18 +238,16 @@ public class PlayerMovementController : MonoBehaviour
 
         //    Vector3 newDirection = Vector3.Reflect(_playerRigidbody.velocity, collisionNormal).normalized;
 
-<<<<<<< Updated upstream
         //    _playerRigidbody.velocity = newDirection * _forceStrength * Mathf.Cos(collisionAngle * Mathf.Deg2Rad);
         //}
-=======
-            _playerRigidbody.velocity = newDirection * _forceStrength * Mathf.Cos(collisionAngle * Mathf.Deg2Rad);
+            //_playerRigidbody.velocity = newDirection * _forceStrength * Mathf.Cos(collisionAngle * Mathf.Deg2Rad);
 
             //Coins explode
             int playerScore = gameObject.GetComponent<Player>().Score;
-            int coins = _numCoinsImpact <= playerScore ? _numCoinsImpact : playerScore;
-            gameObject.GetComponent<Player>().Score -= coins;
-            ExplodeCoins(transform, coins);
-        }
+            //int coins = _numCoinsImpact <= playerScore ? _numCoinsImpact : playerScore;
+            //gameObject.GetComponent<Player>().Score -= coins;
+           //ExplodeCoins(transform, coins);
+        
     }
 
     private void ExplodeCoins(Transform collision, int coins)
@@ -262,7 +259,7 @@ public class PlayerMovementController : MonoBehaviour
 
         for (int i = 0; i < coins - 1; i++)
         {
-            coin = Instantiate(_CoinPrefab, collision.position, Quaternion.identity);
+            coin = Instantiate(_coinPrefab, collision.position, Quaternion.identity);
             int loops = 0;
             do
             {
@@ -276,7 +273,6 @@ public class PlayerMovementController : MonoBehaviour
 
             coin.GetComponent<Loot>()._ExplodeTarget = targetPosition;
         }
->>>>>>> Stashed changes
     }
 
     public void Respawn()
