@@ -18,7 +18,7 @@ public class Loot : MonoBehaviour
     private void OnDestroy()
     {
         GameSettings.LootOnMap--; // Substract 1 from loot on map when Destroyed
-        _parent.GetComponent<LootSpawnPoint>().HasSpawnedLoot = false;
+        _parent.GetComponent<LootSpawnPoint>().HasSpawnedLoot = false;                                                                                                                                                                                                                                                       
     }
 
     private void OnTriggerEnter(Collider other)

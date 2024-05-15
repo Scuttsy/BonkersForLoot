@@ -1,9 +1,11 @@
 using System;
+<<<<<<< Updated upstream
 using System.Collections;
+=======
+>>>>>>> Stashed changes
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using static UnityEngine.EventSystems.EventTrigger;
 using Vector2 = UnityEngine.Vector2;
 using Vector3 = UnityEngine.Vector3;
 
@@ -20,7 +22,7 @@ public class PlayerMovementController : MonoBehaviour
     [Header("Settings")]
     [SerializeField] private float _forceStrength;
     [SerializeField] private float _minVelocityToMove;
-    [Range(0,1)]
+    [Range(0, 1)]
     [SerializeField] private float _controllerDeadZone;
     [SerializeField] private float _fireCooldown;
     [SerializeField] private bool _usingMouse;
@@ -120,8 +122,8 @@ public class PlayerMovementController : MonoBehaviour
         if (_usingMouse)
         //TODO: remove mouse controls
         {
-            Vector3 centeredMousePos = Input.mousePosition - new Vector3(Screen.width/2f,Screen.height/2f,0);
-            Vector3 pointerRotationMouse = new Vector3(0,Mathf.Atan2(centeredMousePos.x, centeredMousePos.y) * Mathf.Rad2Deg, 0);
+            Vector3 centeredMousePos = Input.mousePosition - new Vector3(Screen.width / 2f, Screen.height / 2f, 0);
+            Vector3 pointerRotationMouse = new Vector3(0, Mathf.Atan2(centeredMousePos.x, centeredMousePos.y) * Mathf.Rad2Deg, 0);
             _pointerPivot.eulerAngles = pointerRotationMouse;
         }
 
@@ -144,7 +146,7 @@ public class PlayerMovementController : MonoBehaviour
         }
 
         _playerGFX.localScale = Vector3.Lerp(Vector3.one, Vector3.one / 10,
-            Mathf.Abs(transform.position.y)/ _distanceFromOutOfBounds);
+            Mathf.Abs(transform.position.y) / _distanceFromOutOfBounds);
     }
 
     private void Fire()
@@ -237,8 +239,44 @@ public class PlayerMovementController : MonoBehaviour
 
         //    Vector3 newDirection = Vector3.Reflect(_playerRigidbody.velocity, collisionNormal).normalized;
 
+<<<<<<< Updated upstream
         //    _playerRigidbody.velocity = newDirection * _forceStrength * Mathf.Cos(collisionAngle * Mathf.Deg2Rad);
         //}
+=======
+            _playerRigidbody.velocity = newDirection * _forceStrength * Mathf.Cos(collisionAngle * Mathf.Deg2Rad);
+
+            //Coins explode
+            int playerScore = gameObject.GetComponent<Player>().Score;
+            int coins = _numCoinsImpact <= playerScore ? _numCoinsImpact : playerScore;
+            gameObject.GetComponent<Player>().Score -= coins;
+            ExplodeCoins(transform, coins);
+        }
+    }
+
+    private void ExplodeCoins(Transform collision, int coins)
+    {
+        int maxLoops = 5;
+        Vector3 targetPosition = Vector3.zero;
+        Ray ray;
+        GameObject coin;
+
+        for (int i = 0; i < coins - 1; i++)
+        {
+            coin = Instantiate(_CoinPrefab, collision.position, Quaternion.identity);
+            int loops = 0;
+            do
+            {
+                loops++;
+                Vector2 pos = UnityEngine.Random.insideUnitCircle;
+                targetPosition = transform.position + new Vector3(pos.x / 2, 0, pos.y / 2);
+
+                ray = new Ray(collision.position, targetPosition);
+                Debug.DrawRay(collision.position, ray.direction);
+            } while (Physics.Raycast(ray, (targetPosition - transform.position).magnitude) && loops <= maxLoops);
+
+            coin.GetComponent<Loot>()._ExplodeTarget = targetPosition;
+        }
+>>>>>>> Stashed changes
     }
 
     public void Respawn()
@@ -326,7 +364,7 @@ public class PlayerMovementController : MonoBehaviour
         _playerRigidbody.velocity = (guardRailScript.StartsAt1 ? guardRailScript.EntryPoint2.forward : guardRailScript.EntryPoint1.forward) * _entryVelocity.magnitude * 1.1f;
         guardRailScript.StartAnimation = false;
         guardRailScript.PlayerTransform = null;
-        Invoke(nameof(DelayedColliderReactivation),0.11f);
+        Invoke(nameof(DelayedColliderReactivation), 0.11f);
     }
 
     private void DelayedColliderReactivation()

@@ -591,6 +591,10 @@ MonoBehaviour:
   _controllerDeadZone: 0.5
   _fireCooldown: 0.25
   _usingMouse: 0
+<<<<<<< Updated upstream
+=======
+  _numCoinsImpact: 2
+>>>>>>> Stashed changes
 --- !u!54 &8587798844516945497
 Rigidbody:
   m_ObjectHideFlags: 0

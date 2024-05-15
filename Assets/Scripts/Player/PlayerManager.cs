@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-[RequireComponent(typeof(PlayerInputManager))]
+//RequireComponent(typeof(PlayerInputManager))]
 public class PlayerManager : MonoBehaviour
 {
     [SerializeField]
