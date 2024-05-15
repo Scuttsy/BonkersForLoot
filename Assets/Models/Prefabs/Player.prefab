@@ -61,7 +61,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 3187767296151263382, guid: d26e0591e2d27724a85fafa156f48504, type: 3}
+  - {fileID: 2100000, guid: 531b6d6db9019f34688a033f2f8d166b, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -586,12 +586,12 @@ MonoBehaviour:
   _playerGFX: {fileID: 3965921741289151473}
   _playerRigidbody: {fileID: 8587798844516945497}
   _playerInput: {fileID: 2169207396154533104}
+  _coinPrefab: {fileID: 0}
   _forceStrength: 300
   _minVelocityToMove: 1
   _controllerDeadZone: 0.5
   _fireCooldown: 0.25
   _usingMouse: 0
-  _numCoinsImpact: 2
 --- !u!54 &8587798844516945497
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -761,7 +761,7 @@ LineRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
+  - {fileID: 2100000, guid: 2f90306a2c13e644bb96d45c5ed14800, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
