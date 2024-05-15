@@ -1375,6 +1375,7 @@ GameObject:
   - component: {fileID: 261007455}
   - component: {fileID: 261007454}
   - component: {fileID: 261007453}
+  - component: {fileID: 261007457}
   m_Layer: 0
   m_Name: OutOfBoundsPlane (2)
   m_TagString: OutOfBounds
@@ -1468,6 +1469,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &261007457
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 261007452}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 100, y: 0.001, z: 100}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &262336322
 GameObject:
   m_ObjectHideFlags: 0

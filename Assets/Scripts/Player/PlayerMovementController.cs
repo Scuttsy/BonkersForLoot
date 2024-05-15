@@ -299,6 +299,12 @@ public class PlayerMovementController : MonoBehaviour
                 StopRail(guardRailScript);
             }
         }
+
+        if (other.gameObject.tag == "OutOfBounds")
+        {
+            _playerCollider.isTrigger = false;
+            Respawn();
+        }
     }
 
     private void StartRail(GuardRail guardRailScript)
