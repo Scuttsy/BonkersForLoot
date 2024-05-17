@@ -14,9 +14,19 @@ public class GameOverScene : MonoBehaviour
     [SerializeField] private Transform _winnerPos;
     [SerializeField] private Transform _secondPos;
     [SerializeField] private Transform _thirdPos;
+
+    private AudioSource audioSource;
+
     // Start is called before the first frame update
     void Start()
     {
+        audioSource = GetComponent<AudioSource>();
+
+        if (audioSource != null && audioSource.clip != null)
+        {
+            audioSource.PlayOneShot(audioSource.clip);
+        }
+
         GameSettings.GameIsInProgress = false;
         SetPlayerPositions();
 

@@ -46,6 +46,7 @@ public class PlayerMovementController : MonoBehaviour
 
     private bool _hasRecentlyFired;
 
+    private AudioSource audioSource;
 
     void Awake()
     {
@@ -228,6 +229,14 @@ public class PlayerMovementController : MonoBehaviour
         if (collision.gameObject.tag == "OutOfBounds")
         {
             Respawn();
+        }
+
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            if (audioSource != null && audioSource.clip != null)
+            {
+                audioSource.PlayOneShot(audioSource.clip);
+            }
         }
 
         //tryout players bouncing
