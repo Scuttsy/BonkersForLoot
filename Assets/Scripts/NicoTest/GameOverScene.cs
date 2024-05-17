@@ -23,7 +23,7 @@ public class GameOverScene : MonoBehaviour
         // Set Winning player in UI
         if ( _winnerText != null && GameSettings.FirstPlace != null)
         {
-            _winnerText.text = $"The winner is: {GameSettings.FirstPlace.name}";
+            _winnerText.text = $"The winner is: {GameSettings.FirstPlace.gameObject.GetComponent<Player>().PlayerName}";
         }
 
         else

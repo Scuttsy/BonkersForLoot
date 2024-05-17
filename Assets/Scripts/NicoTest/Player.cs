@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.PlayerLoop;
 
 public class Player : MonoBehaviour
@@ -8,6 +9,9 @@ public class Player : MonoBehaviour
     public int UnclaimedLoot = 0;
     public int Score = 0;
     public string PlayerName = "(Default Name)";
+
+    [SerializeField] private List<Material> _playerColours;
+    [SerializeField] private Renderer _playerModel;
 
     //private bool _positionSet = false;
     //private Vector3 _tempPos;
@@ -30,6 +34,39 @@ public class Player : MonoBehaviour
         //Debug.Log(_tempPos);
 
         //Debug.Log("Player Start");
+
+
+        PlayerInput playerInput = GetComponent<PlayerInput>();
+        int index = 0;
+        for (int i = 0; i < GameSettings.PlayersInGame.Count; i++)
+        {
+            if (GameSettings.PlayersInGame[i] == playerInput)
+            {
+                index = i;
+            }
+        }
+
+        if (index == 0)
+        {
+            _playerModel.material = _playerColours[0];
+            PlayerName = "Blue";
+        }
+        else if (index == 1)
+        {
+            _playerModel.material = _playerColours[1];
+            PlayerName = "Green";
+        }
+        else if (index == 2)
+        {
+            _playerModel.material = _playerColours[2];
+            PlayerName = "Red";
+        }
+        else if (index == 3)
+        {
+            _playerModel.material = _playerColours[3];
+            PlayerName = "Yellow";
+        }
+
     }
 
     void Update()

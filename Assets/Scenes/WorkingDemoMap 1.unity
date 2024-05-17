@@ -1175,6 +1175,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _timeRemaining: 100
   _timerText: {fileID: 539642396}
+  _unClaimedScoresTexts: []
+  _scoresTexts: []
 --- !u!114 &648151500
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17913,6 +17915,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _rotationSpeed: 10
+  PlayerYeeter: {fileID: 0}
+  _minVelocity: 17
+  _minAngle: 10
+  _maxAngle: 45
 --- !u!64 &5653536648928840031
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -18863,6 +18869,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _rotationSpeed: 20
+  PlayerYeeter: {fileID: 0}
+  _minVelocity: 17
+  _minAngle: 10
+  _maxAngle: 45
 --- !u!33 &7856717100011918712
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -19014,6 +19024,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _rotationSpeed: -20
+  PlayerYeeter: {fileID: 0}
+  _minVelocity: 17
+  _minAngle: 10
+  _maxAngle: 45
 --- !u!23 &8114319033031647745
 MeshRenderer:
   m_ObjectHideFlags: 0
