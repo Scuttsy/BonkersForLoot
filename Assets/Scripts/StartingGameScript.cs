@@ -21,8 +21,8 @@ public class StartingGameScript : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             currentPlayerCount++;
-
-            if (currentPlayerCount >= GameSettings.PlayersRequiredToStart && !countingDown)
+            //currentPlayerCount >= GameSettings.PlayersRequiredToStart || currentPlayerCount == GameSettings.MinimumPlayersRequiredToStart
+            if (currentPlayerCount == GameSettings.PlayersInGame.Count && !countingDown)
             {
                 countingDown = true;
                 InvokeRepeating("CountDown", 1f, 1f);
