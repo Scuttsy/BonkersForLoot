@@ -80,7 +80,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 0.67559016, z: -0, w: 0.7372774}
   m_LocalPosition: {x: 2.416, y: 1, z: -0.814}
-  m_LocalScale: {x: 0.8, y: 2, z: 0.8}
+  m_LocalScale: {x: 0.6, y: 2, z: 0.6}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5483128620405199028}
@@ -444,7 +444,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 0.1326024, z: -0, w: 0.99116933}
   m_LocalPosition: {x: -0.432, y: 1, z: 2.606}
-  m_LocalScale: {x: 0.8, y: 2, z: 0.8}
+  m_LocalScale: {x: 0.6, y: 2, z: 0.6}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5483128620405199028}
@@ -685,6 +685,7 @@ MonoBehaviour:
   EntryPoint1: {fileID: 8209554508627345922}
   EntryPoint2: {fileID: 8337680967545726583}
   AnimSpeed: 200
+  AnimSpeedMultiplier: 15
   StartsAt1: 0
   StartAnimation: 0
   PlayerTransform: {fileID: 0}

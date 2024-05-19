@@ -112,7 +112,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 4772294434118235480}
+  - {fileID: 8088366074452442872}
   m_Father: {fileID: 856005145528362927}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2579293452366807332
@@ -198,12 +198,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4069906099711340061}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 1.5}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0.5}
   m_LocalScale: {x: 0.1, y: 0.1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 7848671297918863599}
+  m_Father: {fileID: 8088366074452442872}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &3177942097415298968
 MeshFilter:
@@ -255,6 +255,38 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &4863737385162633560
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8088366074452442872}
+  m_Layer: 0
+  m_Name: PointerScalePivot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8088366074452442872
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4863737385162633560}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 1}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 4772294434118235480}
+  m_Father: {fileID: 7848671297918863599}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5500942948510283640
 GameObject:
   m_ObjectHideFlags: 0
@@ -582,17 +614,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _playerCollider: {fileID: 8787480432676933196}
-  _pointerPivot: {fileID: 7848671297918863599}
   _pointer: {fileID: 2295349984629494832}
+  _pointerPivot: {fileID: 7848671297918863599}
+  _pointerScalePivot: {fileID: 8088366074452442872}
   _playerGFX: {fileID: 3965921741289151473}
-  _playerRigidbody: {fileID: 8587798844516945497}
+  PlayerRigidbody: {fileID: 8587798844516945497}
   _playerInput: {fileID: 2169207396154533104}
   _coinPrefab: {fileID: 0}
-  _forceStrength: 300
   _minVelocityToMove: 1
   _controllerDeadZone: 0.5
   _fireCooldown: 0.25
   _usingMouse: 0
+  _impactFreezeTime: 0.5
+  _impactFreezeDivider: 5
+  _minPointerSize: {x: 1, y: 1, z: 0.5}
+  _maxPointerSize: {x: 2, y: 2, z: 2}
+  _timeForMaxShot: 1
+  _minForceStrength: 200
+  _maxForceStrength: 400
+  _respawnTimer: 2
 --- !u!54 &8587798844516945497
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -640,6 +680,11 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 2f90306a2c13e644bb96d45c5ed14800, type: 2}
   - {fileID: 2100000, guid: 84fe31ffd73b18e46b834a8dbd5ecc5c, type: 2}
   - {fileID: 2100000, guid: 3d57024e33c073a48a514d8c6e7199cb, type: 2}
+  _playerDeviceColours:
+  - {r: 0.078431375, g: 0.18431373, b: 0.7882353, a: 0}
+  - {r: 0, g: 1, b: 0, a: 0}
+  - {r: 0.78431374, g: 0, b: 0, a: 0}
+  - {r: 1, g: 1, b: 0, a: 0}
   _playerModel: {fileID: 1269047990666651647}
 --- !u!114 &2169207396154533104
 MonoBehaviour:
