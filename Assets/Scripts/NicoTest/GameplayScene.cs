@@ -17,10 +17,14 @@ public class GameplayScene : MonoBehaviour
     private float _timeRemaining; // In Seconds!
     [SerializeField] private Image _timerImage;
     [SerializeField] private TMP_Text _timerText;
-    private float _startTime;
+     private float _startTime;
 
     [SerializeField] private List<TextMeshProUGUI> _unClaimedScoresTexts;
     [SerializeField] private List<TextMeshProUGUI> _scoresTexts;
+
+    [SerializeField] private Color _startTimerColor;
+    [SerializeField] private Color _endTimerColor;
+    [SerializeField] private float _timeStartColorlerp;
 
     private WinnerDecider _winnerDecider = new WinnerDecider();
     private void Awake()
@@ -143,6 +147,12 @@ public class GameplayScene : MonoBehaviour
             else
             {
                 _timerText.text = $"{minutes}:{seconds}";
+            }
+
+            if (_timeRemaining < _timeStartColorlerp)
+            {
+                _timerImage.color = Color.Lerp(_endTimerColor, _startTimerColor, _timeRemaining/_timeStartColorlerp);
+                _timerText.color = Color.Lerp(_endTimerColor, _startTimerColor, _timeRemaining/_timeStartColorlerp);
             }
         }
         _timerImage.enabled = true;
