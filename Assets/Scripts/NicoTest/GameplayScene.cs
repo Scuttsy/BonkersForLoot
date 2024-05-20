@@ -25,6 +25,7 @@ public class GameplayScene : MonoBehaviour
     [SerializeField] private Color _startTimerColor;
     [SerializeField] private Color _endTimerColor;
     [SerializeField] private float _timeStartColorlerp;
+    [SerializeField] private float _maxColorTime; //remaining time during which color is maximally red
 
     private WinnerDecider _winnerDecider = new WinnerDecider();
     private void Awake()
@@ -149,10 +150,15 @@ public class GameplayScene : MonoBehaviour
                 _timerText.text = $"{minutes}:{seconds}";
             }
 
-            if (_timeRemaining < _timeStartColorlerp)
+            if (_timeRemaining < _timeStartColorlerp && _timeRemaining > _maxColorTime)
             {
-                _timerImage.color = Color.Lerp(_endTimerColor, _startTimerColor, _timeRemaining/_timeStartColorlerp);
-                _timerText.color = Color.Lerp(_endTimerColor, _startTimerColor, _timeRemaining/_timeStartColorlerp);
+                _timerImage.color = Color.Lerp(_endTimerColor, _startTimerColor, _timeRemaining/ (_timeStartColorlerp - _maxColorTime));
+                _timerText.color = Color.Lerp(_endTimerColor, _startTimerColor, _timeRemaining/ (_timeStartColorlerp - _maxColorTime));
+            }
+
+            if (_timeRemaining < 1)
+            {
+                _timerText.text = "0:00";
             }
         }
         _timerImage.enabled = true;
