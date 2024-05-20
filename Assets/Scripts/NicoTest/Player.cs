@@ -15,6 +15,8 @@ public class Player : MonoBehaviour
     [SerializeField] private List<Color> _playerDeviceColours;
     [SerializeField] private Renderer _playerModel;
 
+    [SerializeField] private ScreenShake _screenShake;
+
     //private bool _positionSet = false;
     //private Vector3 _tempPos;
     //private float _timer;
@@ -91,5 +93,14 @@ public class Player : MonoBehaviour
         //}
 
         //Debug.Log($"Position{this.transform.position}");
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.tag == "Player")
+        {
+            Debug.Log("Collision");
+            _screenShake.StartShaking();
+        }
     }
 }
