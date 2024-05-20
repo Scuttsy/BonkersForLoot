@@ -11,7 +11,6 @@ public class PlayerManager : MonoBehaviour
     [SerializeField]
     private PlayerInputManager _playerInputManager;
 
-    public static PlayerInput[] PlayersInGame;
 
     private AudioSource audioSource;
 

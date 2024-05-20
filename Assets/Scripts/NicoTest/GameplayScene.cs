@@ -108,7 +108,7 @@ public class GameplayScene : MonoBehaviour
 
     private void SetUIStartOfGame()
     {
-        Debug.Log($"Players in Game: {GameSettings.PlayersInGame.Count}");
+        //Debug.Log($"Players in Game: {GameSettings.PlayersInGame.Count}");
         for (int i = 0; i < GameSettings.PlayersInGame.Count; i++)
         {
             _unClaimedScoresTexts[i].gameObject.SetActive(true);
