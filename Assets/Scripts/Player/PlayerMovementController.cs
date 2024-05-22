@@ -417,6 +417,7 @@ public class PlayerMovementController : MonoBehaviour
 
     public void Respawn()
     {
+        _playerCollider.isTrigger = false;
         _isRespawning = true;
         _respawningTimer = _timeNeededToRespawn;
         _respawnTimerObj.SetActive(true);
@@ -480,7 +481,6 @@ public class PlayerMovementController : MonoBehaviour
 
         if (other.gameObject.tag == "OutOfBounds")
         {
-            _playerCollider.isTrigger = false;
             CancelInvoke(nameof(Respawn));
             Invoke(nameof(Respawn), 0.5f);
             SetMotorSpeeds(0.4f, 0.5f, 0.5f);
