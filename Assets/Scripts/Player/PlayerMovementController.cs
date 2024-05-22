@@ -221,6 +221,7 @@ public class PlayerMovementController : MonoBehaviour
         }
 
     }
+
     private bool IsPointerActive => (PlayerRigidbody.velocity.magnitude < _minVelocityToMove || PointerActiveOnRotatingPlatform()) && !_isRespawning;
 
     private bool PointerActiveOnRotatingPlatform()
@@ -386,7 +387,7 @@ public class PlayerMovementController : MonoBehaviour
     {
         if (GameplaySceneScript == null) return false;
 
-        return Math.Abs(GameplaySceneScript.TimeRemaining - (GameplaySceneScript.StartTime - 1)) < 0.01f;
+        return GameplaySceneScript.TimeRemaining <= GameplaySceneScript.StartTime - 1;
     }
 
     private void ExplodeCoins(Transform collision, int coins)
