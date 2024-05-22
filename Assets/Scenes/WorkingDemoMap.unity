@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.43748936, g: 0.48531228, b: 0.56558734, a: 1}
+  m_IndirectSpecularColor: {r: 0.4366756, g: 0.48427194, b: 0.5645252, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2056,13 +2056,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 458072962}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.60402274, y: -0.2620026, z: 0.21984623, w: 0.71984637}
+  m_LocalRotation: {x: 0.66446304, y: -0.24184473, z: 0.24184473, w: 0.66446304}
   m_LocalPosition: {x: 0, y: 6, z: 0}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 80, y: -40, z: 0}
+  m_LocalEulerAnglesHint: {x: 90, y: -40, z: 0}
 --- !u!1001 &502107605
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4643,18 +4643,6 @@ PrefabInstance:
     - target: {fileID: 5142034083999107598, guid: 3af9c08b37dbf194bb0e1ec08de20e02, type: 3}
       propertyPath: m_Name
       value: SM_RailPrefab
-      objectReference: {fileID: 0}
-    - target: {fileID: 5483128620405199028, guid: 3af9c08b37dbf194bb0e1ec08de20e02, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5483128620405199028, guid: 3af9c08b37dbf194bb0e1ec08de20e02, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5483128620405199028, guid: 3af9c08b37dbf194bb0e1ec08de20e02, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 5483128620405199028, guid: 3af9c08b37dbf194bb0e1ec08de20e02, type: 3}
       propertyPath: m_LocalPosition.x
@@ -8584,10 +8572,7 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 4698051368311681136, guid: 88cfe86e2562d634b8f9ab13d34164cb, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 2962860710865543609}
-    - targetCorrespondingSourceObject: {fileID: 4698051368311681136, guid: 88cfe86e2562d634b8f9ab13d34164cb, type: 3}
-      insertIndex: -1
+      insertIndex: 5
       addedObject: {fileID: 2962860710865543608}
   m_SourcePrefab: {fileID: 100100000, guid: 88cfe86e2562d634b8f9ab13d34164cb, type: 3}
 --- !u!1 &2962860710865543607 stripped
@@ -8616,18 +8601,6 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.8
   m_Center: {x: 0, y: 0.2, z: 0}
---- !u!114 &2962860710865543609
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2962860710865543607}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d8ec55b3df90d884bb0faccfa742cb3c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &2988695751062507162
 Transform:
   m_ObjectHideFlags: 0

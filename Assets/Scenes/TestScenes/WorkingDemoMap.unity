@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.43748936, g: 0.48531228, b: 0.56558734, a: 1}
+  m_IndirectSpecularColor: {r: 0.437489, g: 0.48531187, b: 0.56558657, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2832,6 +2832,7 @@ MonoBehaviour:
   TimeRemaining: 0
   _timerImage: {fileID: 0}
   _timerText: {fileID: 972978369}
+  StartTime: 0
   _unClaimedScoresTexts:
   - {fileID: 853303208}
   - {fileID: 387417118}
@@ -8475,6 +8476,7 @@ GameObject:
   - component: {fileID: 7790337174612625783}
   - component: {fileID: 7790337174612625782}
   - component: {fileID: 7790337174612625781}
+  - component: {fileID: 7790337174612625785}
   m_Layer: 0
   m_Name: SM_Centre
   m_TagString: RotatingCenter
@@ -9722,6 +9724,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8ec55b3df90d884bb0faccfa742cb3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _dropOffClip: {fileID: 8300000, guid: e9f1f9cab5ba3d749b6a13e387396b14, type: 3}
 --- !u!4 &5822757678041623339
 Transform:
   m_ObjectHideFlags: 0
@@ -10231,6 +10234,102 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 0.5, z: 2.5}
   m_Center: {x: 0.00000008940697, y: 0.25, z: 1.6485221}
+--- !u!82 &7790337174612625785
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1147684654430073735}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!64 &7823497200895573049
 MeshCollider:
   m_ObjectHideFlags: 0

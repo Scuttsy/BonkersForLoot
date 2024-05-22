@@ -4,10 +4,14 @@ using UnityEngine;
 
 public class DropOffPoint : MonoBehaviour
 {
+    [SerializeField]
+    private AudioClip _dropOffClip;
+    private AudioSource _source;
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        _source = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -26,12 +30,14 @@ public class DropOffPoint : MonoBehaviour
         if (other.gameObject.TryGetComponent(out Player player))
         {
             player.Score += (int)player.UnclaimedLoot;
+            _source.PlayOneShot(_dropOffClip);
             player.UnclaimedLoot = 0;
         }
 
         if (otherParent.TryGetComponent(out Player parentPlayer))
         {
             parentPlayer.Score += (int)parentPlayer.UnclaimedLoot;
+            _source.PlayOneShot(_dropOffClip);
             parentPlayer.UnclaimedLoot = 0;
         }
     }
