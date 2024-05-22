@@ -1825,6 +1825,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   NextSceneName: WorkingDemoMap
+  Canvas: {fileID: 143567115}
 --- !u!1 &1260050521
 GameObject:
   m_ObjectHideFlags: 0
