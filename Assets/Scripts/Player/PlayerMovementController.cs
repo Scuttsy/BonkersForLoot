@@ -202,10 +202,6 @@ public class PlayerMovementController : MonoBehaviour
             _playerGFX.localScale = Vector3.Lerp(Vector3.one, Vector3.one / 10,
                 Mathf.Abs(transform.position.y) / _distanceFromOutOfBounds);
         }
-        else
-        {
-            Debug.LogError("FloorRaycast hit nothing!");
-        }
 
     }
 
