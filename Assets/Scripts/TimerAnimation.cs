@@ -19,7 +19,6 @@ public class TimerAnimation : MonoBehaviour
 
         if (_gameplayScene.TimeRemaining < 30f)
         {
-            _hasStarted = true;
             _animation.Play();
         }
     }
