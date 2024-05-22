@@ -125,7 +125,7 @@ MonoBehaviour:
   _explodeSpeed: 1
   _ExplodeTarget: {x: 0, y: 0, z: 0}
   _audioClip: {fileID: 8300000, guid: 2833bea11618ca042be2d0067bbfcf92, type: 3}
-  audioSource: {fileID: 7912620022595226468}
+  _lootPickupIcon: {fileID: 3485600226737655512, guid: b28e525cbadf4d348a0dac390cf1b508, type: 3}
 --- !u!82 &7912620022595226468
 AudioSource:
   m_ObjectHideFlags: 0

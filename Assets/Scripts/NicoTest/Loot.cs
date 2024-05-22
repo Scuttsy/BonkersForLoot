@@ -12,6 +12,8 @@ public class Loot : MonoBehaviour
     [SerializeField]
     private AudioClip _audioClip;
 
+    [SerializeField] private GameObject _lootPickupIcon;
+
     private void Awake()
     {
         GameSettings.LootOnMap++; // Add 1 to loot on map when created
@@ -36,7 +38,7 @@ public class Loot : MonoBehaviour
         {
             player.UnclaimedLoot++;
             AudioSource.PlayClipAtPoint(_audioClip, transform.position);
-            Debug.Log("Is " + player.UnclaimedLoot); 
+            Debug.Log("Is " + player.UnclaimedLoot);
             Destroy(this.gameObject);
         }
 
@@ -45,6 +47,7 @@ public class Loot : MonoBehaviour
             parentPlayer.UnclaimedLoot++;
             AudioSource.PlayClipAtPoint(_audioClip, transform.position);
             Debug.Log("Is " + parentPlayer.UnclaimedLoot);
+            Instantiate(_lootPickupIcon, this.transform.position, Quaternion.identity);
             Destroy(this.gameObject);
         }
     }

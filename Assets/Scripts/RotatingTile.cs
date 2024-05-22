@@ -13,8 +13,6 @@ public class RotatingTile : MonoBehaviour
     [SerializeField] private float _baybladeRotationSpeed;
 
     private bool _isRotatingLeft;
-    // 22.26456 max velocity
-    private const float MaxVelocity = 22.26456f;
     [SerializeField]
     private float _minVelocity = 17f;
     [SerializeField]
