@@ -71,6 +71,7 @@ public class PlayerMovementController : MonoBehaviour
 
     private bool _hasRecentlyFired;
 
+    [SerializeField]
     private AudioSource _audioSource;
 
     private float _impactVelocityAfterFreeze;
@@ -231,6 +232,9 @@ public class PlayerMovementController : MonoBehaviour
             PlayerRigidbody.AddForce(_playerGFX.forward.normalized * force, ForceMode.Impulse);
             Invoke(nameof(ResetFire), 0.25f);
             Invoke(nameof(ResetHasRecentlyFired), 0.10f);
+
+            _audioSource.PlayOneShot(_audioSource.clip);
+            
         }
         else
         {
@@ -352,6 +356,14 @@ public class PlayerMovementController : MonoBehaviour
 
             _playerScript.LoseUnclaimedLoot();
         }
+
+        /*if (collision.gameObject.CompareTag("Player") || collision.gameObject.CompareTag("BouncyWall"))
+        {
+            if (_audioSource != null && _audioSource.clip != null)
+            {
+                _audioSource.PlayOneShot(_audioSource.clip);
+            }
+        }*/
 
         if (collision.gameObject.CompareTag("Player"))
         {

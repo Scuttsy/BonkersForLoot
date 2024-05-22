@@ -31,9 +31,8 @@ public class StartingGameScript : MonoBehaviour
 
     private void Awake()
     {
-        _timerImage.color = new Color(255f, 255f, 255f, 0f);
+        _timerImage.gameObject.SetActive(false);
         maxTime = countdownTimer;
-        _startTimerText.gameObject.SetActive(false);
         _playerCounterText.gameObject.SetActive(false);
         _instructionPlayer1Text.text = "Press any button to join!";
         _instructionPlayer2Text.text = "Press any button to join!";
@@ -79,11 +78,9 @@ public class StartingGameScript : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             currentPlayerCount++;
-            //currentPlayerCount >= GameSettings.PlayersRequiredToStart || currentPlayerCount == GameSettings.MinimumPlayersRequiredToStart
             if (currentPlayerCount == GameSettings.PlayersInGame.Count && !countingDown)
             {
-                _timerImage.color = new Color(255f, 255f, 255f, 255f);
-                _startTimerText.gameObject.SetActive(true);
+                _timerImage.gameObject.SetActive(true);
                 countingDown = true;
                 InvokeRepeating("CountDown", 1f, 1f);
             }
@@ -96,11 +93,14 @@ public class StartingGameScript : MonoBehaviour
         {
             currentPlayerCount--;
 
-            _startTimerText.gameObject.SetActive(false);
+            _timerImage.gameObject.SetActive(false);
 
             if (currentPlayerCount < GameSettings.PlayersRequiredToStart && countingDown)
             {
                 countdownTimer = 5f;
+                _startTimerText.text = countdownTimer.ToString();
+                elapsedTime = 0f;
+                _startTimerImage.fillAmount = 0f;
                 countingDown = false;
                 CancelInvoke("CountDown");
             }
@@ -112,7 +112,6 @@ public class StartingGameScript : MonoBehaviour
         countdownTimer -= 1f;
         Debug.Log("Countdown: " + countdownTimer.ToString("F0"));
 
-        //_startTimerText.gameObject.SetActive(true);
         _startTimerText.text = countdownTimer.ToString();
 
         if (countdownTimer <= 0f)
