@@ -33,7 +33,7 @@ public class GameSettings : MonoBehaviour
 
             for (int i = 0; i < PlayersInGame.Count; i++)
             {
-                scores.Add(PlayersInGame[i].GetComponent<Player>().UnclaimedLoot);
+                scores.Add((int)PlayersInGame[i].GetComponent<Player>().UnclaimedLoot);
             }
             return scores;
         }
