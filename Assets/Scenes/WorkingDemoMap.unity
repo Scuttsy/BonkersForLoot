@@ -2678,7 +2678,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 064e23b0b6963894f8b9509ab9a2aa6f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _timeRemaining: 90
+  TimeRemaining: 90
   _timerImage: {fileID: 1680039127}
   _timerText: {fileID: 1669622123}
   _unClaimedScoresTexts:
@@ -6139,6 +6139,7 @@ GameObject:
   - component: {fileID: 1669622123}
   - component: {fileID: 1669622127}
   - component: {fileID: 1669622128}
+  - component: {fileID: 1669622129}
   m_Layer: 0
   m_Name: TimerText
   m_TagString: Untagged
@@ -6351,6 +6352,19 @@ Animation:
   m_PlayAutomatically: 0
   m_AnimatePhysics: 0
   m_CullingType: 0
+--- !u!114 &1669622129
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1615440364}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d528f8d67a7f3ae419758d44e3a3db6d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _gameplayScene: {fileID: 648151499}
 --- !u!1 &1680039125
 GameObject:
   m_ObjectHideFlags: 0
