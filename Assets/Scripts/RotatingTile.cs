@@ -1,3 +1,5 @@
+// Ignore Spelling: Rigidbody
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -6,9 +8,9 @@ using UnityEngine.UIElements;
 
 public class RotatingTile : MonoBehaviour
 {
-    [SerializeField] private float _rotationSpeed;
-
     public Transform PlayerYeeter;
+    [SerializeField] private bool _isRotatingBayblade;
+    [SerializeField] private float _baybladeRotationSpeed;
 
     private bool _isRotatingLeft;
     // 22.26456 max velocity
@@ -20,22 +22,6 @@ public class RotatingTile : MonoBehaviour
     [SerializeField]
     private float _maxAngle = 45f;
 
-    void Start()
-    {
-        float xSign = Mathf.Sign(transform.localScale.x);
-        float ySign = Mathf.Sign(transform.localScale.y);
-        float zSign = Mathf.Sign(transform.localScale.z);
-
-        _rotationSpeed *= -1 * xSign * ySign * zSign;
-
-        _isRotatingLeft = _rotationSpeed > 0;
-    }
-
-    void Update()
-    {
-        transform.Rotate(Vector3.up, _rotationSpeed * Time.deltaTime);
-    }
-
     public void LaunchPlayer(Rigidbody playerRigidbody)
     {
         float speedRatio = Mathf.Clamp01((playerRigidbody.velocity.magnitude - _minVelocity) / (MaxVelocity - _minVelocity));
@@ -44,5 +30,11 @@ public class RotatingTile : MonoBehaviour
 
         Vector3 newPlayerVelocity = PlayerYeeter.forward * playerRigidbody.velocity.magnitude;
         playerRigidbody.velocity = newPlayerVelocity;
+    }
+
+    private void Update()
+    {
+        if (!_isRotatingBayblade) return;
+        transform.Rotate(new Vector3(0, _baybladeRotationSpeed * Time.deltaTime, 0), Space.World);
     }
 }

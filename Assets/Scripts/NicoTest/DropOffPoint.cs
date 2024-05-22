@@ -20,7 +20,7 @@ public class DropOffPoint : MonoBehaviour
     {
         // On trigger Check if collider is Player
         // and if so add UnclaimedLoot to score and UnclaimedLoot = 0.
-
+        if (other.gameObject.tag != "Player") return;
         GameObject otherParent = other.gameObject.transform.parent.gameObject;
 
         if (other.gameObject.TryGetComponent(out Player player))

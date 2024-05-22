@@ -11,6 +11,7 @@ TagManager:
   - StartGuardRail
   - RotatingCenter
   - LobbyOutOfBounds
+  - GroundPlane
   layers:
   - Default
   - TransparentFX

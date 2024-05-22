@@ -72,6 +72,7 @@ public class Player : MonoBehaviour
 
 
         var device = playerInput.devices[0];
+        //TODO: set color for all controllers
         if (device.GetType().ToString() == "UnityEngine.InputSystem.DualShock.DualShock4GamepadHID")
         {
             DualShockGamepad ds4 = (DualShockGamepad)device;

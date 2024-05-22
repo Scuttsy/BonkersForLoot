@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Runtime.CompilerServices;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -9,7 +10,7 @@ using Vector3 = UnityEngine.Vector3;
 public class PlayerMovementController : MonoBehaviour
 {
     [Header("References")]
-    [SerializeField] private Collider _playerCollider;
+    [SerializeField] private CapsuleCollider _playerCollider;
     [SerializeField] private MeshRenderer _pointer;
     [SerializeField] private Transform _pointerPivot;
     [SerializeField] private Transform _pointerScalePivot;
@@ -35,6 +36,16 @@ public class PlayerMovementController : MonoBehaviour
     [SerializeField] private float _maxForceStrength;
 
     [SerializeField] private float _respawnTimer;
+
+
+    [Header("Step settings")]
+    [SerializeField] private Transform _stepRayCastLower;
+    [SerializeField] private Transform _stepRayCastUpper;
+    [SerializeField] private float _stepHeight;
+    [SerializeField] private float _stepSmooth;
+    [SerializeField] private float _lowerRayCastMaxDistance = .3f;
+    [SerializeField] private float _upperRayCastMaxDistance = .4f;
+
 
     private float _horizontalInput;
     private float _verticalInput;
@@ -65,6 +76,7 @@ public class PlayerMovementController : MonoBehaviour
     private float _impactVelocityDuringFreeze;
     private bool _isInImpactFreeze;
 
+    [HideInInspector] public RotatingCarrier RotatingCarrier;
 
     void Awake()
     {
@@ -72,6 +84,10 @@ public class PlayerMovementController : MonoBehaviour
         _inputAsset = _playerInput.actions;
         _player = _inputAsset.FindActionMap("Player");
         SetPlayerStartingPosition(GameSettings.PlayersInGame.Count - 1);
+
+        Vector3 stepRayCastUpper = _stepRayCastUpper.localPosition;
+        stepRayCastUpper.y += _stepHeight;
+        _stepRayCastUpper.localPosition = stepRayCastUpper;
     }
 
     void OnEnable()
@@ -142,6 +158,15 @@ public class PlayerMovementController : MonoBehaviour
 
     void Update()
     {
+        if (RotatingCarrier != null)
+        {
+            //Debug.Log(Math.Abs(PlayerRigidbody.velocity.magnitude / Vector3.Distance(transform.position, RotatingCarrier.CarrierRigidbody.position) - RotatingCarrier.AngularVelocity) < 0.01f);
+            //Debug.Log("Velocity: " + PlayerRigidbody.velocity.magnitude);
+            //Debug.Log("AngularVelocity: " + PlayerRigidbody.angularVelocity.magnitude);
+            //Debug.Log("CarrierVelocity: " + RotatingCarrier.AngularVelocity);
+            //Debug.Log("Pointer: " + Mathf.Abs(0.054f * _minVelocityToMove * RotatingCarrier.transform.localScale.x * RotatingCarrier.RotationSpeed));
+        }
+
         GetAimingInput();
         Vector3 tempPosition = SetPlayerFacing();
 
@@ -165,6 +190,7 @@ public class PlayerMovementController : MonoBehaviour
         _previousPosition = tempPosition;
     }
 
+
     private void SetPlayerScaleBasedOnHeight()
     {
         if (!(transform.position.y < 0)) return;
@@ -182,7 +208,17 @@ public class PlayerMovementController : MonoBehaviour
         }
 
     }
-    private bool IsPointerActive => !_isInImpactFreeze && PlayerRigidbody.velocity.magnitude < _minVelocityToMove;
+
+    private bool PlayerSlowEnoughForPointer => PlayerRigidbody.velocity.magnitude < _minVelocityToMove;
+    private bool IsPointerActive => (!_isInImpactFreeze && PlayerSlowEnoughForPointer) || PointerActiveOnRotatingPlatform();
+
+    private bool PointerActiveOnRotatingPlatform()
+    {
+        if (RotatingCarrier == null) return false;
+
+        return (PlayerRigidbody.velocity.magnitude <= Mathf.Abs(0.054f * _minVelocityToMove * RotatingCarrier.transform.localScale.x * RotatingCarrier.RotationSpeed));
+    }
+
     private void Fire()
     {
         if (IsPointerActive)
@@ -289,6 +325,15 @@ public class PlayerMovementController : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
+        if (collision.gameObject.CompareTag("GroundPlane"))
+        {
+            Debug.Log("hit floor with " + collision.contactCount + " collisions");
+            foreach (ContactPoint contact in collision.contacts)
+            {
+                Debug.DrawLine(contact.point,contact.point + Vector3.up/5, Color.black,30f);
+            }
+        }
+
         if (collision.gameObject.CompareTag("BouncyWall"))
         {
             SetMotorSpeeds(0.2f, 0.3f, 0.25f);
@@ -325,6 +370,53 @@ public class PlayerMovementController : MonoBehaviour
         //int coinsToLose = _numCoinsImpact <= playerScore ? _numCoinsImpact : playerScore;
         //gameObject.GetComponent<Player>().Score -= coinsToLose;
         //ExplodeCoins(transform, coinsToLose);
+    }
+
+    private void StepUp()
+    {
+        PlayerRigidbody.position += Vector3.up * _stepSmooth;
+    }
+
+    private bool HasCollidedWithStepable()
+    {
+        Vector3 ray45LDir = (_playerGFX.forward - _playerGFX.right).normalized;
+        Vector3 ray45RDir = (_playerGFX.forward + _playerGFX.right).normalized;
+        Vector3 rayFDir = _playerGFX.forward;
+
+        bool lowerRayHit45L = Physics.Raycast(_stepRayCastLower.position, ray45LDir, out RaycastHit hitLower, _lowerRayCastMaxDistance);
+        bool lowerRayHit45R = Physics.Raycast(_stepRayCastLower.position, ray45RDir, out hitLower, _lowerRayCastMaxDistance);
+        bool lowerRayHitF = Physics.Raycast(_stepRayCastLower.position, rayFDir, out hitLower, _lowerRayCastMaxDistance);
+        bool upperRayHit45L = Physics.Raycast(_stepRayCastUpper.position, ray45LDir, out RaycastHit hitUpper, _upperRayCastMaxDistance);
+        bool upperRayHit45R = Physics.Raycast(_stepRayCastUpper.position, ray45RDir, out hitUpper, _upperRayCastMaxDistance);
+        bool upperRayHitF = Physics.Raycast(_stepRayCastUpper.position, rayFDir, out hitUpper, _upperRayCastMaxDistance);
+
+        #region DebugRaycasts
+
+        Debug.DrawLine(_stepRayCastLower.position, _stepRayCastLower.position + ray45LDir * _lowerRayCastMaxDistance, Color.green, 3f);
+        Debug.DrawLine(_stepRayCastLower.position, _stepRayCastLower.position + ray45RDir * _lowerRayCastMaxDistance, Color.green, 3f);
+        Debug.DrawLine(_stepRayCastLower.position, _stepRayCastLower.position + rayFDir * _lowerRayCastMaxDistance, Color.green, 3f);
+        Debug.DrawLine(_stepRayCastUpper.position, _stepRayCastUpper.position + ray45LDir * _upperRayCastMaxDistance, Color.red, 3f);
+        Debug.DrawLine(_stepRayCastUpper.position, _stepRayCastUpper.position + ray45RDir * _upperRayCastMaxDistance, Color.red, 3f);
+        Debug.DrawLine(_stepRayCastUpper.position, _stepRayCastUpper.position + rayFDir * _upperRayCastMaxDistance, Color.red, 3f);
+
+        #endregion
+
+        bool lowerRayCast = (lowerRayHitF || lowerRayHit45L || lowerRayHit45R);
+        bool upperRayCast = (upperRayHitF || upperRayHit45L || upperRayHit45R);
+        Debug.Log("Upper Ray Hit: " + upperRayCast);
+        Debug.Log("Lower Ray Hit: " + lowerRayCast);
+
+
+        if (upperRayCast && lowerRayCast)
+            Debug.Log("Not same collider: " + !hitLower.collider.Equals(hitUpper.collider));
+        if (upperRayCast) Debug.Log(hitUpper.collider.name);
+        if (lowerRayCast) Debug.Log(hitLower.collider.name);
+
+        bool returnUpper = !upperRayCast;
+        if (upperRayCast)
+            returnUpper = !hitLower.collider.Equals(hitUpper.collider);
+
+        return lowerRayCast && returnUpper;
     }
 
     private void ImpactFreeze()
