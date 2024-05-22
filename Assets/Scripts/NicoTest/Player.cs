@@ -18,6 +18,8 @@ public class Player : MonoBehaviour
 
     [SerializeField] private ScreenShake _screenShake;
 
+    [HideInInspector] public bool HasLostPoints;
+
     //private bool _positionSet = false;
     //private Vector3 _tempPos;
     //private float _timer;
@@ -103,6 +105,8 @@ public class Player : MonoBehaviour
 
     public void LoseUnclaimedLoot()
     {
+        if (HasLostPoints) return;
+        HasLostPoints = true;
         // Lose 20% of the unclaimedLoot
 
         if ((UnclaimedLoot / 5f) < 1f && (UnclaimedLoot / 5f) > 0)

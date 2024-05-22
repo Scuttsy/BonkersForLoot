@@ -16,7 +16,7 @@ public class GameplayScene : MonoBehaviour
     public float TimeRemaining; // In Seconds!
     [SerializeField] private Image _timerImage;
     [SerializeField] private TextMeshProUGUI _timerText;
-     private float _startTime;
+    [HideInInspector] public float StartTime;
 
     [SerializeField] private List<TextMeshProUGUI> _unClaimedScoresTexts;
     [SerializeField] private List<TextMeshProUGUI> _scoresTexts;
@@ -48,13 +48,14 @@ public class GameplayScene : MonoBehaviour
             text.gameObject.SetActive(false);
         }
 
-        _startTime = TimeRemaining;
+        StartTime = TimeRemaining;
     }
 
     // Start is called before the first frame update
     void Start()
     {
         GameSettings.GameIsInProgress = true;
+        PlayerMovementController.SetGamePlayScene(this);
     }
 
     // Update is called once per frame
@@ -157,7 +158,7 @@ public class GameplayScene : MonoBehaviour
         float minutes = Mathf.FloorToInt(TimeRemaining / 60);
         float seconds = Mathf.FloorToInt(TimeRemaining % 60);
 
-        _timerImage.fillAmount = TimeRemaining / _startTime;
+        _timerImage.fillAmount = TimeRemaining / StartTime;
         _timerImage.enabled = false;
         if (_timerImage != null)
         {
