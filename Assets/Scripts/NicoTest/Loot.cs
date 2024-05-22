@@ -7,9 +7,10 @@ public class Loot : MonoBehaviour
     private GameObject _parent;
     [SerializeField] private float _floatSpeed = 1.0f; //the time in seconds that the coin should take to bounce up and down
     [SerializeField] private float _explodeSpeed = 1.0f;
-    public Vector3 _ExplodeTarget = Vector3.zero; //The place that the coin tries to move to 
+    public Vector3 _ExplodeTarget = Vector3.zero; //The place that the coin tries to move to
+
     [SerializeField]
-    private AudioClip _audioSource;
+    private AudioClip _audioClip;
 
     private void Awake()
     {
@@ -34,7 +35,7 @@ public class Loot : MonoBehaviour
         if (other.gameObject.TryGetComponent(out Player player))
         {
             player.UnclaimedLoot++;
-            AudioSource.PlayClipAtPoint(_audioSource, transform.position);
+            AudioSource.PlayClipAtPoint(_audioClip, transform.position);
             Debug.Log("Is " + player.UnclaimedLoot); 
             Destroy(this.gameObject);
         }
@@ -42,7 +43,7 @@ public class Loot : MonoBehaviour
         if (otherParent.TryGetComponent(out Player parentPlayer))
         {
             parentPlayer.UnclaimedLoot++;
-            AudioSource.PlayClipAtPoint(_audioSource, transform.position);
+            AudioSource.PlayClipAtPoint(_audioClip, transform.position);
             Debug.Log("Is " + parentPlayer.UnclaimedLoot);
             Destroy(this.gameObject);
         }
