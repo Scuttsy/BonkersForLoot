@@ -16,7 +16,9 @@ public class GuardRail : MonoBehaviour
     [HideInInspector]
     public bool StartAnimation;
     [HideInInspector]
-    public Transform PlayerTransform;
+    public Rigidbody PlayerRigidbody;
+    [HideInInspector]
+    public Vector3 PlayerStartPos;
 
     [SerializeField] private float _startAngle = -3f;
     [SerializeField] private float _endAngle = -3f;
@@ -38,21 +40,19 @@ public class GuardRail : MonoBehaviour
         if (!StartAnimation) return;
         RailPivot.Rotate(Vector3.up, (StartsAt1 ? 1 : -1) * Time.deltaTime * AnimSpeed);
 
-        if (PlayerTransform == null)
+        if (PlayerRigidbody == null)
         {
             Debug.LogError("PlayerTransform is not set!");
             return;
         }
 
-        if (transform.eulerAngles.y < 45f+180f)
-        {
-
-        }
-
-        PlayerTransform.position = RailPivot.position
+        Vector3 newPlayerPos = RailPivot.position
               + (new Vector3(
                   Mathf.Sin(RailPivot.eulerAngles.y * Mathf.Deg2Rad),
                   0,
                   Mathf.Cos(RailPivot.eulerAngles.y * Mathf.Deg2Rad))) * -_distanceDecider.localPosition.z * transform.localScale.x;
+        newPlayerPos.y = PlayerStartPos.y + 1;
+        PlayerRigidbody.position = newPlayerPos;
+        Debug.Log(newPlayerPos);
     }
 }

@@ -10,20 +10,31 @@ public class PlayerMovementController : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private Collider _playerCollider;
-    [SerializeField] private Transform _pointerPivot;
     [SerializeField] private MeshRenderer _pointer;
+    [SerializeField] private Transform _pointerPivot;
+    [SerializeField] private Transform _pointerScalePivot;
     [SerializeField] private Transform _playerGFX;
-    [SerializeField] private Rigidbody _playerRigidbody;
+    public Rigidbody PlayerRigidbody;
     [SerializeField] private PlayerInput _playerInput;
     [SerializeField] private GameObject _coinPrefab;
 
     [Header("Settings")]
-    [SerializeField] private float _forceStrength;
     [SerializeField] private float _minVelocityToMove;
     [Range(0, 1)]
     [SerializeField] private float _controllerDeadZone;
     [SerializeField] private float _fireCooldown;
     [SerializeField] private bool _usingMouse;
+    [SerializeField] private float _impactFreezeTime;
+    [Min(0.001f)]
+    [SerializeField] private float _impactFreezeDivider;
+
+    [SerializeField] private Vector3 _minPointerSize;
+    [SerializeField] private Vector3 _maxPointerSize;
+    [SerializeField] private float _timeForMaxShot;
+    [SerializeField] private float _minForceStrength;
+    [SerializeField] private float _maxForceStrength;
+
+    [SerializeField] private float _respawnTimer;
 
     private float _horizontalInput;
     private float _verticalInput;
@@ -37,6 +48,8 @@ public class PlayerMovementController : MonoBehaviour
     private InputAction _aim;
     private InputAction _fire;
     private InputAction _reset;
+    private bool _isHoldingDownFire;
+    private float _chargeTimer;
 
     private bool _isOnRail;
     private Vector3 _entryVelocity;
@@ -48,18 +61,24 @@ public class PlayerMovementController : MonoBehaviour
 
     private AudioSource _audioSource;
 
+    private float _impactVelocityAfterFreeze;
+    private float _impactVelocityDuringFreeze;
+    private bool _isInImpactFreeze;
+
+
     void Awake()
     {
-        GameSettings.PlayersInGame.Add(GetComponent<PlayerInput>());
-        _inputAsset = this.GetComponent<PlayerInput>().actions;
+        GameSettings.PlayersInGame.Add(_playerInput);
+        _inputAsset = _playerInput.actions;
         _player = _inputAsset.FindActionMap("Player");
         SetPlayerStartingPosition(GameSettings.PlayersInGame.Count - 1);
     }
 
     void OnEnable()
     {
-        _player.FindAction("Fire").started += OnFire;
-        _player.FindAction("Stop").started += OnStop;
+        _player.FindAction("Fire").started += OnFireStart;
+        _player.FindAction("Fire").canceled += OnFireStop;
+        _player.FindAction("Stop").started += OnStopPressed;
         //_player.FindAction("SetPosition").started += OnSetPosition;
         _aim = _player.FindAction("Aim");
         _player.Enable();
@@ -72,24 +91,30 @@ public class PlayerMovementController : MonoBehaviour
         {
             _playerGFX.rotation = Quaternion.LookRotation(new Vector3(0,90,0));
         }
-        _playerRigidbody.position = GameSettings.SpawnPointList[playerCount].position;
-        Debug.Log("player" + (playerCount + 1) + ", " + GameSettings.SpawnPointList[playerCount].position);
+        PlayerRigidbody.position = GameSettings.SpawnPointList[playerCount].position;
     }
 
     void OnDisable()
     {
-        _player.FindAction("Fire").started -= OnFire;
-        _player.FindAction("Stop").started -= OnStop;
+        _player.FindAction("Fire").started -= OnFireStart;
+        _player.FindAction("Fire").canceled -= OnFireStop;
+        _player.FindAction("Stop").started -= OnStopPressed;
         //_player.FindAction("SetPosition").started -= OnSetPosition;
         _player.Disable();
     }
 
-    public void OnFire(InputAction.CallbackContext ctx)
+    public void OnFireStart(InputAction.CallbackContext ctx)
     {
-        _shouldFire = ctx.action.IsPressed();
+        _isHoldingDownFire = true;
+
+    }
+    public void OnFireStop(InputAction.CallbackContext ctx)
+    {
+        _isHoldingDownFire = false;
+        _shouldFire = true;
     }
 
-    public void OnStop(InputAction.CallbackContext ctx)
+    public void OnStopPressed(InputAction.CallbackContext ctx)
     {
 #if UNITY_EDITOR
         EditorApplication.isPlaying = false;
@@ -100,7 +125,8 @@ public class PlayerMovementController : MonoBehaviour
     {
         foreach (var player in GameSettings.PlayersInGame)
         {
-            player.gameObject.GetComponent<PlayerMovementController>().SetPlayerStartingPosition(GameSettings.PlayersInGame.Count - 1);
+            PlayerMovementController playerMovementScript = player.gameObject.GetComponent<PlayerMovementController>();
+            playerMovementScript.SetPlayerStartingPosition(GameSettings.PlayersInGame.Count - 1);
         }
     }
 
@@ -129,7 +155,11 @@ public class PlayerMovementController : MonoBehaviour
 
         KeepOldInputIfNoInput();
         Fire();
+        ChargeFire();
         SetPlayerScaleBasedOnHeight();
+
+        if (_isInImpactFreeze)
+            PlayerRigidbody.velocity = PlayerRigidbody.velocity.normalized * _impactVelocityDuringFreeze;
 
         _shouldFire = false;
         _previousPosition = tempPosition;
@@ -138,27 +168,34 @@ public class PlayerMovementController : MonoBehaviour
     private void SetPlayerScaleBasedOnHeight()
     {
         if (!(transform.position.y < 0)) return;
-        if (!_hasShotRay)
+        bool hitFloor = Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit);
+        if (hitFloor)
         {
-            Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit);
-            _hasShotRay = true;
+            if (hit.distance < 1) return;
             _distanceFromOutOfBounds = hit.distance;
+            _playerGFX.localScale = Vector3.Lerp(Vector3.one, Vector3.one / 10,
+                Mathf.Abs(transform.position.y) / _distanceFromOutOfBounds);
+        }
+        else
+        {
+            Debug.LogError("FloorRaycast hit nothing!");
         }
 
-        _playerGFX.localScale = Vector3.Lerp(Vector3.one, Vector3.one / 10,
-            Mathf.Abs(transform.position.y) / _distanceFromOutOfBounds);
     }
-
+    private bool IsPointerActive => !_isInImpactFreeze && PlayerRigidbody.velocity.magnitude < _minVelocityToMove;
     private void Fire()
     {
-        if (_playerRigidbody.velocity.magnitude < _minVelocityToMove)
+        if (IsPointerActive)
         {
             _pointer.enabled = true;
             if (!_readyToFire || !_shouldFire) return;
             _readyToFire = false;
             _hasRecentlyFired = true;
             _playerGFX.forward = _pointerPivot.forward;
-            _playerRigidbody.AddForce(_playerGFX.forward.normalized * _forceStrength, ForceMode.Impulse);
+            float ratio = _chargeTimer / _timeForMaxShot;
+            ratio = Mathf.Clamp01(ratio);
+            float force = Mathf.Lerp(_minForceStrength, _maxForceStrength, ratio);
+            PlayerRigidbody.AddForce(_playerGFX.forward.normalized * force, ForceMode.Impulse);
             Invoke(nameof(ResetFire), 0.25f);
             Invoke(nameof(ResetHasRecentlyFired), 0.10f);
         }
@@ -167,15 +204,31 @@ public class PlayerMovementController : MonoBehaviour
             _pointer.enabled = false;
         }
     }
+    private void ChargeFire()
+    {
+        if (_isHoldingDownFire && IsPointerActive)
+        {
+            _chargeTimer += Time.deltaTime;
+            float ratio = _chargeTimer / _timeForMaxShot;
+            ratio = Mathf.Clamp01(ratio);
+            _pointerScalePivot.localScale = Vector3.Lerp(_minPointerSize, _maxPointerSize, ratio);
+        }
+        else
+        {
+            _chargeTimer = 0f;
+            _pointerScalePivot.localScale = _minPointerSize;
+        }
+    }
+
 
     public void Fire(Vector3 direction)
     {
-            _pointer.enabled = true;
+        _pointer.enabled = true;
 
-            _playerGFX.forward = direction;
-            _playerRigidbody.AddForce(_playerGFX.forward.normalized * _playerRigidbody.velocity.magnitude, ForceMode.Impulse);
-            Invoke(nameof(ResetFire), 0.25f);
-            Invoke(nameof(ResetHasRecentlyFired), 0.10f);
+        _playerGFX.forward = direction;
+        PlayerRigidbody.AddForce(_playerGFX.forward.normalized * PlayerRigidbody.velocity.magnitude, ForceMode.Impulse);
+        Invoke(nameof(ResetFire), 0.25f);
+        Invoke(nameof(ResetHasRecentlyFired), 0.10f);
        
     }
 
@@ -208,27 +261,50 @@ public class PlayerMovementController : MonoBehaviour
         _verticalInput = _aim.ReadValue<Vector2>().y;
     }
 
-    void ResetFire()
+    private void ResetFire()
     {
         _readyToFire = true;
     }
 
-    void ResetHasRecentlyFired()
+    private void ResetHasRecentlyFired()
     {
         _hasRecentlyFired = false;
     }
 
+    private void SetMotorSpeeds(float lowFrequency, float highFrequency, float resetSpeed)
+    {
+        Debug.Log("Motor");
+        var controller = (Gamepad)_playerInput.devices[0];
+        controller.SetMotorSpeeds(lowFrequency, highFrequency);
+        CancelInvoke(nameof(ResetMotorSpeeds));
+        Invoke(nameof(ResetMotorSpeeds),resetSpeed);
+    }
+
+    private void ResetMotorSpeeds()
+    {
+        Debug.Log("no motor");
+        var controller = (Gamepad)_playerInput.devices[0];
+        controller.ResetHaptics();
+    }
+
     void OnCollisionEnter(Collision collision)
     {
+        if (collision.gameObject.CompareTag("BouncyWall"))
+        {
+            SetMotorSpeeds(0.2f, 0.3f, 0.25f);
+        }
+
         if (collision.gameObject.CompareTag("NoBounce"))
         {
             if (_hasRecentlyFired) return;
-            _playerRigidbody.velocity = Vector3.zero;
+            PlayerRigidbody.velocity = Vector3.zero;
+            SetMotorSpeeds(0.2f, 0.3f, 0.25f);
         }
 
         if (collision.gameObject.tag == "OutOfBounds")
         {
-            Respawn();
+            Invoke(nameof(Respawn), _respawnTimer);
+            SetMotorSpeeds(0.4f, 0.5f, 0.5f);
         }
 
         if (collision.gameObject.CompareTag("Player"))
@@ -237,26 +313,32 @@ public class PlayerMovementController : MonoBehaviour
             {
                 _audioSource.PlayOneShot(_audioSource.clip);
             }
+
+            // 0 time = called next frame right before next Update()
+            Invoke(nameof(ImpactFreeze),0);
+
+            SetMotorSpeeds(0.7f, 0.8f, 0.5f);
         }
 
-        //tryout players bouncing
-        //if (collision.gameObject.CompareTag("Player"))
-        //{
-        //    Vector3 collisionNormal = collision.contacts[0].normal;
-        //    float collisionAngle = Vector3.Angle(_playerRigidbody.velocity, collision.relativeVelocity);
+        //Coins explode
+        //int playerScore = gameObject.GetComponent<Player>().Score;
+        //int coinsToLose = _numCoinsImpact <= playerScore ? _numCoinsImpact : playerScore;
+        //gameObject.GetComponent<Player>().Score -= coinsToLose;
+        //ExplodeCoins(transform, coinsToLose);
+    }
 
-        //    Vector3 newDirection = Vector3.Reflect(_playerRigidbody.velocity, collisionNormal).normalized;
+    private void ImpactFreeze()
+    {
+        _impactVelocityAfterFreeze = PlayerRigidbody.velocity.magnitude;
+        _impactVelocityDuringFreeze = PlayerRigidbody.velocity.magnitude / _impactFreezeDivider;
+        Invoke(nameof(EndImpactFreeze), _impactFreezeTime);
+        _isInImpactFreeze = true;
+    }
 
-        //    _playerRigidbody.velocity = newDirection * _forceStrength * Mathf.Cos(collisionAngle * Mathf.Deg2Rad);
-        //}
-            //_playerRigidbody.velocity = newDirection * _forceStrength * Mathf.Cos(collisionAngle * Mathf.Deg2Rad);
-
-            //Coins explode
-            int playerScore = gameObject.GetComponent<Player>().Score;
-            //int coins = _numCoinsImpact <= playerScore ? _numCoinsImpact : playerScore;
-            //gameObject.GetComponent<Player>().Score -= coins;
-           //ExplodeCoins(transform, coins);
-        
+    private void EndImpactFreeze()
+    {
+        PlayerRigidbody.velocity = PlayerRigidbody.velocity.normalized * _impactVelocityAfterFreeze;
+        _isInImpactFreeze = false;
     }
 
     private void ExplodeCoins(Transform collision, int coins)
@@ -286,7 +368,7 @@ public class PlayerMovementController : MonoBehaviour
 
     public void Respawn()
     {
-        _playerRigidbody.velocity = Vector3.zero;
+        PlayerRigidbody.velocity = Vector3.zero;
         _playerGFX.localScale = Vector3.one;
         _distanceFromOutOfBounds = float.MaxValue;
         _hasShotRay = false;
@@ -326,7 +408,7 @@ public class PlayerMovementController : MonoBehaviour
         {
             RotatingTile rotatingTileScript = other.GetComponent<RotatingTile>();
             rotatingTileScript.PlayerYeeter.rotation = _playerGFX.rotation;
-            rotatingTileScript.LaunchPlayer(_playerRigidbody);
+            rotatingTileScript.LaunchPlayer(PlayerRigidbody);
         }
 
         if (other.CompareTag("StartGuardRail"))
@@ -348,6 +430,32 @@ public class PlayerMovementController : MonoBehaviour
             _playerCollider.isTrigger = false;
             Respawn();
         }
+
+        if (other.gameObject.tag == "LobbyOutOfBounds")
+        {
+            Vector3 playerPosition = PlayerRigidbody.position;
+            playerPosition.y = 1.17f;
+            PlayerRigidbody.position = playerPosition;
+
+            Vector3 playerVelocity = PlayerRigidbody.velocity;
+            playerVelocity.y = 0f;
+            PlayerRigidbody.velocity = playerVelocity;
+        }
+    }
+
+    // Added OnTriggerStay to be 100% sure it fires off.
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.gameObject.tag == "LobbyOutOfBounds")
+        {
+            Vector3 playerPosition = PlayerRigidbody.position;
+            playerPosition.y = 1.17f;
+            PlayerRigidbody.position = playerPosition;
+
+            Vector3 playerVelocity = PlayerRigidbody.velocity;
+            playerVelocity.y = 0f;
+            PlayerRigidbody.velocity = playerVelocity * PlayerRigidbody.velocity.magnitude;
+        }
     }
 
     private void StartRail(GuardRail guardRailScript)
@@ -357,18 +465,19 @@ public class PlayerMovementController : MonoBehaviour
 
         guardRailScript.StartsAt1 = entry1DistanceFromPlayer < entry2DistanceFromPlayer;
         guardRailScript.SetStartingAngle();
-        _entryVelocity = _playerRigidbody.velocity;
-        _playerRigidbody.velocity = Vector3.zero;
+        _entryVelocity = PlayerRigidbody.velocity;
+        PlayerRigidbody.velocity = Vector3.zero;
         guardRailScript.StartAnimation = true;
-        guardRailScript.PlayerTransform = transform;
+        guardRailScript.PlayerRigidbody = PlayerRigidbody;
+        guardRailScript.PlayerStartPos = transform.position;
         _playerCollider.isTrigger = true;
     }
 
     private void StopRail(GuardRail guardRailScript)
     {
-        _playerRigidbody.velocity = (guardRailScript.StartsAt1 ? guardRailScript.EntryPoint2.forward : guardRailScript.EntryPoint1.forward) * _entryVelocity.magnitude * 1.1f;
+        PlayerRigidbody.velocity = (guardRailScript.StartsAt1 ? guardRailScript.EntryPoint2.forward : guardRailScript.EntryPoint1.forward) * _entryVelocity.magnitude * 1.1f;
         guardRailScript.StartAnimation = false;
-        guardRailScript.PlayerTransform = null;
+        guardRailScript.PlayerRigidbody = null;
         Invoke(nameof(DelayedColliderReactivation), 0.11f);
     }
 

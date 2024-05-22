@@ -15,10 +15,17 @@ public class GameplayScene : MonoBehaviour
 {
     [SerializeField]
     private float _timeRemaining; // In Seconds!
-    [SerializeField] private TextMeshProUGUI _timerText;
+    [SerializeField] private Image _timerImage;
+    [SerializeField] private TMP_Text _timerText;
+     private float _startTime;
 
     [SerializeField] private List<TextMeshProUGUI> _unClaimedScoresTexts;
     [SerializeField] private List<TextMeshProUGUI> _scoresTexts;
+
+    [SerializeField] private Color _startTimerColor;
+    [SerializeField] private Color _endTimerColor;
+    [SerializeField] private float _timeStartColorlerp;
+    [SerializeField] private float _maxColorTime; //remaining time during which color is maximally red
 
     private WinnerDecider _winnerDecider = new WinnerDecider();
     private void Awake()
@@ -35,6 +42,8 @@ public class GameplayScene : MonoBehaviour
             if (text != null)
             text.gameObject.SetActive(false);
         }
+
+        _startTime = _timeRemaining;
     }
 
     // Start is called before the first frame update
@@ -104,7 +113,7 @@ public class GameplayScene : MonoBehaviour
 
     private void SetUIStartOfGame()
     {
-        Debug.Log($"Players in Game: {GameSettings.PlayersInGame.Count}");
+        //Debug.Log($"Players in Game: {GameSettings.PlayersInGame.Count}");
         for (int i = 0; i < GameSettings.PlayersInGame.Count; i++)
         {
             _unClaimedScoresTexts[i].gameObject.SetActive(true);
@@ -128,8 +137,9 @@ public class GameplayScene : MonoBehaviour
         float minutes = Mathf.FloorToInt(_timeRemaining / 60);
         float seconds = Mathf.FloorToInt(_timeRemaining % 60);
 
-        _timerText.enabled = false;
-        if (_timerText != null)
+        _timerImage.fillAmount = _timeRemaining / _startTime;
+        _timerImage.enabled = false;
+        if (_timerImage != null)
         {
             if (seconds < 10)
             {
@@ -139,7 +149,18 @@ public class GameplayScene : MonoBehaviour
             {
                 _timerText.text = $"{minutes}:{seconds}";
             }
+
+            if (_timeRemaining < _timeStartColorlerp && _timeRemaining > _maxColorTime)
+            {
+                _timerImage.color = Color.Lerp(_endTimerColor, _startTimerColor, _timeRemaining/ (_timeStartColorlerp - _maxColorTime));
+                _timerText.color = Color.Lerp(_endTimerColor, _startTimerColor, _timeRemaining/ (_timeStartColorlerp - _maxColorTime));
+            }
+
+            if (_timeRemaining < 1)
+            {
+                _timerText.text = "0:00";
+            }
         }
-        _timerText.enabled = true;
+        _timerImage.enabled = true;
     }
 }

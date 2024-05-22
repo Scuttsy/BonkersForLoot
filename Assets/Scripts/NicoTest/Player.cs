@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.DualShock;
 using UnityEngine.PlayerLoop;
 
 public class Player : MonoBehaviour
@@ -11,7 +12,10 @@ public class Player : MonoBehaviour
     public string PlayerName = "(Default Name)";
 
     [SerializeField] private List<Material> _playerColours;
+    [SerializeField] private List<Color> _playerDeviceColours;
     [SerializeField] private Renderer _playerModel;
+
+    [SerializeField] private ScreenShake _screenShake;
 
     //private bool _positionSet = false;
     //private Vector3 _tempPos;
@@ -46,27 +50,33 @@ public class Player : MonoBehaviour
             }
         }
 
-        if (index == 0)
+        switch (index)
         {
-            _playerModel.material = _playerColours[0];
-            PlayerName = "Blue";
-        }
-        else if (index == 1)
-        {
-            _playerModel.material = _playerColours[1];
-            PlayerName = "Green";
-        }
-        else if (index == 2)
-        {
-            _playerModel.material = _playerColours[2];
-            PlayerName = "Red";
-        }
-        else if (index == 3)
-        {
-            _playerModel.material = _playerColours[3];
-            PlayerName = "Yellow";
+            case 0:
+                _playerModel.material = _playerColours[0];
+                PlayerName = "Blue";
+                break;
+            case 1:
+                _playerModel.material = _playerColours[1];
+                PlayerName = "Green";
+                break;
+            case 2:
+                _playerModel.material = _playerColours[2];
+                PlayerName = "Red";
+                break;
+            case 3:
+                _playerModel.material = _playerColours[3];
+                PlayerName = "Yellow";
+                break;
         }
 
+
+        var device = playerInput.devices[0];
+        if (device.GetType().ToString() == "UnityEngine.InputSystem.DualShock.DualShock4GamepadHID")
+        {
+            DualShockGamepad ds4 = (DualShockGamepad)device;
+            ds4.SetLightBarColor(_playerDeviceColours[index]);
+        }
     }
 
     void Update()
@@ -83,5 +93,14 @@ public class Player : MonoBehaviour
         //}
 
         //Debug.Log($"Position{this.transform.position}");
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.tag == "Player")
+        {
+            Debug.Log("Collision");
+            _screenShake.StartShaking();
+        }
     }
 }
