@@ -46,7 +46,7 @@ public class PlayerMovementController : MonoBehaviour
 
     private bool _hasRecentlyFired;
 
-    private AudioSource audioSource;
+    private AudioSource _audioSource;
 
     void Awake()
     {
@@ -233,9 +233,9 @@ public class PlayerMovementController : MonoBehaviour
 
         if (collision.gameObject.CompareTag("Player"))
         {
-            if (audioSource != null && audioSource.clip != null)
+            if (_audioSource != null && _audioSource.clip != null)
             {
-                audioSource.PlayOneShot(audioSource.clip);
+                _audioSource.PlayOneShot(_audioSource.clip);
             }
         }
 
