@@ -1,15 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class LobbyScene : MonoBehaviour
 {
+
     private void Awake()
     {
         // Create Player list in GameSettings before other script's starts are called
         GameSettings.PlayersInGame = new List<PlayerInput>();
         GameSettings.LootSpawnPoints = new List<LootSpawnPoint>();
+
     }
 
     // Start is called before the first frame update

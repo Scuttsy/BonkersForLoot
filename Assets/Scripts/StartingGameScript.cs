@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -14,6 +15,33 @@ public class StartingGameScript : MonoBehaviour
 
     public delegate void CountdownFinished();
     public static event CountdownFinished OnCountdownFinished;
+
+    [SerializeField] private TextMeshProUGUI _startTimerText;
+    [SerializeField] private TextMeshProUGUI _playerCounterText;
+    [SerializeField] private TextMeshProUGUI _instructionPlayer1Text;
+    [SerializeField] private TextMeshProUGUI _instructionPlayer2Text;
+    [SerializeField] private TextMeshProUGUI _instructionPlayer3Text;
+    [SerializeField] private TextMeshProUGUI _instructionPlayer4Text;
+
+    private void Awake()
+    {
+        _startTimerText.gameObject.SetActive(false);
+        _playerCounterText.gameObject.SetActive(false);
+        _instructionPlayer1Text.text = "Press any button to join!";
+        _instructionPlayer2Text.text = "Press any button to join!";
+        _instructionPlayer3Text.text = "Press any button to join!";
+        _instructionPlayer4Text.text = "Press any button to join!";
+    }
+
+    private void Update()
+    {
+        if (GameSettings.PlayersInGame.Count > 0)
+        {
+            _instructionPlayer1Text.gameObject.SetActive(false);
+            _playerCounterText.gameObject.SetActive(true);
+            _playerCounterText.text = $"{currentPlayerCount} / {GameSettings.PlayersInGame.Count} players to start!";
+        }
+    }
 
     private void OnTriggerEnter(Collider other)
     {
@@ -36,8 +64,11 @@ public class StartingGameScript : MonoBehaviour
         {
             currentPlayerCount--;
 
+            _startTimerText.gameObject.SetActive(false);
+
             if (currentPlayerCount < GameSettings.PlayersRequiredToStart && countingDown)
             {
+                countdownTimer = 5f;
                 countingDown = false;
                 CancelInvoke("CountDown");
             }
@@ -48,6 +79,9 @@ public class StartingGameScript : MonoBehaviour
     {
         countdownTimer -= 1f;
         Debug.Log("Countdown: " + countdownTimer.ToString("F0"));
+
+        _startTimerText.gameObject.SetActive(true);
+        _startTimerText.text = countdownTimer.ToString();
 
         if (countdownTimer <= 0f)
         {
