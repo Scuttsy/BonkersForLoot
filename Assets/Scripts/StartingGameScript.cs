@@ -44,6 +44,21 @@ public class StartingGameScript : MonoBehaviour
             _playerCounterText.gameObject.SetActive(true);
             _playerCounterText.text = $"{currentPlayerCount} / {GameSettings.PlayersInGame.Count} players to start!";
         }
+
+        if (GameSettings.PlayersInGame.Count > 1)
+        {
+            _instructionPlayer2Text.gameObject.SetActive(false);
+        }
+
+        if (GameSettings.PlayersInGame.Count > 2)
+        {
+            _instructionPlayer3Text.gameObject.SetActive(false);
+        }
+
+        if (GameSettings.PlayersInGame.Count > 3)
+        {
+            _instructionPlayer4Text.gameObject.SetActive(false);
+        }
     }
 
     private void OnTriggerEnter(Collider other)
