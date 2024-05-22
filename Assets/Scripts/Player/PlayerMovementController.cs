@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Runtime.CompilerServices;
+using TMPro;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -19,6 +20,8 @@ public class PlayerMovementController : MonoBehaviour
     [SerializeField] private PlayerInput _playerInput;
     [SerializeField] private GameObject _coinPrefab;
     [SerializeField] private Player _playerScript;
+    [SerializeField] private TMP_Text _respawnTimerVisuals;
+    [SerializeField] private GameObject _respawnTimerObj;
 
     [Header("Settings")]
     [SerializeField] private float _minVelocityToMove;
@@ -36,7 +39,7 @@ public class PlayerMovementController : MonoBehaviour
     [SerializeField] private float _minForceStrength;
     [SerializeField] private float _maxForceStrength;
 
-    [SerializeField] private float _respawnTimer;
+    [SerializeField] private float _timeNeededToRespawn;
 
 
     [Header("Step settings")]
@@ -44,9 +47,6 @@ public class PlayerMovementController : MonoBehaviour
     [SerializeField] private Transform _stepRayCastUpper;
     [SerializeField] private float _stepHeight;
     [SerializeField] private float _stepSmooth;
-    [SerializeField] private float _lowerRayCastMaxDistance = .3f;
-    [SerializeField] private float _upperRayCastMaxDistance = .4f;
-
 
     private float _horizontalInput;
     private float _verticalInput;
@@ -66,7 +66,6 @@ public class PlayerMovementController : MonoBehaviour
     private bool _isOnRail;
     private Vector3 _entryVelocity;
 
-    private bool _hasShotRay;
     private float _distanceFromOutOfBounds;
 
     private bool _hasRecentlyFired;
@@ -74,9 +73,10 @@ public class PlayerMovementController : MonoBehaviour
     [SerializeField]
     private AudioSource _audioSource;
 
-    private float _impactVelocityAfterFreeze;
-    private float _impactVelocityDuringFreeze;
-    private bool _isInImpactFreeze;
+    private bool _isRespawning;
+    private float _respawningTimer;
+
+    [HideInInspector] public GameplayScene GameplaySceneScript;
 
     [HideInInspector] public RotatingCarrier RotatingCarrier;
 
@@ -90,6 +90,7 @@ public class PlayerMovementController : MonoBehaviour
         Vector3 stepRayCastUpper = _stepRayCastUpper.localPosition;
         stepRayCastUpper.y += _stepHeight;
         _stepRayCastUpper.localPosition = stepRayCastUpper;
+        _respawnTimerObj.SetActive(false);
     }
 
     void OnEnable()
@@ -148,6 +149,15 @@ public class PlayerMovementController : MonoBehaviour
         }
     }
 
+    public static void SetGamePlayScene(GameplayScene gameplayScene)
+    {
+        foreach (var player in GameSettings.PlayersInGame)
+        {
+            PlayerMovementController playerMovementScript = player.gameObject.GetComponent<PlayerMovementController>();
+            playerMovementScript.GameplaySceneScript = gameplayScene;
+        }
+    }
+
     public void OnSetPosition(InputAction.CallbackContext ctx)
     {
         for (int i = 0; i < GameSettings.PlayersInGame.Count; i++)
@@ -160,15 +170,6 @@ public class PlayerMovementController : MonoBehaviour
 
     void Update()
     {
-        if (RotatingCarrier != null)
-        {
-            //Debug.Log(Math.Abs(PlayerRigidbody.velocity.magnitude / Vector3.Distance(transform.position, RotatingCarrier.CarrierRigidbody.position) - RotatingCarrier.AngularVelocity) < 0.01f);
-            //Debug.Log("Velocity: " + PlayerRigidbody.velocity.magnitude);
-            //Debug.Log("AngularVelocity: " + PlayerRigidbody.angularVelocity.magnitude);
-            //Debug.Log("CarrierVelocity: " + RotatingCarrier.AngularVelocity);
-            //Debug.Log("Pointer: " + Mathf.Abs(0.054f * _minVelocityToMove * RotatingCarrier.transform.localScale.x * RotatingCarrier.RotationSpeed));
-        }
-
         GetAimingInput();
         Vector3 tempPosition = SetPlayerFacing();
 
@@ -185,11 +186,26 @@ public class PlayerMovementController : MonoBehaviour
         ChargeFire();
         SetPlayerScaleBasedOnHeight();
 
-        if (_isInImpactFreeze)
-            PlayerRigidbody.velocity = PlayerRigidbody.velocity.normalized * _impactVelocityDuringFreeze;
+        if (_isRespawning) DuringRespawn();
 
         _shouldFire = false;
         _previousPosition = tempPosition;
+    }
+
+    private void DuringRespawn()
+    {
+        _respawningTimer -= Time.deltaTime;
+        if (_respawningTimer < 0)
+        {
+            _isRespawning = false;
+            _respawnTimerObj.SetActive(false);
+            return;
+        }
+
+        float ratio = _respawningTimer / _timeNeededToRespawn;
+        _playerGFX.localScale = Vector3.Lerp(Vector3.one / 1000, Vector3.one, 1-ratio);
+        float seconds = Mathf.CeilToInt(_respawningTimer % 60);
+        _respawnTimerVisuals.text = "" + seconds;
     }
 
 
@@ -201,14 +217,13 @@ public class PlayerMovementController : MonoBehaviour
         {
             if (hit.distance < 1) return;
             _distanceFromOutOfBounds = hit.distance;
-            _playerGFX.localScale = Vector3.Lerp(Vector3.one, Vector3.one / 10,
+            _playerGFX.localScale = Vector3.Lerp(Vector3.one, Vector3.one / 1000,
                 Mathf.Abs(transform.position.y) / _distanceFromOutOfBounds);
         }
 
     }
 
-    private bool PlayerSlowEnoughForPointer => PlayerRigidbody.velocity.magnitude < _minVelocityToMove;
-    private bool IsPointerActive => (!_isInImpactFreeze && PlayerSlowEnoughForPointer) || PointerActiveOnRotatingPlatform();
+    private bool IsPointerActive => (PlayerRigidbody.velocity.magnitude < _minVelocityToMove || PointerActiveOnRotatingPlatform()) && !_isRespawning;
 
     private bool PointerActiveOnRotatingPlatform()
     {
@@ -310,7 +325,6 @@ public class PlayerMovementController : MonoBehaviour
 
     private void SetMotorSpeeds(float lowFrequency, float highFrequency, float resetSpeed)
     {
-        Debug.Log("Motor");
         var controller = (Gamepad)_playerInput.devices[0];
         if (controller == null) return;
         controller.SetMotorSpeeds(lowFrequency, highFrequency);
@@ -320,7 +334,6 @@ public class PlayerMovementController : MonoBehaviour
 
     private void ResetMotorSpeeds()
     {
-        Debug.Log("no motor");
         var controller = (Gamepad)_playerInput.devices[0];
         controller.ResetHaptics();
     }
@@ -350,11 +363,11 @@ public class PlayerMovementController : MonoBehaviour
 
         if (collision.gameObject.tag == "OutOfBounds")
         {
-            CancelInvoke(nameof(Respawn));
-            Invoke(nameof(Respawn), _respawnTimer);
-            SetMotorSpeeds(0.4f, 0.5f, 0.5f);
-
+            if (!HasGameStarted()) return;
             _playerScript.LoseUnclaimedLoot();
+            CancelInvoke(nameof(Respawn));
+            Invoke(nameof(Respawn), 0.5f);
+            SetMotorSpeeds(0.4f, 0.5f, 0.5f);
         }
 
         /*if (collision.gameObject.CompareTag("Player") || collision.gameObject.CompareTag("BouncyWall"))
@@ -372,9 +385,6 @@ public class PlayerMovementController : MonoBehaviour
                 _audioSource.PlayOneShot(_audioSource.clip);
             }
 
-            // 0 time = called next frame right before next Update()
-            Invoke(nameof(ImpactFreeze),0);
-
             SetMotorSpeeds(0.6f, 0.7f, 0.5f);
         }
 
@@ -385,65 +395,11 @@ public class PlayerMovementController : MonoBehaviour
         //ExplodeCoins(transform, coinsToLose);
     }
 
-    private void StepUp()
+    private bool HasGameStarted()
     {
-        PlayerRigidbody.position += Vector3.up * _stepSmooth;
-    }
+        if (GameplaySceneScript == null) return false;
 
-    private bool HasCollidedWithStepable()
-    {
-        Vector3 ray45LDir = (_playerGFX.forward - _playerGFX.right).normalized;
-        Vector3 ray45RDir = (_playerGFX.forward + _playerGFX.right).normalized;
-        Vector3 rayFDir = _playerGFX.forward;
-
-        bool lowerRayHit45L = Physics.Raycast(_stepRayCastLower.position, ray45LDir, out RaycastHit hitLower, _lowerRayCastMaxDistance);
-        bool lowerRayHit45R = Physics.Raycast(_stepRayCastLower.position, ray45RDir, out hitLower, _lowerRayCastMaxDistance);
-        bool lowerRayHitF = Physics.Raycast(_stepRayCastLower.position, rayFDir, out hitLower, _lowerRayCastMaxDistance);
-        bool upperRayHit45L = Physics.Raycast(_stepRayCastUpper.position, ray45LDir, out RaycastHit hitUpper, _upperRayCastMaxDistance);
-        bool upperRayHit45R = Physics.Raycast(_stepRayCastUpper.position, ray45RDir, out hitUpper, _upperRayCastMaxDistance);
-        bool upperRayHitF = Physics.Raycast(_stepRayCastUpper.position, rayFDir, out hitUpper, _upperRayCastMaxDistance);
-
-        #region DebugRaycasts
-
-        Debug.DrawLine(_stepRayCastLower.position, _stepRayCastLower.position + ray45LDir * _lowerRayCastMaxDistance, Color.green, 3f);
-        Debug.DrawLine(_stepRayCastLower.position, _stepRayCastLower.position + ray45RDir * _lowerRayCastMaxDistance, Color.green, 3f);
-        Debug.DrawLine(_stepRayCastLower.position, _stepRayCastLower.position + rayFDir * _lowerRayCastMaxDistance, Color.green, 3f);
-        Debug.DrawLine(_stepRayCastUpper.position, _stepRayCastUpper.position + ray45LDir * _upperRayCastMaxDistance, Color.red, 3f);
-        Debug.DrawLine(_stepRayCastUpper.position, _stepRayCastUpper.position + ray45RDir * _upperRayCastMaxDistance, Color.red, 3f);
-        Debug.DrawLine(_stepRayCastUpper.position, _stepRayCastUpper.position + rayFDir * _upperRayCastMaxDistance, Color.red, 3f);
-
-        #endregion
-
-        bool lowerRayCast = (lowerRayHitF || lowerRayHit45L || lowerRayHit45R);
-        bool upperRayCast = (upperRayHitF || upperRayHit45L || upperRayHit45R);
-        Debug.Log("Upper Ray Hit: " + upperRayCast);
-        Debug.Log("Lower Ray Hit: " + lowerRayCast);
-
-
-        if (upperRayCast && lowerRayCast)
-            Debug.Log("Not same collider: " + !hitLower.collider.Equals(hitUpper.collider));
-        if (upperRayCast) Debug.Log(hitUpper.collider.name);
-        if (lowerRayCast) Debug.Log(hitLower.collider.name);
-
-        bool returnUpper = !upperRayCast;
-        if (upperRayCast)
-            returnUpper = !hitLower.collider.Equals(hitUpper.collider);
-
-        return lowerRayCast && returnUpper;
-    }
-
-    private void ImpactFreeze()
-    {
-        _impactVelocityAfterFreeze = PlayerRigidbody.velocity.magnitude;
-        _impactVelocityDuringFreeze = PlayerRigidbody.velocity.magnitude / _impactFreezeDivider;
-        Invoke(nameof(EndImpactFreeze), _impactFreezeTime);
-        _isInImpactFreeze = true;
-    }
-
-    private void EndImpactFreeze()
-    {
-        PlayerRigidbody.velocity = PlayerRigidbody.velocity.normalized * _impactVelocityAfterFreeze;
-        _isInImpactFreeze = false;
+        return GameplaySceneScript.TimeRemaining <= GameplaySceneScript.StartTime - 1;
     }
 
     private void ExplodeCoins(Transform collision, int coins)
@@ -471,12 +427,18 @@ public class PlayerMovementController : MonoBehaviour
         }
     }
 
+
     public void Respawn()
     {
+        _playerCollider.isTrigger = false;
+        _isRespawning = true;
+        _respawningTimer = _timeNeededToRespawn;
+        _respawnTimerObj.SetActive(true);
+
         PlayerRigidbody.velocity = Vector3.zero;
-        _playerGFX.localScale = Vector3.one;
+        _playerGFX.localScale = Vector3.one / 1000;
         _distanceFromOutOfBounds = float.MaxValue;
-        _hasShotRay = false;
+        _playerScript.HasLostPoints = false;
 
         // respawn mechanic taking into consideration the positions of the other player,
         // it calculates per spawnpoint the closest distance, and then gets the furthest spawmpoint;
@@ -532,8 +494,9 @@ public class PlayerMovementController : MonoBehaviour
 
         if (other.gameObject.tag == "OutOfBounds")
         {
-            _playerCollider.isTrigger = false;
-            Respawn();
+            CancelInvoke(nameof(Respawn));
+            Invoke(nameof(Respawn), 0.5f);
+            SetMotorSpeeds(0.4f, 0.5f, 0.5f);
         }
 
         if (other.gameObject.tag == "LobbyOutOfBounds")
