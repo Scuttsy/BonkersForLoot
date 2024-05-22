@@ -108,18 +108,18 @@ public class GameplayScene : MonoBehaviour
     }
     private void FixedUpdate()
     {
-        for (int i = 0; i < GameSettings.PlayersInGame.Count; i++)
-        {
-            if (GameSettings.UnclaimedLoot[i] >= 0)
-            {
-                _arrowToCentreImg[i].enabled = true;
-                _arrowToCentreImg[i].transform.position = GameSettings.PlayersInGame[i].transform.position;
-                Vector3 lookDirection = -_arrowToCentreImg[i].transform.position;
-                _arrowToCentreImg[i].transform.rotation = Quaternion.LookRotation(lookDirection, Vector3.up);
-            }
-            else
-                _arrowToCentreImg[i].enabled = false;
-        }
+        //for (int i = 0; i < GameSettings.PlayersInGame.Count; i++)
+        //{
+        //    if (GameSettings.UnclaimedLoot[i] >= 0)
+        //    {
+        //        _arrowToCentreImg[i].enabled = true;
+        //        _arrowToCentreImg[i].transform.position = GameSettings.PlayersInGame[i].transform.position;
+        //        Vector3 lookDirection = -_arrowToCentreImg[i].transform.position;
+        //        _arrowToCentreImg[i].transform.rotation = Quaternion.LookRotation(lookDirection, Vector3.up);
+        //    }
+        //    else
+        //        _arrowToCentreImg[i].enabled = false;
+        //}
     }
 
     private void DisplayScores()
