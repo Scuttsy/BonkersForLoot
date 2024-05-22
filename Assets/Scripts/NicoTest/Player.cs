@@ -122,7 +122,7 @@ public class Player : MonoBehaviour
         if (collision.gameObject.tag == "Player")
         {
             Debug.Log("Collision");
-            _screenShake.StartShaking();
+            //_screenShake.StartShaking();
         }
     }
 }
