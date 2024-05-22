@@ -504,10 +504,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 8527684191710260398, guid: 64cc70ca7459e5041bd5475327130863, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1297208220}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 64cc70ca7459e5041bd5475327130863, type: 3}
 --- !u!1 &332029572
 GameObject:
@@ -1398,20 +1395,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Bayblade
       objectReference: {fileID: 0}
-    - target: {fileID: 9171656653013927990, guid: 64cc70ca7459e5041bd5475327130863, type: 3}
-      propertyPath: _baybladeRotationSpeed
-      value: -10
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 8527684191710260398, guid: 64cc70ca7459e5041bd5475327130863, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1482163265}
-    - targetCorrespondingSourceObject: {fileID: 8527684191710260398, guid: 64cc70ca7459e5041bd5475327130863, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1482163266}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 64cc70ca7459e5041bd5475327130863, type: 3}
 --- !u!1 &783582326 stripped
 GameObject:
@@ -1825,7 +1812,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   NextSceneName: WorkingDemoMap
-  Canvas: {fileID: 143567115}
 --- !u!1 &1260050521
 GameObject:
   m_ObjectHideFlags: 0
@@ -1986,24 +1972,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1297208218 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8527684191710260398, guid: 64cc70ca7459e5041bd5475327130863, type: 3}
-  m_PrefabInstance: {fileID: 293566124}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1297208220
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1297208218}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1b18921c23ddaa54bb717a496d75d287, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  YeetMultiplier: 1
 --- !u!1 &1303661847
 GameObject:
   m_ObjectHideFlags: 0
@@ -2379,47 +2347,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1479601125}
   m_CullTransparentMesh: 1
---- !u!1 &1482163263 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8527684191710260398, guid: 64cc70ca7459e5041bd5475327130863, type: 3}
-  m_PrefabInstance: {fileID: 777118517}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1482163265
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1482163263}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1b18921c23ddaa54bb717a496d75d287, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  YeetMultiplier: 1
---- !u!114 &1482163266
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1482163263}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e60825d0935cc4046b9d67723ff9fc11, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  PlayerYeeter: {fileID: 1482163267}
-  _isRotatingBayblade: 0
-  _baybladeRotationSpeed: 0
-  _minVelocity: 99999
-  _minAngle: 10
-  _maxAngle: 45
---- !u!4 &1482163267 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 5959131126650222621, guid: 64cc70ca7459e5041bd5475327130863, type: 3}
-  m_PrefabInstance: {fileID: 777118517}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1605078981
 GameObject:
   m_ObjectHideFlags: 0

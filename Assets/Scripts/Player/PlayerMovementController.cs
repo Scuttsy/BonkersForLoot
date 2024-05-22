@@ -345,7 +345,7 @@ public class PlayerMovementController : MonoBehaviour
 
         if (collision.gameObject.tag == "OutOfBounds")
         {
-            CancelInvoke(nameof(Invoke));
+            CancelInvoke(nameof(Respawn));
             Invoke(nameof(Respawn), _respawnTimer);
             SetMotorSpeeds(0.4f, 0.5f, 0.5f);
         }
