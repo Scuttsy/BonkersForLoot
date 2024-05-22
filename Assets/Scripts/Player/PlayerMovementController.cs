@@ -311,6 +311,7 @@ public class PlayerMovementController : MonoBehaviour
     {
         Debug.Log("Motor");
         var controller = (Gamepad)_playerInput.devices[0];
+        if (controller == null) return;
         controller.SetMotorSpeeds(lowFrequency, highFrequency);
         CancelInvoke(nameof(ResetMotorSpeeds));
         Invoke(nameof(ResetMotorSpeeds),resetSpeed);
@@ -348,6 +349,7 @@ public class PlayerMovementController : MonoBehaviour
 
         if (collision.gameObject.tag == "OutOfBounds")
         {
+            CancelInvoke(nameof(Invoke));
             Invoke(nameof(Respawn), _respawnTimer);
             SetMotorSpeeds(0.4f, 0.5f, 0.5f);
         }
@@ -362,7 +364,7 @@ public class PlayerMovementController : MonoBehaviour
             // 0 time = called next frame right before next Update()
             Invoke(nameof(ImpactFreeze),0);
 
-            SetMotorSpeeds(0.7f, 0.8f, 0.5f);
+            SetMotorSpeeds(0.6f, 0.7f, 0.5f);
         }
 
         //Coins explode

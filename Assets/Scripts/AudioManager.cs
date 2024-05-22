@@ -15,7 +15,7 @@ public class AudioManager : MonoBehaviour
 
         audioSource = GetComponent<AudioSource>();
 
-        audioSource.volume = 0.01f;
+        audioSource.volume = 2f;
 
         PlayMusic(SceneManager.GetActiveScene().name);
 
@@ -49,7 +49,7 @@ public class AudioManager : MonoBehaviour
         if (audioSource.clip != null)
         {
             audioSource.loop = true;
-            audioSource.volume = 0.01f;
+            audioSource.volume = 2f;
             audioSource.Play();
         }
     }
