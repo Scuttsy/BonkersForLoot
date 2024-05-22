@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,9 +6,9 @@ using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.DualShock;
 using UnityEngine.PlayerLoop;
 
-public class Player : MonoBehaviour
+public class Player : MonoBehaviour 
 {
-    public int UnclaimedLoot = 0;
+    public float UnclaimedLoot = 0;
     public int Score = 0;
     public string PlayerName = "(Default Name)";
 
@@ -72,11 +73,15 @@ public class Player : MonoBehaviour
 
 
         var device = playerInput.devices[0];
-        //TODO: set color for all controllers
         if (device.GetType().ToString() == "UnityEngine.InputSystem.DualShock.DualShock4GamepadHID")
         {
             DualShockGamepad ds4 = (DualShockGamepad)device;
             ds4.SetLightBarColor(_playerDeviceColours[index]);
+        }
+        if (device.GetType().ToString() == "UnityEngine.InputSystem.DualShock.DualSenseGamepadHID")
+        {
+            var dualSenseGamepad = (DualSenseGamepadHID)device;
+            dualSenseGamepad.SetLightBarColor(_playerDeviceColours[index]);
         }
     }
 
@@ -96,12 +101,28 @@ public class Player : MonoBehaviour
         //Debug.Log($"Position{this.transform.position}");
     }
 
+    public void LoseUnclaimedLoot()
+    {
+        // Lose 20% of the unclaimedLoot
+
+        if ((UnclaimedLoot / 5f) < 1f && (UnclaimedLoot / 5f) > 0)
+        {
+            UnclaimedLoot -= 1f;
+        }
+
+        else
+        {
+            this.UnclaimedLoot -= this.UnclaimedLoot / 5;
+            UnclaimedLoot = (int)Mathf.Round(UnclaimedLoot);
+        }        
+    }
+
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.tag == "Player")
         {
             Debug.Log("Collision");
-            _screenShake.StartShaking();
+            //_screenShake.StartShaking();
         }
     }
 }

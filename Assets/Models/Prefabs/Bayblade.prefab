@@ -486,6 +486,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5959131126650222621}
   - component: {fileID: 9171656653013927990}
+  - component: {fileID: 8978949965650114950}
   m_Layer: 0
   m_Name: Bayblade
   m_TagString: Untagged
@@ -526,7 +527,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PlayerYeeter: {fileID: 0}
   _isRotatingBayblade: 1
-  _baybladeRotationSpeed: 10
+  _baybladeRotationSpeed: -10
   _minVelocity: 99999
   _minAngle: 10
   _maxAngle: 45
+--- !u!114 &8978949965650114950
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8527684191710260398}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b18921c23ddaa54bb717a496d75d287, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  YeetMultiplier: 1

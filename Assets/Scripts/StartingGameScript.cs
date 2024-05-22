@@ -27,6 +27,7 @@ public class StartingGameScript : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _instructionPlayer2Text;
     [SerializeField] private TextMeshProUGUI _instructionPlayer3Text;
     [SerializeField] private TextMeshProUGUI _instructionPlayer4Text;
+    [SerializeField] private Image _background;
 
     private void Awake()
     {
@@ -44,6 +45,7 @@ public class StartingGameScript : MonoBehaviour
     {
         if (GameSettings.PlayersInGame.Count > 0)
         {
+            _background.gameObject.SetActive(false);
             _instructionPlayer1Text.gameObject.SetActive(false);
             _playerCounterText.gameObject.SetActive(true);
             _playerCounterText.text = $"{currentPlayerCount} / {GameSettings.PlayersInGame.Count} players to start!";
@@ -53,6 +55,21 @@ public class StartingGameScript : MonoBehaviour
         {
             elapsedTime += Time.deltaTime;
             _startTimerImage.fillAmount = elapsedTime/maxTime;
+        }
+        
+        if (GameSettings.PlayersInGame.Count > 1)
+        {
+            _instructionPlayer2Text.gameObject.SetActive(false);
+        }
+
+        if (GameSettings.PlayersInGame.Count > 2)
+        {
+            _instructionPlayer3Text.gameObject.SetActive(false);
+        }
+
+        if (GameSettings.PlayersInGame.Count > 3)
+        {
+            _instructionPlayer4Text.gameObject.SetActive(false);
         }
     }
 

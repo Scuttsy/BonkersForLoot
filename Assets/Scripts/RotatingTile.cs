@@ -18,15 +18,11 @@ public class RotatingTile : MonoBehaviour
     [SerializeField]
     private float _minVelocity = 17f;
     [SerializeField]
-    private float _minAngle = 10f;
-    [SerializeField]
-    private float _maxAngle = 45f;
+    private float _angle = 30f;
 
     public void LaunchPlayer(Rigidbody playerRigidbody)
     {
-        float speedRatio = Mathf.Clamp01((playerRigidbody.velocity.magnitude - _minVelocity) / (MaxVelocity - _minVelocity));
-        float angle = Mathf.Lerp(_minAngle, _maxAngle, 1-speedRatio);
-        PlayerYeeter.Rotate(Vector3.up, (_isRotatingLeft ? 1 : -1) * angle);
+        PlayerYeeter.Rotate(Vector3.up, (_isRotatingLeft ? 1 : -1) * _angle);
 
         Vector3 newPlayerVelocity = PlayerYeeter.forward * playerRigidbody.velocity.magnitude;
         playerRigidbody.velocity = newPlayerVelocity;

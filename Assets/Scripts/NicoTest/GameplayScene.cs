@@ -13,10 +13,9 @@ using UnityEngine.UI;
 
 public class GameplayScene : MonoBehaviour
 {
-    [SerializeField]
-    private float _timeRemaining; // In Seconds!
+    public float TimeRemaining; // In Seconds!
     [SerializeField] private Image _timerImage;
-    [SerializeField] private TMP_Text _timerText;
+    [SerializeField] private TextMeshProUGUI _timerText;
      private float _startTime;
 
     [SerializeField] private List<TextMeshProUGUI> _unClaimedScoresTexts;
@@ -26,6 +25,12 @@ public class GameplayScene : MonoBehaviour
     [SerializeField] private Color _endTimerColor;
     [SerializeField] private float _timeStartColorlerp;
     [SerializeField] private float _maxColorTime; //remaining time during which color is maximally red
+
+    [Header("References")]
+    [SerializeField] private List<Image> _arrowToCentreImg;
+
+    [Header("Player UI Settings")]
+    [SerializeField] private int _displayDunkArrowThreshold = 1;
 
     private WinnerDecider _winnerDecider = new WinnerDecider();
     private void Awake()
@@ -43,7 +48,7 @@ public class GameplayScene : MonoBehaviour
             text.gameObject.SetActive(false);
         }
 
-        _startTime = _timeRemaining;
+        _startTime = TimeRemaining;
     }
 
     // Start is called before the first frame update
@@ -64,7 +69,7 @@ public class GameplayScene : MonoBehaviour
         //DisplayScores();
         SetUIStartOfGame();
         // Check if time has run out
-        if (_timeRemaining < 0)
+        if (TimeRemaining < 0)
         {
             GameSettings.GameIsInProgress = false;
 
@@ -97,8 +102,23 @@ public class GameplayScene : MonoBehaviour
         }
         else
         {
-            _timeRemaining -= Time.deltaTime;
+            TimeRemaining -= Time.deltaTime;
         }
+    }
+    private void FixedUpdate()
+    {
+        //for (int i = 0; i < GameSettings.PlayersInGame.Count; i++)
+        //{
+        //    if (GameSettings.UnclaimedLoot[i] >= 0)
+        //    {
+        //        _arrowToCentreImg[i].enabled = true;
+        //        _arrowToCentreImg[i].transform.position = GameSettings.PlayersInGame[i].transform.position;
+        //        Vector3 lookDirection = -_arrowToCentreImg[i].transform.position;
+        //        _arrowToCentreImg[i].transform.rotation = Quaternion.LookRotation(lookDirection, Vector3.up);
+        //    }
+        //    else
+        //        _arrowToCentreImg[i].enabled = false;
+        //}
     }
 
     private void DisplayScores()
@@ -134,10 +154,10 @@ public class GameplayScene : MonoBehaviour
 
     private void DisplayTime()
     {
-        float minutes = Mathf.FloorToInt(_timeRemaining / 60);
-        float seconds = Mathf.FloorToInt(_timeRemaining % 60);
+        float minutes = Mathf.FloorToInt(TimeRemaining / 60);
+        float seconds = Mathf.FloorToInt(TimeRemaining % 60);
 
-        _timerImage.fillAmount = _timeRemaining / _startTime;
+        _timerImage.fillAmount = TimeRemaining / _startTime;
         _timerImage.enabled = false;
         if (_timerImage != null)
         {
@@ -150,13 +170,13 @@ public class GameplayScene : MonoBehaviour
                 _timerText.text = $"{minutes}:{seconds}";
             }
 
-            if (_timeRemaining < _timeStartColorlerp && _timeRemaining > _maxColorTime)
+            if (TimeRemaining < _timeStartColorlerp && TimeRemaining > _maxColorTime)
             {
-                _timerImage.color = Color.Lerp(_endTimerColor, _startTimerColor, _timeRemaining/ (_timeStartColorlerp - _maxColorTime));
-                _timerText.color = Color.Lerp(_endTimerColor, _startTimerColor, _timeRemaining/ (_timeStartColorlerp - _maxColorTime));
+                _timerImage.color = Color.Lerp(_endTimerColor, _startTimerColor, TimeRemaining/ (_timeStartColorlerp - _maxColorTime));
+                _timerText.color = Color.Lerp(_endTimerColor, _startTimerColor, TimeRemaining/ (_timeStartColorlerp - _maxColorTime));
             }
 
-            if (_timeRemaining < 1)
+            if (TimeRemaining < 1)
             {
                 _timerText.text = "0:00";
             }
