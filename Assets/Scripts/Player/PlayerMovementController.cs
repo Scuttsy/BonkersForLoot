@@ -70,7 +70,7 @@ public class PlayerMovementController : MonoBehaviour
 
     private bool _hasRecentlyFired;
 
-    private AudioSource audioSource;
+    private AudioSource _audioSource;
 
     private float _impactVelocityAfterFreeze;
     private float _impactVelocityDuringFreeze;
@@ -354,9 +354,9 @@ public class PlayerMovementController : MonoBehaviour
 
         if (collision.gameObject.CompareTag("Player"))
         {
-            if (audioSource != null && audioSource.clip != null)
+            if (_audioSource != null && _audioSource.clip != null)
             {
-                audioSource.PlayOneShot(audioSource.clip);
+                _audioSource.PlayOneShot(_audioSource.clip);
             }
 
             // 0 time = called next frame right before next Update()

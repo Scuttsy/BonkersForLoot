@@ -977,7 +977,7 @@ RectTransform:
   m_GameObject: {fileID: 159803054}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2, y: 2, z: 2}
+  m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 1680039126}
@@ -2678,7 +2678,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 064e23b0b6963894f8b9509ab9a2aa6f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _timeRemaining: 100
+  _timeRemaining: 30
   _timerImage: {fileID: 1680039127}
   _timerText: {fileID: 1669622123}
   _unClaimedScoresTexts:
@@ -2691,6 +2691,9 @@ MonoBehaviour:
   - {fileID: 1433127004}
   - {fileID: 708899430}
   - {fileID: 80796254}
+  _startTimerColor: {r: 0.8196079, g: 0.5372549, b: 0.15294118, a: 1}
+  _endTimerColor: {r: 0.936, g: 0.34441057, b: 0.292968, a: 1}
+  _timeStartColorlerp: 20
 --- !u!114 &648151500
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6120,6 +6123,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   HasSpawnedLoot: 0
+--- !u!1 &1615440364
 --- !u!1 &1669622121
 GameObject:
   m_ObjectHideFlags: 0
@@ -6128,6 +6132,10 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 1615440366}
+  - component: {fileID: 1615440365}
+  m_Layer: 0
+  m_Name: Audio
   - component: {fileID: 1669622122}
   - component: {fileID: 1669622124}
   - component: {fileID: 1669622123}
@@ -6138,12 +6146,31 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!81 &1615440365
+AudioListener:
 --- !u!224 &1669622122
 RectTransform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1615440364}
+  m_Enabled: 1
+--- !u!4 &1615440366
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1615440364}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 50.699696, y: -24.910454, z: -1.1079544}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_GameObject: {fileID: 1669622121}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -6179,8 +6206,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 1:30
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 42a28aaf31706ba45a28490647537020, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 42a28aaf31706ba45a28490647537020, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -9544,6 +9571,7 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 458072964}
+  - {fileID: 1615440366}
   - {fileID: 579534866}
   - {fileID: 1470681570}
   - {fileID: 648151503}
