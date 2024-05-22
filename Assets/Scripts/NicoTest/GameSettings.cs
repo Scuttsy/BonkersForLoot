@@ -25,6 +25,35 @@ public class GameSettings : MonoBehaviour
     public Transform SpawnPointC;
     public Transform SpawnPointD;
 
+    public static List<int> UnclaimedLoot
+    {
+        get
+        {
+            List<int> scores = new List<int>();
+
+            for (int i = 0; i < PlayersInGame.Count; i++)
+            {
+                scores.Add(PlayersInGame[i].GetComponent<Player>().UnclaimedLoot);
+            }
+            return scores;
+        }
+    }
+    public static List<int> PlayeScores
+    {
+        get
+        {
+            List<int> scores = new List<int>();
+
+            for (int i = 0; i < PlayersInGame.Count; i++)
+            {
+                scores.Add(PlayersInGame[i].GetComponent<Player>().Score);
+            }
+            return scores;
+        }
+    }
+
+
+
     void Awake()
     {
         SpawnPointList = new List<Transform>

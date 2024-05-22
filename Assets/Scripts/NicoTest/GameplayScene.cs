@@ -13,20 +13,35 @@ using UnityEngine.UI;
 
 public class GameplayScene : MonoBehaviour
 {
+<<<<<<< Updated upstream
     [SerializeField]
     private float _timeRemaining; // In Seconds!
     [SerializeField] private Image _timerImage;
     [SerializeField] private TMP_Text _timerText;
      private float _startTime;
+=======
+
+    [SerializeField] private TextMeshProUGUI _timerText;
+>>>>>>> Stashed changes
 
     [SerializeField] private List<TextMeshProUGUI> _unClaimedScoresTexts;
     [SerializeField] private List<TextMeshProUGUI> _scoresTexts;
 
+<<<<<<< Updated upstream
     [SerializeField] private Color _startTimerColor;
     [SerializeField] private Color _endTimerColor;
     [SerializeField] private float _timeStartColorlerp;
     [SerializeField] private float _maxColorTime; //remaining time during which color is maximally red
 
+=======
+    [Header("References")]
+    [SerializeField] private List<Image> _arrowToCentreImg;
+
+    [Header("Player UI Settings")]
+    [SerializeField] private int _displayDunkArrowThreshold = 1;
+    
+    private float _timeRemaining; // In Seconds!
+>>>>>>> Stashed changes
     private WinnerDecider _winnerDecider = new WinnerDecider();
     private void Awake()
     {
@@ -98,6 +113,21 @@ public class GameplayScene : MonoBehaviour
         else
         {
             _timeRemaining -= Time.deltaTime;
+        }
+    }
+    private void FixedUpdate()
+    {
+        for (int i = 0; i < GameSettings.PlayersInGame.Count; i++)
+        {
+            if (GameSettings.UnclaimedLoot[i] >= 0)
+            {
+                _arrowToCentreImg[i].enabled = true;
+                _arrowToCentreImg[i].transform.position = GameSettings.PlayersInGame[i].transform.position;
+                Vector3 lookDirection = -_arrowToCentreImg[i].transform.position;
+                _arrowToCentreImg[i].transform.rotation = Quaternion.LookRotation(lookDirection, Vector3.up);
+            }
+            else
+                _arrowToCentreImg[i].enabled = false;
         }
     }
 
