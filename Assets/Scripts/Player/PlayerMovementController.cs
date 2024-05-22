@@ -18,6 +18,7 @@ public class PlayerMovementController : MonoBehaviour
     public Rigidbody PlayerRigidbody;
     [SerializeField] private PlayerInput _playerInput;
     [SerializeField] private GameObject _coinPrefab;
+    [SerializeField] private Player _playerScript;
 
     [Header("Settings")]
     [SerializeField] private float _minVelocityToMove;
@@ -348,6 +349,8 @@ public class PlayerMovementController : MonoBehaviour
             CancelInvoke(nameof(Invoke));
             Invoke(nameof(Respawn), _respawnTimer);
             SetMotorSpeeds(0.4f, 0.5f, 0.5f);
+
+            _playerScript.LoseUnclaimedLoot();
         }
 
         if (collision.gameObject.CompareTag("Player"))

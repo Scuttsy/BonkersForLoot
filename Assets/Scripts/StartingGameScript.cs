@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class StartingGameScript : MonoBehaviour
 {
@@ -22,6 +23,7 @@ public class StartingGameScript : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _instructionPlayer2Text;
     [SerializeField] private TextMeshProUGUI _instructionPlayer3Text;
     [SerializeField] private TextMeshProUGUI _instructionPlayer4Text;
+    [SerializeField] private Image _background;
 
     private void Awake()
     {
@@ -37,6 +39,7 @@ public class StartingGameScript : MonoBehaviour
     {
         if (GameSettings.PlayersInGame.Count > 0)
         {
+            _background.gameObject.SetActive(false);
             _instructionPlayer1Text.gameObject.SetActive(false);
             _playerCounterText.gameObject.SetActive(true);
             _playerCounterText.text = $"{currentPlayerCount} / {GameSettings.PlayersInGame.Count} players to start!";

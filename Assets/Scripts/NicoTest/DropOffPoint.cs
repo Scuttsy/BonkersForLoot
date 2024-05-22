@@ -25,13 +25,13 @@ public class DropOffPoint : MonoBehaviour
 
         if (other.gameObject.TryGetComponent(out Player player))
         {
-            player.Score += player.UnclaimedLoot;
+            player.Score += (int)player.UnclaimedLoot;
             player.UnclaimedLoot = 0;
         }
 
         if (otherParent.TryGetComponent(out Player parentPlayer))
         {
-            parentPlayer.Score += parentPlayer.UnclaimedLoot;
+            parentPlayer.Score += (int)parentPlayer.UnclaimedLoot;
             parentPlayer.UnclaimedLoot = 0;
         }
     }

@@ -670,6 +670,7 @@ MonoBehaviour:
   PlayerRigidbody: {fileID: 8587798844516945497}
   _playerInput: {fileID: 2169207396154533104}
   _coinPrefab: {fileID: 0}
+  _playerScript: {fileID: 6139210573302760375}
   _minVelocityToMove: 1
   _controllerDeadZone: 0.5
   _fireCooldown: 0.25

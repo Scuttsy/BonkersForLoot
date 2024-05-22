@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,9 +6,9 @@ using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.DualShock;
 using UnityEngine.PlayerLoop;
 
-public class Player : MonoBehaviour
+public class Player : MonoBehaviour 
 {
-    public int UnclaimedLoot = 0;
+    public float UnclaimedLoot = 0;
     public int Score = 0;
     public string PlayerName = "(Default Name)";
 
@@ -94,6 +95,22 @@ public class Player : MonoBehaviour
         //}
 
         //Debug.Log($"Position{this.transform.position}");
+    }
+
+    public void LoseUnclaimedLoot()
+    {
+        // Lose 20% of the unclaimedLoot
+
+        if ((UnclaimedLoot / 5f) < 1f)
+        {
+            UnclaimedLoot -= 1f;
+        }
+
+        else
+        {
+            this.UnclaimedLoot -= this.UnclaimedLoot / 5;
+            UnclaimedLoot = (int)Mathf.Round(UnclaimedLoot);
+        }        
     }
 
     private void OnCollisionEnter(Collision collision)
