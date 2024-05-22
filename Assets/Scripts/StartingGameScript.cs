@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class StartingGameScript : MonoBehaviour
 {
@@ -12,11 +13,15 @@ public class StartingGameScript : MonoBehaviour
     private int currentPlayerCount = 0;
     private float countdownTimer = 5f;
     private bool countingDown = false;
+    private float elapsedTime = 0f;
+    private float maxTime;
 
     public delegate void CountdownFinished();
     public static event CountdownFinished OnCountdownFinished;
 
     [SerializeField] private TextMeshProUGUI _startTimerText;
+    [SerializeField] private Image _startTimerImage;
+    [SerializeField] private Image _timerImage;
     [SerializeField] private TextMeshProUGUI _playerCounterText;
     [SerializeField] private TextMeshProUGUI _instructionPlayer1Text;
     [SerializeField] private TextMeshProUGUI _instructionPlayer2Text;
@@ -25,6 +30,8 @@ public class StartingGameScript : MonoBehaviour
 
     private void Awake()
     {
+        _timerImage.color = new Color(255f, 255f, 255f, 0f);
+        maxTime = countdownTimer;
         _startTimerText.gameObject.SetActive(false);
         _playerCounterText.gameObject.SetActive(false);
         _instructionPlayer1Text.text = "Press any button to join!";
@@ -41,6 +48,12 @@ public class StartingGameScript : MonoBehaviour
             _playerCounterText.gameObject.SetActive(true);
             _playerCounterText.text = $"{currentPlayerCount} / {GameSettings.PlayersInGame.Count} players to start!";
         }
+
+        if (countingDown)
+        {
+            elapsedTime += Time.deltaTime;
+            _startTimerImage.fillAmount = elapsedTime/maxTime;
+        }
     }
 
     private void OnTriggerEnter(Collider other)
@@ -52,6 +65,8 @@ public class StartingGameScript : MonoBehaviour
             //currentPlayerCount >= GameSettings.PlayersRequiredToStart || currentPlayerCount == GameSettings.MinimumPlayersRequiredToStart
             if (currentPlayerCount == GameSettings.PlayersInGame.Count && !countingDown)
             {
+                _timerImage.color = new Color(255f, 255f, 255f, 255f);
+                _startTimerText.gameObject.SetActive(true);
                 countingDown = true;
                 InvokeRepeating("CountDown", 1f, 1f);
             }
@@ -80,7 +95,7 @@ public class StartingGameScript : MonoBehaviour
         countdownTimer -= 1f;
         Debug.Log("Countdown: " + countdownTimer.ToString("F0"));
 
-        _startTimerText.gameObject.SetActive(true);
+        //_startTimerText.gameObject.SetActive(true);
         _startTimerText.text = countdownTimer.ToString();
 
         if (countdownTimer <= 0f)
