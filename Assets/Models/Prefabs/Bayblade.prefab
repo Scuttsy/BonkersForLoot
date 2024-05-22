@@ -526,7 +526,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PlayerYeeter: {fileID: 0}
-  _isRotatingBayblade: 0
+  _isRotatingBayblade: 1
   _baybladeRotationSpeed: -10
   _minVelocity: 99999
   _minAngle: 10
