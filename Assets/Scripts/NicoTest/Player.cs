@@ -105,7 +105,7 @@ public class Player : MonoBehaviour
     {
         // Lose 20% of the unclaimedLoot
 
-        if ((UnclaimedLoot / 5f) < 1f)
+        if ((UnclaimedLoot / 5f) < 1f && (UnclaimedLoot / 5f) > 0)
         {
             UnclaimedLoot -= 1f;
         }
