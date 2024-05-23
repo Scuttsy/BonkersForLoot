@@ -71,6 +71,9 @@ public class PlayerMovementController : MonoBehaviour
     private bool _hasRecentlyFired;
 
     [SerializeField]
+    private AudioClip _audioClipBonk;
+    [SerializeField]
+    private AudioClip _audioClipFall;
     private AudioSource _audioSource;
 
     private bool _isRespawning;
@@ -91,6 +94,7 @@ public class PlayerMovementController : MonoBehaviour
         stepRayCastUpper.y += _stepHeight;
         _stepRayCastUpper.localPosition = stepRayCastUpper;
         _respawnTimerObj.SetActive(false);
+        _audioSource = GetComponent<AudioSource>();
     }
 
     void OnEnable()
@@ -247,9 +251,6 @@ public class PlayerMovementController : MonoBehaviour
             PlayerRigidbody.AddForce(_playerGFX.forward.normalized * force, ForceMode.Impulse);
             Invoke(nameof(ResetFire), 0.25f);
             Invoke(nameof(ResetHasRecentlyFired), 0.10f);
-
-            _audioSource.PlayOneShot(_audioSource.clip);
-            
         }
         else
         {
@@ -338,6 +339,15 @@ public class PlayerMovementController : MonoBehaviour
         controller.ResetHaptics();
     }
 
+    private void PlayAudioClip(AudioClip clip)
+    {
+        if (_audioSource != null && clip != null)
+        {
+            _audioSource.clip = clip;
+            _audioSource.PlayOneShot(clip);
+        }
+    }
+
     void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.CompareTag("GroundPlane"))
@@ -352,6 +362,7 @@ public class PlayerMovementController : MonoBehaviour
         if (collision.gameObject.CompareTag("BouncyWall"))
         {
             SetMotorSpeeds(0.2f, 0.3f, 0.25f);
+            PlayAudioClip(_audioClipBonk);
         }
 
         if (collision.gameObject.CompareTag("NoBounce"))
@@ -365,27 +376,16 @@ public class PlayerMovementController : MonoBehaviour
         {
             if (!HasGameStarted()) return;
             _playerScript.LoseUnclaimedLoot();
+            PlayAudioClip(_audioClipFall);
             CancelInvoke(nameof(Respawn));
             Invoke(nameof(Respawn), 0.5f);
             SetMotorSpeeds(0.4f, 0.5f, 0.5f);
         }
 
-        /*if (collision.gameObject.CompareTag("Player") || collision.gameObject.CompareTag("BouncyWall"))
-        {
-            if (_audioSource != null && _audioSource.clip != null)
-            {
-                _audioSource.PlayOneShot(_audioSource.clip);
-            }
-        }*/
-
         if (collision.gameObject.CompareTag("Player"))
         {
-            if (_audioSource != null && _audioSource.clip != null)
-            {
-                _audioSource.PlayOneShot(_audioSource.clip);
-            }
-
             SetMotorSpeeds(0.6f, 0.7f, 0.5f);
+            PlayAudioClip(_audioClipBonk);
         }
 
         //Coins explode
@@ -426,7 +426,6 @@ public class PlayerMovementController : MonoBehaviour
             coin.GetComponent<Loot>()._ExplodeTarget = targetPosition;
         }
     }
-
 
     public void Respawn()
     {
@@ -496,6 +495,7 @@ public class PlayerMovementController : MonoBehaviour
         {
             CancelInvoke(nameof(Respawn));
             Invoke(nameof(Respawn), 0.5f);
+            PlayAudioClip(_audioClipFall);
             SetMotorSpeeds(0.4f, 0.5f, 0.5f);
         }
 

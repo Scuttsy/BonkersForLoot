@@ -24,15 +24,22 @@ public class GuardRail : MonoBehaviour
     [SerializeField] private float _endAngle = -3f;
     [SerializeField] private Transform _distanceDecider;
 
+    [SerializeField]
+    private AudioClip _audioClip;
+    private AudioSource _audioSource;
+
     private void Start()
     {
         _startAngle += 180f + transform.eulerAngles.y;
         _endAngle += 180f + transform.eulerAngles.y;
+        _audioSource = GetComponent<AudioSource>();
+        _audioSource.clip = _audioClip;
     }
 
     public void SetStartingAngle()
     {
         RailPivot.eulerAngles = StartsAt1 ? new Vector3(0, _startAngle, 0) : new Vector3(0, _endAngle, 0);
+        _audioSource.PlayOneShot(_audioSource.clip);
     }
 
     private void Update()

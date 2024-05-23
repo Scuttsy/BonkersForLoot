@@ -945,8 +945,9 @@ MonoBehaviour:
   _stepRayCastUpper: {fileID: 8280664283000782621}
   _stepHeight: 0.4
   _stepSmooth: 0.75
-  _lowerRayCastMaxDistance: 0.3
-  _upperRayCastMaxDistance: 0.4
+  _audioClipBonk: {fileID: 8300000, guid: edb1e5959025949498789c498f399432, type: 3}
+  _audioClipFall: {fileID: 8300000, guid: c76db1365a51774428a1e2b2175af1fb, type: 3}
+  GameplaySceneScript: {fileID: 0}
   RotatingCarrier: {fileID: 0}
 --- !u!54 &8587798844516945497
 Rigidbody:
@@ -1221,7 +1222,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: edb1e5959025949498789c498f399432, type: 3}
+  m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
