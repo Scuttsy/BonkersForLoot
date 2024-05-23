@@ -18,16 +18,13 @@ public class LootSpawning : MonoBehaviour
     private void Awake()
     {
         // Add all spawn points to List
-        GameSettings.LootSpawnPoints.Clear();
-        GameSettings.LootSpawnPoints.AddRange(_spawnPositions);
-    }
-    // Start is called before the first frame update
-    void Start()
-    {
-        
+        if (GameSettings.LootSpawnPoints != null)
+        {
+            GameSettings.LootSpawnPoints.Clear();
+            GameSettings.LootSpawnPoints.AddRange(_spawnPositions);
+        }
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (_timer > _timeToSpawn) 

@@ -51,14 +51,13 @@ public class GameplayScene : MonoBehaviour
         StartTime = TimeRemaining;
     }
 
-    // Start is called before the first frame update
     void Start()
     {
         GameSettings.GameIsInProgress = true;
         PlayerMovementController.SetGamePlayScene(this);
     }
 
-    // Update is called once per frame
+
     void Update()
     {
         if (!GameSettings.GameIsInProgress)
@@ -110,12 +109,11 @@ public class GameplayScene : MonoBehaviour
     {
         for (int i = 0; i < GameSettings.PlayersInGame.Count; i++)
         {
-            if (GameSettings.UnclaimedLoot[i] >= 0)
+            if (GameSettings.UnclaimedLoot[i] > 0)
             {
                 _arrowToCentreImg[i].enabled = true;
                 _arrowToCentreImg[i].transform.position = GameSettings.PlayersInGame[i].camera.WorldToScreenPoint(GameSettings.PlayersInGame[i].transform.position);
                 Vector3 target = GameSettings.PlayersInGame[i].camera.WorldToScreenPoint(Vector3.zero);
-
                 target -= _arrowToCentreImg[i].transform.position;
                 _arrowToCentreImg[i].transform.rotation = Quaternion.LookRotation(target, Vector3.forward);
             }
