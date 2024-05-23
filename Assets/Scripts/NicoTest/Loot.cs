@@ -55,7 +55,7 @@ public class Loot : MonoBehaviour
             {
                 Instantiate(_lootPickupBlueIcon, this.transform.position, Quaternion.identity);
             }
-
+             
             else if (parentPlayer.PlayerName == "Green")
             {
                 Instantiate(_lootPickupGreenIcon, this.transform.position, Quaternion.identity);
