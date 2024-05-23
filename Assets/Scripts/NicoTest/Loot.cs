@@ -12,7 +12,10 @@ public class Loot : MonoBehaviour
     [SerializeField]
     private AudioClip _audioClip;
 
-    [SerializeField] private GameObject _lootPickupIcon;
+    [SerializeField] private GameObject _lootPickupBlueIcon;
+    [SerializeField] private GameObject _lootPickupGreenIcon;
+    [SerializeField] private GameObject _lootPickupRedIcon;
+    [SerializeField] private GameObject _lootPickupYellowIcon;
 
     private void Awake()
     {
@@ -47,7 +50,30 @@ public class Loot : MonoBehaviour
             parentPlayer.UnclaimedLoot++;
             AudioSource.PlayClipAtPoint(_audioClip, transform.position);
             Debug.Log("Is " + parentPlayer.UnclaimedLoot);
-            Instantiate(_lootPickupIcon, this.transform.position, Quaternion.identity);
+
+            if (parentPlayer.PlayerName == "Blue")
+            {
+                Instantiate(_lootPickupBlueIcon, this.transform.position, Quaternion.identity);
+            }
+
+            else if (parentPlayer.PlayerName == "Green")
+            {
+                Instantiate(_lootPickupGreenIcon, this.transform.position, Quaternion.identity);
+            }
+
+            else if (parentPlayer.PlayerName == "Red")
+            {
+                Instantiate(_lootPickupRedIcon, this.transform.position, Quaternion.identity);
+            }
+            else if (parentPlayer.PlayerName == "Yellow")
+            {
+                Instantiate(_lootPickupYellowIcon, this.transform.position, Quaternion.identity);
+            }
+            else
+            {
+                Debug.Log("Player not found (Loot)");
+            }
+
             Destroy(this.gameObject);
         }
     }

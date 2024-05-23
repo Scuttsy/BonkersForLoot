@@ -73,8 +73,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 44e5064d271ad694d9c8af71c05cdd05, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Sprite: {fileID: 21300000, guid: 99e0098b72526ea438879c2fbf27bf36, type: 3}
+  m_Color: {r: 0.15596583, g: 0.55345905, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -96,7 +96,7 @@ GameObject:
   - component: {fileID: 4361941519496683917}
   - component: {fileID: 3747017107096099775}
   m_Layer: 0
-  m_Name: LootPickupIcon
+  m_Name: LootPickupGreenIcon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
