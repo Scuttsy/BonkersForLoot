@@ -5,10 +5,11 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.DualShock;
 using UnityEngine.PlayerLoop;
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour 
 {
-    public float UnclaimedLoot = 0;
+    public int UnclaimedLoot = 0;
     public int Score = 0;
     public string PlayerName = "(Default Name)";
 
@@ -20,6 +21,10 @@ public class Player : MonoBehaviour
 
     [HideInInspector] public bool HasLostPoints;
 
+    [Header("ArrowToCentre")]
+    [SerializeField] private Transform _arrowToCentrePivot;
+    [Range(0.1f, 3f)]
+    [SerializeField] private float _arrowScalingMultiplier;
     //private bool _positionSet = false;
     //private Vector3 _tempPos;
     //private float _timer;
@@ -103,6 +108,19 @@ public class Player : MonoBehaviour
         //Debug.Log($"Position{this.transform.position}");
     }
 
+    private void FixedUpdate()
+    {
+        if (UnclaimedLoot >5)
+        {
+            _arrowToCentrePivot.GetChild(0).gameObject.SetActive(true);
+            _arrowToCentrePivot.LookAt(new Vector3(0, _arrowToCentrePivot.transform.position.y, 0));
+        }
+        else
+            _arrowToCentrePivot.GetChild(0).gameObject.SetActive(false);
+
+
+    }
+
     public void LoseUnclaimedLoot()
     {
         if (HasLostPoints) return;
@@ -111,7 +129,7 @@ public class Player : MonoBehaviour
 
         if ((UnclaimedLoot / 5f) < 1f && (UnclaimedLoot / 5f) > 0)
         {
-            UnclaimedLoot -= 1f;
+            UnclaimedLoot -= 1;
         }
 
         else

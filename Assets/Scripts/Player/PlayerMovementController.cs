@@ -70,6 +70,7 @@ public class PlayerMovementController : MonoBehaviour
 
     private bool _hasRecentlyFired;
 
+    [Header("Audio")]
     [SerializeField]
     private AudioClip _audioClipBonk;
     [SerializeField]
@@ -194,6 +195,11 @@ public class PlayerMovementController : MonoBehaviour
 
         _shouldFire = false;
         _previousPosition = tempPosition;
+    }
+
+    private void FixedUpdate()
+    {
+        
     }
 
     private void DuringRespawn()

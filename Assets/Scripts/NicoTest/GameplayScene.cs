@@ -26,8 +26,7 @@ public class GameplayScene : MonoBehaviour
     [SerializeField] private float _timeStartColorlerp;
     [SerializeField] private float _maxColorTime; //remaining time during which color is maximally red
 
-    [Header("References")]
-    [SerializeField] private List<Image> _arrowToCentreImg;
+
 
     [Header("Player UI Settings")]
     [SerializeField] private int _displayDunkArrowThreshold = 1;
@@ -105,22 +104,7 @@ public class GameplayScene : MonoBehaviour
             TimeRemaining -= Time.deltaTime;
         }
     }
-    private void FixedUpdate()
-    {
-        for (int i = 0; i < GameSettings.PlayersInGame.Count; i++)
-        {
-            if (GameSettings.UnclaimedLoot[i] > 0)
-            {
-                _arrowToCentreImg[i].enabled = true;
-                _arrowToCentreImg[i].transform.position = GameSettings.PlayersInGame[i].camera.WorldToScreenPoint(GameSettings.PlayersInGame[i].transform.position);
-                Vector3 target = GameSettings.PlayersInGame[i].camera.WorldToScreenPoint(Vector3.zero);
-                target -= _arrowToCentreImg[i].transform.position;
-                _arrowToCentreImg[i].transform.rotation = Quaternion.LookRotation(target, Vector3.forward);
-            }
-            else
-                _arrowToCentreImg[i].enabled = false;
-        }
-    }
+
 
     private void DisplayScores()
     {
