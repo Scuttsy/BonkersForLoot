@@ -705,6 +705,7 @@ GameObject:
   - component: {fileID: 1241549156962648211}
   - component: {fileID: 6176094848403855250}
   - component: {fileID: 1528218232846679311}
+  - component: {fileID: 5122589308182130352}
   m_Layer: 0
   m_Name: ArrowToCentre
   m_TagString: Untagged
@@ -777,6 +778,27 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!95 &5122589308182130352
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8506905032317557135}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 85958446aac62044bab379110e509dbf, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &8840387190959414356
 GameObject:
   m_ObjectHideFlags: 0
@@ -1121,6 +1143,7 @@ MonoBehaviour:
   _screenShake: {fileID: 7895821162514044144}
   HasLostPoints: 0
   _arrowToCentrePivot: {fileID: 8142689048980939562}
+  _arrowScalingMultiplier: 0
 --- !u!114 &2169207396154533104
 MonoBehaviour:
   m_ObjectHideFlags: 0
