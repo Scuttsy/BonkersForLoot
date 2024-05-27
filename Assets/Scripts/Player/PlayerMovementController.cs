@@ -29,9 +29,6 @@ public class PlayerMovementController : MonoBehaviour
     [SerializeField] private float _controllerDeadZone;
     [SerializeField] private float _fireCooldown;
     [SerializeField] private bool _usingMouse;
-    [SerializeField] private float _impactFreezeTime;
-    [Min(0.001f)]
-    [SerializeField] private float _impactFreezeDivider;
 
     [SerializeField] private Vector3 _minPointerSize;
     [SerializeField] private Vector3 _maxPointerSize;
@@ -40,13 +37,11 @@ public class PlayerMovementController : MonoBehaviour
     [SerializeField] private float _maxForceStrength;
 
     [SerializeField] private float _timeNeededToRespawn;
-
-
-    [Header("Step settings")]
-    [SerializeField] private Transform _stepRayCastLower;
-    [SerializeField] private Transform _stepRayCastUpper;
-    [SerializeField] private float _stepHeight;
-    [SerializeField] private float _stepSmooth;
+    [SerializeField] private int _maxCoinsLostOnPlayerImpact;
+    [Range(0.02f,1f)]
+    [SerializeField] private float _percentageOfCoinsLostOnPlayerImpact;
+    [SerializeField] private float _maxExplosionRadius;
+    [SerializeField] private float _minExplosionRadius;
 
     private float _horizontalInput;
     private float _verticalInput;
@@ -70,6 +65,7 @@ public class PlayerMovementController : MonoBehaviour
 
     private bool _hasRecentlyFired;
 
+
     [Header("Audio")]
     [SerializeField]
     private AudioClip _audioClipBonk;
@@ -84,6 +80,8 @@ public class PlayerMovementController : MonoBehaviour
 
     [HideInInspector] public RotatingCarrier RotatingCarrier;
 
+    private float _playerImpactCoinsDivider;
+
     void Awake()
     {
         GameSettings.PlayersInGame.Add(_playerInput);
@@ -91,9 +89,6 @@ public class PlayerMovementController : MonoBehaviour
         _player = _inputAsset.FindActionMap("Player");
         SetPlayerStartingPosition(GameSettings.PlayersInGame.Count - 1);
 
-        Vector3 stepRayCastUpper = _stepRayCastUpper.localPosition;
-        stepRayCastUpper.y += _stepHeight;
-        _stepRayCastUpper.localPosition = stepRayCastUpper;
         _respawnTimerObj.SetActive(false);
         _audioSource = GetComponent<AudioSource>();
     }
@@ -103,10 +98,10 @@ public class PlayerMovementController : MonoBehaviour
         _player.FindAction("Fire").started += OnFireStart;
         _player.FindAction("Fire").canceled += OnFireStop;
         _player.FindAction("Stop").started += OnStopPressed;
-        //_player.FindAction("SetPosition").started += OnSetPosition;
         _aim = _player.FindAction("Aim");
         _player.Enable();
 
+        _playerImpactCoinsDivider = (1 / _percentageOfCoinsLostOnPlayerImpact);
     }
 
     public void SetPlayerStartingPosition(int playerCount)
@@ -116,6 +111,7 @@ public class PlayerMovementController : MonoBehaviour
             _playerGFX.rotation = Quaternion.LookRotation(new Vector3(0,90,0));
         }
         PlayerRigidbody.position = GameSettings.SpawnPointList[playerCount].position;
+        Debug.Log("setting player" + playerCount + " location to: " + GameSettings.SpawnPointList[playerCount].position);
     }
 
     void OnDisable()
@@ -123,7 +119,6 @@ public class PlayerMovementController : MonoBehaviour
         _player.FindAction("Fire").started -= OnFireStart;
         _player.FindAction("Fire").canceled -= OnFireStop;
         _player.FindAction("Stop").started -= OnStopPressed;
-        //_player.FindAction("SetPosition").started -= OnSetPosition;
         _player.Disable();
     }
 
@@ -147,10 +142,16 @@ public class PlayerMovementController : MonoBehaviour
 
     public static void StartGame()
     {
-        foreach (var player in GameSettings.PlayersInGame)
+        //foreach (var player in GameSettings.PlayersInGame)
+        //{
+        //    PlayerMovementController playerMovementScript = player.gameObject.GetComponent<PlayerMovementController>();
+        //    playerMovementScript.SetPlayerStartingPosition(GameSettings.PlayersInGame.Count - 1);
+        //}
+        for (int i = 0; i < GameSettings.PlayersInGame.Count; i++)
         {
+            var player = GameSettings.PlayersInGame[i];
             PlayerMovementController playerMovementScript = player.gameObject.GetComponent<PlayerMovementController>();
-            playerMovementScript.SetPlayerStartingPosition(GameSettings.PlayersInGame.Count - 1);
+            playerMovementScript.SetPlayerStartingPosition(i);
         }
     }
 
@@ -163,15 +164,6 @@ public class PlayerMovementController : MonoBehaviour
         }
     }
 
-    public void OnSetPosition(InputAction.CallbackContext ctx)
-    {
-        for (int i = 0; i < GameSettings.PlayersInGame.Count; i++)
-        {
-            var player = GameSettings.PlayersInGame[i];
-            player.gameObject.transform.position = GameSettings.SpawnPointList[i].position;
-            player.gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
-        }
-    }
 
     void Update()
     {
@@ -209,6 +201,7 @@ public class PlayerMovementController : MonoBehaviour
         {
             _isRespawning = false;
             _respawnTimerObj.SetActive(false);
+            PlayerRigidbody.constraints = RigidbodyConstraints.FreezeRotation;
             return;
         }
 
@@ -356,15 +349,6 @@ public class PlayerMovementController : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.CompareTag("GroundPlane"))
-        {
-            Debug.Log("hit floor with " + collision.contactCount + " collisions");
-            foreach (ContactPoint contact in collision.contacts)
-            {
-                Debug.DrawLine(contact.point,contact.point + Vector3.up/5, Color.black,30f);
-            }
-        }
-
         if (collision.gameObject.CompareTag("BouncyWall"))
         {
             SetMotorSpeeds(0.2f, 0.3f, 0.25f);
@@ -392,13 +376,21 @@ public class PlayerMovementController : MonoBehaviour
         {
             SetMotorSpeeds(0.6f, 0.7f, 0.5f);
             PlayAudioClip(_audioClipBonk);
+
+
+            //Coins explode
+            int playerScore = _playerScript.UnclaimedLoot;
+
+                // Code for exploding a set amount of coins
+                //int coinsToLose = Math.Min(_maxCoinsLostOnPlayerImpact, playerScore);
+                // Code for exploding a percentage amount of coins
+                int coinsToLose = (int)((1 / _playerImpactCoinsDivider) * playerScore);
+                if (coinsToLose == 0) coinsToLose = 1;
+
+            _playerScript.UnclaimedLoot -= coinsToLose;
+            ExplodeCoins(coinsToLose);
         }
 
-        //Coins explode
-        //int playerScore = gameObject.GetComponent<Player>().Score;
-        //int coinsToLose = _numCoinsImpact <= playerScore ? _numCoinsImpact : playerScore;
-        //gameObject.GetComponent<Player>().Score -= coinsToLose;
-        //ExplodeCoins(transform, coinsToLose);
     }
 
     private bool HasGameStarted()
@@ -408,34 +400,40 @@ public class PlayerMovementController : MonoBehaviour
         return GameplaySceneScript.TimeRemaining <= GameplaySceneScript.StartTime - 1;
     }
 
-    private void ExplodeCoins(Transform collision, int coins)
+    private void ExplodeCoins(int coinsToLose)
     {
-        int maxLoops = 5;
         Vector3 targetPosition = Vector3.zero;
-        Ray ray;
         GameObject coin;
-
-        for (int i = 0; i < coins - 1; i++)
+        Vector3 rayCastDir = Vector3.zero;
+        int maxAmountOfAttempts = 10;
+        for (int i = 0; i < coinsToLose - 1; i++)
         {
-            coin = Instantiate(_coinPrefab, collision.position, Quaternion.identity);
+            int amountOfAttempts = 0;
+            coin = Instantiate(_coinPrefab, transform.position, Quaternion.identity);
             int loops = 0;
             do
             {
-                loops++;
-                Vector2 pos = UnityEngine.Random.insideUnitCircle;
-                targetPosition = transform.position + new Vector3(pos.x / 2, 0, pos.y / 2);
+                amountOfAttempts++;
+                Vector2 pos = UnityEngine.Random.insideUnitCircle.normalized * UnityEngine.Random.Range(_minExplosionRadius,_maxExplosionRadius);
+                targetPosition = transform.position + new Vector3(pos.x, 0, pos.y);
+                rayCastDir = targetPosition.normalized;
+                Debug.DrawLine(transform.position, targetPosition, Color.black, 20f);
+                if (amountOfAttempts > maxAmountOfAttempts)
+                {
+                    Debug.LogWarning("Broke the loop");
+                    break;
+                }
+            } while (Physics.Raycast(transform.position, rayCastDir, (targetPosition - transform.position).magnitude));
 
-                ray = new Ray(collision.position, targetPosition);
-                Debug.DrawRay(collision.position, ray.direction);
-            } while (Physics.Raycast(ray, (targetPosition - transform.position).magnitude) && loops <= maxLoops);
-
-            coin.GetComponent<Loot>()._ExplodeTarget = targetPosition;
+            Loot lootScript = coin.GetComponent<Loot>();
+            lootScript.LaunchFishToPos(targetPosition); 
         }
     }
 
     public void Respawn()
     {
         _playerCollider.isTrigger = false;
+        PlayerRigidbody.constraints = RigidbodyConstraints.FreezeAll;
         _isRespawning = true;
         _respawningTimer = _timeNeededToRespawn;
         _respawnTimerObj.SetActive(true);
