@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class CustomSceneManager : MonoBehaviour
 {
-    public string NextSceneName = "MatthiasTestScene";
+    public string NextSceneName;
 
     private void Start()
     {
@@ -21,5 +21,18 @@ public class CustomSceneManager : MonoBehaviour
     {
         UnityEngine.SceneManagement.SceneManager.LoadScene(NextSceneName);
         PlayerMovementController.StartGame();
+    }
+
+    public void PlayGame()
+    {
+        SceneManager.LoadScene("Lobby");
+    }
+
+    public void QuitGame()
+    {
+        Application.Quit();
+        #if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+        #endif
     }
 }
