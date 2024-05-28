@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Runtime.CompilerServices;
+using System.Xml.Linq;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
@@ -86,7 +87,10 @@ public class PlayerMovementController : MonoBehaviour
 
     void Awake()
     {
+        
         GameSettings.PlayersInGame.Add(_playerInput);
+        _playerScript.PlayerName = $"Player {GameSettings.PlayersInGame.Count}";
+        SetCameraLayerMask();
         _inputAsset = _playerInput.actions;
         _player = _inputAsset.FindActionMap("Player");
         SetPlayerStartingPosition(GameSettings.PlayersInGame.Count - 1);
@@ -96,6 +100,12 @@ public class PlayerMovementController : MonoBehaviour
         _stepRayCastUpper.localPosition = stepRayCastUpper;
         _respawnTimerObj.SetActive(false);
         _audioSource = GetComponent<AudioSource>();
+    }
+
+    private void SetCameraLayerMask()
+    {
+        GetComponentInChildren<Camera>().cullingMask = LayerMask.GetMask(_playerScript.PlayerName);
+
     }
 
     void OnEnable()
