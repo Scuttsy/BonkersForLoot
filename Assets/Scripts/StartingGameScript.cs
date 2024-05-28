@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -70,15 +71,29 @@ public class StartingGameScript : MonoBehaviour
         {
             _instructionPlayer4Text.gameObject.SetActive(false);
         }
+
+        if (currentPlayerCount < GameSettings.PlayersInGame.Count)
+        {
+            _timerImage.gameObject.SetActive(false);
+
+            if (IsInvoking(nameof(CountDown)))
+            {
+                countdownTimer = 5f;
+                _startTimerText.text = countdownTimer.ToString();
+                elapsedTime = 0f;
+                _startTimerImage.fillAmount = 0f;
+                countingDown = false;
+                CancelInvoke(nameof(CountDown));
+            }
+        }
     }
 
     private void OnTriggerEnter(Collider other)
     {
-
         if (other.CompareTag("Player"))
         {
             currentPlayerCount++;
-            if (currentPlayerCount == GameSettings.PlayersInGame.Count && !countingDown)
+            if (currentPlayerCount == GameSettings.PlayersInGame.Count && currentPlayerCount != GameSettings.PlayersRequiredToStart && !countingDown)
             {
                 _timerImage.gameObject.SetActive(true);
                 countingDown = true;
