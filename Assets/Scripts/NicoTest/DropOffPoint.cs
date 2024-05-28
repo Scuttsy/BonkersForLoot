@@ -30,20 +30,14 @@ public class DropOffPoint : MonoBehaviour
         if (other.gameObject.TryGetComponent(out Player player))
         {
             player.Score += (int)player.UnclaimedLoot;
-            if (player.UnclaimedLoot != 0)
-            {
-                _source.PlayOneShot(_dropOffClip);
-            }
+            _source.PlayOneShot(_dropOffClip);
             player.UnclaimedLoot = 0;
         }
 
         if (otherParent.TryGetComponent(out Player parentPlayer))
         {
             parentPlayer.Score += (int)parentPlayer.UnclaimedLoot;
-            if (player.UnclaimedLoot != 0)
-            {
-                _source.PlayOneShot(_dropOffClip);
-            }
+            _source.PlayOneShot(_dropOffClip);
             parentPlayer.UnclaimedLoot = 0;
         }
     }
