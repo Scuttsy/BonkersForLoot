@@ -48,6 +48,17 @@ public class GameSettings : MonoBehaviour
             {
                 scores.Add(PlayersInGame[i].GetComponent<Player>().Score);
             }
+
+            int max = 0;
+            List<int> sortedScores = new List<int>();
+            for (int i = 0; i < scores.Count; i++)
+            {
+                if (scores[i] > max)
+                {
+                    int x = scores[i];
+
+                }
+            }
             return scores;
         }
     }

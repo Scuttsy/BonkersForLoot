@@ -11,13 +11,16 @@ public class GameOverScene : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI _winnerText;
 
+    [Header("References")]
     [SerializeField] private Transform _winnerPos;
     [SerializeField] private Transform _secondPos;
     [SerializeField] private Transform _thirdPos;
 
+    [SerializeField] private List<TMP_Text> _leaderBoardNames = new List<TMP_Text>();
+    [SerializeField] private List<TMP_Text> _leaderBoardScores = new List<TMP_Text>();
+
     private AudioSource audioSource;
 
-    // Start is called before the first frame update
     void Start()
     {
         audioSource = GetComponent<AudioSource>();
@@ -29,7 +32,7 @@ public class GameOverScene : MonoBehaviour
 
         GameSettings.GameIsInProgress = false;
         SetPlayerPositions();
-
+        SetPlayerLeaderboard();
         // Set Winning player in UI
         if ( _winnerText != null && GameSettings.FirstPlace != null)
         {
@@ -39,6 +42,16 @@ public class GameOverScene : MonoBehaviour
         else
         {
             Debug.Log("Something is Null in winner text");
+        }
+    }
+
+    private void SetPlayerLeaderboard()
+    {
+        for (int i = 0; i < GameSettings.PlayersInGame.Count; i++)
+        {
+            int playerIndex = WinnerDecider.SortedScores[i];
+             _leaderBoardNames[i].text = GameSettings.PlayersInGame[playerIndex].GetComponent<Player>().PlayerName;
+            _leaderBoardScores[i].text = GameSettings.PlayersInGame[playerIndex].GetComponent<Player>().Score.ToString();
         }
     }
 
@@ -66,9 +79,4 @@ public class GameOverScene : MonoBehaviour
 
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }
