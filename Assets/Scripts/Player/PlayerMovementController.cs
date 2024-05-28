@@ -12,6 +12,7 @@ public class PlayerMovementController : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private CapsuleCollider _playerCollider;
+    [SerializeField] private CapsuleCollider _playerRespawnCollider;
     [SerializeField] private MeshRenderer _pointer;
     [SerializeField] private Transform _pointerPivot;
     [SerializeField] private Transform _pointerScalePivot;
@@ -73,7 +74,7 @@ public class PlayerMovementController : MonoBehaviour
     private AudioClip _audioClipFall;
     private AudioSource _audioSource;
 
-    private bool _isRespawning;
+    [HideInInspector] public bool IsRespawning;
     private float _respawningTimer;
 
     [HideInInspector] public GameplayScene GameplaySceneScript;
@@ -91,6 +92,7 @@ public class PlayerMovementController : MonoBehaviour
 
         _respawnTimerObj.SetActive(false);
         _audioSource = GetComponent<AudioSource>();
+        _playerRespawnCollider.enabled = false;
     }
 
     void OnEnable()
@@ -142,11 +144,6 @@ public class PlayerMovementController : MonoBehaviour
 
     public static void StartGame()
     {
-        //foreach (var player in GameSettings.PlayersInGame)
-        //{
-        //    PlayerMovementController playerMovementScript = player.gameObject.GetComponent<PlayerMovementController>();
-        //    playerMovementScript.SetPlayerStartingPosition(GameSettings.PlayersInGame.Count - 1);
-        //}
         for (int i = 0; i < GameSettings.PlayersInGame.Count; i++)
         {
             var player = GameSettings.PlayersInGame[i];
@@ -183,7 +180,7 @@ public class PlayerMovementController : MonoBehaviour
         ChargeFire();
         SetPlayerScaleBasedOnHeight();
 
-        if (_isRespawning) DuringRespawn();
+        if (IsRespawning) DuringRespawn();
 
         _shouldFire = false;
         _previousPosition = tempPosition;
@@ -199,9 +196,10 @@ public class PlayerMovementController : MonoBehaviour
         _respawningTimer -= Time.deltaTime;
         if (_respawningTimer < 0)
         {
-            _isRespawning = false;
+            IsRespawning = false;
             _respawnTimerObj.SetActive(false);
             PlayerRigidbody.constraints = RigidbodyConstraints.FreezeRotation;
+            _playerRespawnCollider.enabled = false;
             return;
         }
 
@@ -226,7 +224,7 @@ public class PlayerMovementController : MonoBehaviour
 
     }
 
-    private bool IsPointerActive => (PlayerRigidbody.velocity.magnitude < _minVelocityToMove || PointerActiveOnRotatingPlatform()) && !_isRespawning;
+    private bool IsPointerActive => (PlayerRigidbody.velocity.magnitude < _minVelocityToMove || PointerActiveOnRotatingPlatform()) && !IsRespawning;
 
     private bool PointerActiveOnRotatingPlatform()
     {
@@ -374,6 +372,8 @@ public class PlayerMovementController : MonoBehaviour
 
         if (collision.gameObject.CompareTag("Player"))
         {
+            if (IsRespawning) return;
+            if (collision.gameObject.GetComponent<PlayerMovementController>().IsRespawning) return;
             SetMotorSpeeds(0.6f, 0.7f, 0.5f);
             PlayAudioClip(_audioClipBonk);
 
@@ -385,7 +385,7 @@ public class PlayerMovementController : MonoBehaviour
                 //int coinsToLose = Math.Min(_maxCoinsLostOnPlayerImpact, playerScore);
                 // Code for exploding a percentage amount of coins
                 int coinsToLose = (int)((1 / _playerImpactCoinsDivider) * playerScore);
-                if (coinsToLose == 0) coinsToLose = 1;
+                if (coinsToLose == 0 && playerScore != 0) coinsToLose = 1;
 
             _playerScript.UnclaimedLoot -= coinsToLose;
             ExplodeCoins(coinsToLose);
@@ -433,8 +433,9 @@ public class PlayerMovementController : MonoBehaviour
     public void Respawn()
     {
         _playerCollider.isTrigger = false;
+        _playerRespawnCollider.enabled = true;
         PlayerRigidbody.constraints = RigidbodyConstraints.FreezeAll;
-        _isRespawning = true;
+        IsRespawning = true;
         _respawningTimer = _timeNeededToRespawn;
         _respawnTimerObj.SetActive(true);
 
