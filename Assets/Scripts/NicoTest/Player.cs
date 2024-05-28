@@ -25,6 +25,7 @@ public class Player : MonoBehaviour
     [SerializeField] private Transform _arrowToCentrePivot;
     [Range(0.1f, 3f)]
     [SerializeField] private float _arrowScalingMultiplier;
+    [SerializeField] private int _arrowToCentreThreshold = 1;
     //private bool _positionSet = false;
     //private Vector3 _tempPos;
     //private float _timer;
@@ -110,7 +111,7 @@ public class Player : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (UnclaimedLoot >5)
+        if (UnclaimedLoot > _arrowToCentreThreshold)
         {
             _arrowToCentrePivot.GetChild(0).gameObject.SetActive(true);
             _arrowToCentrePivot.LookAt(new Vector3(0, _arrowToCentrePivot.transform.position.y, 0));
