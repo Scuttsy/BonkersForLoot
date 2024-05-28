@@ -127,13 +127,13 @@ public class GameplayScene : MonoBehaviour
         for (int i = 0; i < GameSettings.PlayersInGame.Count; i++)
         {
             _unClaimedScoresTexts[i].text =
-                $"Unclaimed: {GameSettings.PlayersInGame[i].gameObject.GetComponent<Player>().UnclaimedLoot}";
+                $"Unclaimed: {GameSettings.PlayersInGame[i].gameObject.GetComponent<Player>().UnclaimedLoot} [CHANGE THIS]";
         }
 
         for (int i = 0; i < GameSettings.PlayersInGame.Count; i++)
         {
             _scoresTexts[i].text =
-                $"Score: {GameSettings.PlayersInGame[i].gameObject.GetComponent<Player>().Score}";
+                $"{GameSettings.PlayersInGame[i].gameObject.GetComponent<Player>().Score}";
         }
     }
 
