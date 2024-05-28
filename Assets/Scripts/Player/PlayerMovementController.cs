@@ -88,7 +88,7 @@ public class PlayerMovementController : MonoBehaviour
     {
         
         GameSettings.PlayersInGame.Add(_playerInput);
-        _playerScript.PlayerName = $"Player {GameSettings.PlayersInGame.Count}";
+        _playerScript.PlayerName = $"Player{GameSettings.PlayersInGame.Count}";
         SetCameraLayerMask();
         _inputAsset = _playerInput.actions;
         _player = _inputAsset.FindActionMap("Player");
@@ -101,7 +101,15 @@ public class PlayerMovementController : MonoBehaviour
 
     private void SetCameraLayerMask()
     {
-        GetComponentInChildren<Camera>().cullingMask = LayerMask.GetMask(_playerScript.PlayerName);
+        String[] layerMask = new string[6];
+        layerMask[0] = "Default";
+        layerMask[1] = "UI";
+        layerMask[2] = "TransparentFX";
+        layerMask[3] = "IgnoreRaycast";
+        layerMask[4] = "Water";
+        layerMask[5] = _playerScript.name;
+
+        GetComponentInChildren<Camera>().cullingMask = LayerMask.GetMask(layerMask);
 
     }
 

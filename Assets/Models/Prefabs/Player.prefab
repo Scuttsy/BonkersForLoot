@@ -1029,7 +1029,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d36e45a8d21c4ef42bc41ddd75cbe286, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  UnclaimedLoot: 9
+  UnclaimedLoot: 0
   Score: 0
   PlayerName: (Default Name)
   _playerColours:
