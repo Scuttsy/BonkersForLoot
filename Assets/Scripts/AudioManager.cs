@@ -36,7 +36,7 @@ public class AudioManager : MonoBehaviour
 
         switch (sceneName)
         {
-            case "Lobby":
+            case "StartScene":
                 audioSource.clip = lobbyMusic;
                 break;
             case "WorkingDemoMap":

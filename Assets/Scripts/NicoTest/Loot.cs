@@ -15,6 +15,7 @@ public class Loot : MonoBehaviour
 
     [SerializeField]
     private AudioClip _audioClip;
+    private AudioSource _source;
 
     [SerializeField] private GameObject _lootPickupBlueIcon;
     [SerializeField] private GameObject _lootPickupGreenIcon;
@@ -24,6 +25,11 @@ public class Loot : MonoBehaviour
     private bool _isForceSpawned;
     private Rigidbody _fishRigidbody;
     private BoxCollider _fishBoxCollider;
+
+    void Start()
+    {
+        _source = GetComponent<AudioSource>();
+    }
 
     private void Awake()
     {
@@ -63,20 +69,26 @@ public class Loot : MonoBehaviour
         if (other.tag == "Player")
         // and if so add 1 UnclaimedLoot of that player and destroy loot.
         {
+            _source.PlayOneShot(_audioClip);
+
             if (!IsActive) return;
             GameObject otherParent = other.gameObject.transform.parent.gameObject;
 
             if (other.gameObject.TryGetComponent(out Player player))
             {
                 player.UnclaimedLoot++;
-                AudioSource.PlayClipAtPoint(_audioClip, transform.position);
+                //AudioSource.PlayClipAtPoint(_audioClip, transform.position);
+                _source.PlayOneShot(_audioClip);
+
                 Debug.Log("Is " + player.UnclaimedLoot);
             }
 
             if (otherParent.TryGetComponent(out Player parentPlayer))
             {
                 parentPlayer.UnclaimedLoot++;
-                AudioSource.PlayClipAtPoint(_audioClip, transform.position);
+                //AudioSource.PlayClipAtPoint(_audioClip, transform.position);
+                _source.PlayOneShot(_audioClip);
+
                 Debug.Log("Is " + parentPlayer.UnclaimedLoot);
 
                 if (parentPlayer.PlayerName == "Blue")

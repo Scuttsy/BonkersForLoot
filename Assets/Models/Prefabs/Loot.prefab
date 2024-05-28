@@ -135,7 +135,6 @@ MonoBehaviour:
   _lootPickupGreenIcon: {fileID: 3485600226737655512, guid: 147cba2893f09394dbc6bbcf385aec4b, type: 3}
   _lootPickupRedIcon: {fileID: 3485600226737655512, guid: 4201e069dc2c8994e9ed4bbc9ac9a155, type: 3}
   _lootPickupYellowIcon: {fileID: 3485600226737655512, guid: 811c563a65eb48341a35a362a0da17c6, type: 3}
-  IsForceSpawned: 0
 --- !u!82 &7912620022595226468
 AudioSource:
   m_ObjectHideFlags: 0
