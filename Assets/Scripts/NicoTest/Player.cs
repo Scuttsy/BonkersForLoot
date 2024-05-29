@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.DualShock;
@@ -15,9 +16,13 @@ public class Player : MonoBehaviour
 
     [SerializeField] private List<Material> _playerColours;
     [SerializeField] private List<Color> _playerDeviceColours;
+    [SerializeField] private List<Color> _lootPickupColours;
     [SerializeField] private Renderer _playerModel;
 
     [SerializeField] private ScreenShake _screenShake;
+
+    [SerializeField] private TMP_Text _unclaimedScoreUI;
+    private bool _showUnclaimedIcon;
 
     [HideInInspector] public bool HasLostPoints;
 
@@ -91,6 +96,8 @@ public class Player : MonoBehaviour
             var dualSenseGamepad = (DualSenseGamepadHID)device;
             dualSenseGamepad.SetLightBarColor(_playerDeviceColours[index]);
         }
+
+        _unclaimedScoreUI.enabled = false;
     }
 
     void Update()
@@ -107,6 +114,8 @@ public class Player : MonoBehaviour
         //}
 
         //Debug.Log($"Position{this.transform.position}");
+        if (!_unclaimedScoreUI.enabled) return;
+        _unclaimedScoreUI.text = UnclaimedLoot.ToString();
     }
 
     private void FixedUpdate()
@@ -145,5 +154,10 @@ public class Player : MonoBehaviour
             //Debug.Log("Collision");
             //_screenShake.StartShaking();
         }
+    }
+
+    public void EnableUnclaimedLootUI()
+    {
+        _unclaimedScoreUI.enabled = true;
     }
 }

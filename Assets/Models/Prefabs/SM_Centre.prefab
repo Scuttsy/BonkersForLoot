@@ -88,7 +88,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1.25, y: 0.225, z: 4}
+  m_Size: {x: 1.25, y: 0.225, z: 4.25}
   m_Center: {x: -0.0000002682209, y: -0.09, z: -1.6485221}
 --- !u!114 &2109135653419299599
 MonoBehaviour:
@@ -225,7 +225,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 4, y: 0.225, z: 1.25}
+  m_Size: {x: 4.25, y: 0.225, z: 1.25}
   m_Center: {x: 1.6485221, y: -0.09, z: -0.00000017881393}
 --- !u!114 &3515103740633685067
 MonoBehaviour:
@@ -344,7 +344,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 3.2970443, y: 0.11338987, z: 1.3381138}
+  m_Size: {x: 3, y: 0.11338987, z: 1.3381138}
   m_Center: {x: 1.6485221, y: 0.0845, z: -0.00000017881393}
 --- !u!1 &4105046601938208941
 GameObject:
@@ -449,7 +449,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 3.2970445, y: 0.11338987, z: 1.338114}
+  m_Size: {x: 3, y: 0.11338987, z: 1.338114}
   m_Center: {x: -1.648522, y: 0.0845, z: 0.00000032782555}
 --- !u!1 &4698051368311681136
 GameObject:
@@ -464,6 +464,7 @@ GameObject:
   - component: {fileID: 6812003440259466268}
   - component: {fileID: 4577289530765132411}
   - component: {fileID: 3423936870617201639}
+  - component: {fileID: 8750711098642120057}
   - component: {fileID: 5886250585127703871}
   m_Layer: 0
   m_Name: SM_Center
@@ -572,6 +573,27 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _dropOffClip: {fileID: 8300000, guid: e9f1f9cab5ba3d749b6a13e387396b14, type: 3}
+--- !u!135 &8750711098642120057
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4698051368311681136}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.8
+  m_Center: {x: 0, y: 0.2, z: 0}
 --- !u!82 &5886250585127703871
 AudioSource:
   m_ObjectHideFlags: 0
@@ -771,7 +793,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1.3381135, y: 0.11338987, z: 3.2970443}
+  m_Size: {x: 1.3381135, y: 0.11338987, z: 3}
   m_Center: {x: 0.00000008940697, y: 0.0845, z: 1.6485221}
 --- !u!1 &5404077097243450897
 GameObject:
@@ -825,7 +847,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1.25, y: 0.225, z: 4}
+  m_Size: {x: 1.25, y: 0.225, z: 4.25}
   m_Center: {x: 0.00000008940697, y: -0.09, z: 1.6485221}
 --- !u!114 &5108571098522624349
 MonoBehaviour:
@@ -893,7 +915,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 4, y: 0.225, z: 1.25}
+  m_Size: {x: 4.25, y: 0.225, z: 1.25}
   m_Center: {x: -1.648522, y: -0.09, z: 0.00000032782555}
 --- !u!114 &5535862273436742909
 MonoBehaviour:
@@ -1012,7 +1034,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1.338114, y: 0.11338987, z: 3.2970443}
+  m_Size: {x: 1.338114, y: 0.11338987, z: 3}
   m_Center: {x: -0.0000002682209, y: 0.0845, z: -1.6485221}
 --- !u!1 &6611295174261372822
 GameObject:
@@ -1061,8 +1083,6 @@ GameObject:
   - component: {fileID: 5455508574097462133}
   - component: {fileID: 5479188826045086701}
   - component: {fileID: 1303824843055416151}
-  - component: {fileID: 9096526672980655465}
-  - component: {fileID: 8738102447664597077}
   m_Layer: 0
   m_Name: SM_Centre
   m_TagString: RotatingCenter
@@ -1080,7 +1100,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -0.16659679, z: 0}
-  m_LocalScale: {x: 2, y: 2, z: 2}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7576482188665853277}
@@ -1126,43 +1146,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0268d9a3e72c664b8a2adc298264cb0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  RotationSpeed: 0
+  RotationSpeed: 10
   UseTriggerAsSensor: 1
   OnlyRotate: 0
   CarrierRigidbody: {fileID: 5479188826045086701}
   Rigidbodies: []
   AngularVelocity: 0
---- !u!114 &9096526672980655465
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8432184010521936516}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d8ec55b3df90d884bb0faccfa742cb3c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _dropOffClip: {fileID: 0}
---- !u!135 &8738102447664597077
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8432184010521936516}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Radius: 0.8
-  m_Center: {x: 0, y: 0.2, z: 0}

@@ -18,7 +18,7 @@ public class GameplayScene : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _timerText;
     [HideInInspector] public float StartTime;
 
-    [SerializeField] private List<TextMeshProUGUI> _unClaimedScoresTexts;
+    //[SerializeField] private List<TextMeshProUGUI> _unClaimedScoresTexts;
     [SerializeField] private List<TextMeshProUGUI> _scoresTexts;
 
     [SerializeField] private Color _startTimerColor;
@@ -35,11 +35,11 @@ public class GameplayScene : MonoBehaviour
     private void Awake()
     {
 
-        foreach (TextMeshProUGUI text in _unClaimedScoresTexts)
-        {
-            if (text != null)
-            text.gameObject.SetActive(false);
-        }
+        //foreach (TextMeshProUGUI text in _unClaimedScoresTexts)
+        //{
+        //    if (text != null)
+        //    text.gameObject.SetActive(false);
+        //}
 
         foreach (TextMeshProUGUI text in _scoresTexts)
         {
@@ -97,6 +97,12 @@ public class GameplayScene : MonoBehaviour
                 GameSettings.ThirdPlace.GetComponent<Rigidbody>().velocity = new Vector3(0, 0, 0);
             }
 
+            foreach (var playerInput in GameSettings.PlayersInGame)
+            {
+                var playerMovementScript = playerInput.GetComponent<PlayerMovementController>();
+                playerMovementScript.ForceQuitRespawn();
+            }
+
             SceneManager.LoadScene("GameOverScene");
         }
         else
@@ -113,7 +119,7 @@ public class GameplayScene : MonoBehaviour
             return;
         }
 
-        if (_unClaimedScoresTexts.Count <= 0 || _scoresTexts.Count <= 0) return;
+        if (/*_unClaimedScoresTexts.Count <= 0 ||*/ _scoresTexts.Count <= 0) return;
     }
 
     private void SetUIStartOfGame()
@@ -121,19 +127,22 @@ public class GameplayScene : MonoBehaviour
         //Debug.Log($"Players in Game: {GameSettings.PlayersInGame.Count}");
         for (int i = 0; i < GameSettings.PlayersInGame.Count; i++)
         {
-            _unClaimedScoresTexts[i].gameObject.SetActive(true);
+            //_unClaimedScoresTexts[i].gameObject.SetActive(true);
             _scoresTexts[i].gameObject.SetActive(true);
         }
-        for (int i = 0; i < GameSettings.PlayersInGame.Count; i++)
-        {
-            _unClaimedScoresTexts[i].text =
-                $"Unclaimed: {GameSettings.PlayersInGame[i].gameObject.GetComponent<Player>().UnclaimedLoot} [CHANGE THIS]";
-        }
+
+        // Moved to each player, in the Player Script.
+        //for (int i = 0; i < GameSettings.PlayersInGame.Count; i++)
+        //{
+        //    _unClaimedScoresTexts[i].text =
+        //        $"Unclaimed: {GameSettings.PlayersInGame[i].gameObject.GetComponent<Player>().UnclaimedLoot} [CHANGE THIS]";
+        //}
 
         for (int i = 0; i < GameSettings.PlayersInGame.Count; i++)
         {
             _scoresTexts[i].text =
-                $"{GameSettings.PlayersInGame[i].gameObject.GetComponent<Player>().Score}";
+                "<sprite=0> " + GameSettings.PlayersInGame[i].gameObject.GetComponent<Player>().Score;
+            GameSettings.PlayersInGame[i].gameObject.GetComponent<Player>().EnableUnclaimedLootUI();
         }
     }
 

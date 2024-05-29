@@ -11,7 +11,7 @@ public class Loot : MonoBehaviour
     [SerializeField] private float _minLaunchHeight = 0.5f;
     [SerializeField] private float _maxLaunchHeight = 1.5f;
     [HideInInspector] public bool IsActive = true;
-    [HideInInspector] public Vector3 _ExplodeTarget = Vector3.zero; //The place that the coin tries to move to
+    [HideInInspector] public Vector3 ExplodeTarget = Vector3.zero; //The place that the coin tries to move to
 
     [SerializeField]
     private AudioClip _audioClip;
@@ -131,10 +131,10 @@ public class Loot : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //if (_ExplodeTarget != Vector3.zero)
+        //if (ExplodeTarget != Vector3.zero)
         //{
-        //    Vector3 velocity = (_ExplodeTarget - transform.position).normalized;
-        //    float speed = Mathf.Min(_explodeSpeed, (_ExplodeTarget - transform.position).magnitude);
+        //    Vector3 velocity = (ExplodeTarget - transform.position).normalized;
+        //    float speed = Mathf.Min(_explodeSpeed, (ExplodeTarget - transform.position).magnitude);
         //    transform.position += velocity * speed * Time.deltaTime;
 
         //}
