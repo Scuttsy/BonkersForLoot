@@ -84,6 +84,7 @@ public class PlayerMovementController : MonoBehaviour
     private float _playerImpactCoinsDivider;
     private bool _isUsingDualShock;
     private bool _hasShownLeftStickPrompt;
+    private bool _wantsToShowFirePrompt;
     private bool _hasFinishedShowingFireButtonPrompt;
     private IEnumerator _guardRailKickCoroutine;
     private bool _canEndGame;
@@ -404,6 +405,10 @@ public class PlayerMovementController : MonoBehaviour
         _verticalInput = _aim.ReadValue<Vector2>().y;
 
         ShowOrHideLeftStickPrompt();
+
+        if (!_wantsToShowFirePrompt) return;
+        _wantsToShowFirePrompt = false;
+        ShowFireButtonPrompt();
     }
 
     private void ShowOrHideLeftStickPrompt()
@@ -439,9 +444,15 @@ public class PlayerMovementController : MonoBehaviour
 
     private void ShowFireButtonPrompt()
     {
-        GameObject fireButton = _isUsingDualShock ? _buttonCrossPrompt : _buttonAPrompt;
-        fireButton.SetActive(true);
-        _buttonPromptRadial.transform.parent.gameObject.SetActive(true);
+        if (Vector3.Distance(PlayerRigidbody.velocity, Vector3.zero) > 0.1f) 
+            _wantsToShowFirePrompt = true;
+        else
+        {
+            GameObject fireButton = _isUsingDualShock ? _buttonCrossPrompt : _buttonAPrompt;
+            fireButton.SetActive(true);
+            _buttonPromptRadial.transform.parent.gameObject.SetActive(true);
+
+        }
     }
     private void HideFireButtonPrompt(bool setFinished)
     {

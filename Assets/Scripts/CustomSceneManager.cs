@@ -1,14 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem.UI;
 using UnityEngine.SceneManagement;
 
 public class CustomSceneManager : MonoBehaviour
 {
     public string NextSceneName;
 
+    private InputSystemUIInputModule _inputSystemUIInputModule;
+
     private void Start()
     {
+        _inputSystemUIInputModule = GetComponent<InputSystemUIInputModule>();
+
         StartingGameScript.OnCountdownFinished += SwitchScene;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
