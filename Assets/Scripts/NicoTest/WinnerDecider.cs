@@ -8,7 +8,7 @@ using UnityEngine.InputSystem;
 
 public class WinnerDecider 
 {
-    public static int[] SortedScores = new int[4];
+    public static List<Player> Leaderboard = new List<Player>();
     public void DecideWinner()
     {
         // Loop through all players in the game
@@ -18,25 +18,19 @@ public class WinnerDecider
         GameObject _currentSecondPlace = null;
         GameObject _currentThirdPlace = null;
 
-        for (int i = 0; i < GameSettings.PlayersInGame.Count; i++)
+        Leaderboard.Clear();
+        foreach(var player in GameSettings.PlayersInGame)
         {
-            SortedScores[i] = GameSettings.PlayersInGame[i].GetComponent<Player>().Score;
+            Leaderboard.Add(player.GetComponent<Player>());
         }
-
-        int temp = 0;
-        for (int write = 0; write < SortedScores.Length; write++)
+        Leaderboard.Sort(delegate (Player x, Player y) {
+            return x.Score.CompareTo(y.Score);
+        });
+        Leaderboard.Reverse();
+        for (int i = 0; i < Leaderboard.Count; i++)
         {
-            for (int sort = 0; sort < SortedScores.Length - 1; sort++)
-            {
-                if (SortedScores[sort] > SortedScores[sort + 1])
-                {
-                    temp = SortedScores[sort + 1];
-                    SortedScores[sort + 1] = SortedScores[sort];
-                    SortedScores[sort] = temp;
-                }
-            }
+            Debug.Log(Leaderboard[i].PlayerName + Leaderboard[i].Score);
         }
-
         foreach (PlayerInput player in GameSettings.PlayersInGame)
         {   
             // If there is no First place player.

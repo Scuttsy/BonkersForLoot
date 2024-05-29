@@ -49,9 +49,8 @@ public class GameOverScene : MonoBehaviour
     {
         for (int i = 0; i < GameSettings.PlayersInGame.Count; i++)
         {
-            int playerIndex = WinnerDecider.SortedScores[i];
-             _leaderBoardNames[i].text = GameSettings.PlayersInGame[playerIndex].GetComponent<Player>().PlayerName;
-            _leaderBoardScores[i].text = GameSettings.PlayersInGame[playerIndex].GetComponent<Player>().Score.ToString();
+            _leaderBoardNames[i].text = WinnerDecider.Leaderboard[i].PlayerName;
+            _leaderBoardScores[i].text = WinnerDecider.Leaderboard[i].Score.ToString();
         }
     }
 

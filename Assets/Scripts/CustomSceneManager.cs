@@ -28,6 +28,12 @@ public class CustomSceneManager : MonoBehaviour
         SceneManager.LoadScene("Lobby");
     }
 
+
+
+
+
+
+
     public void QuitGame()
     {
         Application.Quit();
