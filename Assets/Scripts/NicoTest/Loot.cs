@@ -82,7 +82,7 @@ public class Loot : MonoBehaviour
                 if (_source != null)
                 _source.PlayOneShot(_audioClip);
 
-                Debug.Log("Is " + player.UnclaimedLoot);
+                //Debug.Log("Is " + player.UnclaimedLoot);
             }
 
             if (otherParent.TryGetComponent(out Player parentPlayer))

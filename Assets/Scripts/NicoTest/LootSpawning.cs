@@ -71,7 +71,7 @@ public class LootSpawning : MonoBehaviour
         Loot lootScript = lootInstance.GetComponent<Loot>();
         if (lootScript != null && _audioSourceManager != null)
         {
-            Debug.Log("Set audiosource");
+            //Debug.Log("Set audiosource");
             AudioSource audioSource = _audioSourceManager.GetComponent<AudioSource>();
             lootScript.SetAudioSource(audioSource);
         }

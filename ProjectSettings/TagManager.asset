@@ -13,6 +13,7 @@ TagManager:
   - LobbyOutOfBounds
   - GroundPlane
   - LoseFish
+  - AudioManager
   layers:
   - Default
   - TransparentFX

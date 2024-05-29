@@ -138,7 +138,10 @@ public class StartingGameScript : MonoBehaviour
             countingDown = false;
             CancelInvoke("CountDown");
 
-            GameSettings.ToggleDontDestroyOnLoadForPlayers();
+            foreach (PlayerInput player in GameSettings.PlayersInGame)
+            {
+                DontDestroyOnLoad(player);
+            }
 
             OnCountdownFinished?.Invoke();
         }

@@ -11,7 +11,7 @@ using Vector3 = UnityEngine.Vector3;
 
 public class PlayerMovementController : MonoBehaviour
 {
-    [Header("References")] public Transform debugcube;
+    [Header("References")]
     [SerializeField] private CapsuleCollider _playerCollider;
     [SerializeField] private CapsuleCollider _playerRespawnCollider;
     [SerializeField] private MeshRenderer _pointer;

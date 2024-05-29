@@ -32,6 +32,11 @@ public class GameplayScene : MonoBehaviour
     [SerializeField] private int _displayDunkArrowThreshold = 1;
 
     private WinnerDecider _winnerDecider = new WinnerDecider();
+
+    private AudioSource _audioSource;
+    private bool _hasIncreasedPitch;
+    private float _newPitch = 1.3f;
+
     private void Awake()
     {
 
@@ -48,6 +53,8 @@ public class GameplayScene : MonoBehaviour
         }
 
         StartTime = TimeRemaining;
+
+        _audioSource = GameObject.FindGameObjectWithTag("AudioManager").GetComponent<AudioSource>();
     }
 
     void Start()
@@ -68,8 +75,11 @@ public class GameplayScene : MonoBehaviour
         //DisplayScores();
         SetUIStartOfGame();
 
-        if (TimeRemaining < 10)
-
+        if (TimeRemaining < 10 && !_hasIncreasedPitch)
+        {
+            _audioSource.pitch *= _newPitch;
+            _hasIncreasedPitch = true;
+        }
 
         // Check if time has run out
         if (TimeRemaining < 0)
@@ -107,6 +117,8 @@ public class GameplayScene : MonoBehaviour
                 playerMovementScript.ForceQuitRespawn();
             }
 
+            _audioSource.pitch /= _newPitch;
+            _hasIncreasedPitch = false;
             SceneManager.LoadScene("GameOverScene");
         }
         else
