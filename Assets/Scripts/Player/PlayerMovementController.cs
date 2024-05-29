@@ -11,8 +11,9 @@ using Vector3 = UnityEngine.Vector3;
 
 public class PlayerMovementController : MonoBehaviour
 {
-    [Header("References")]
-    [SerializeField] private CapsuleCollider _playerCollider;
+    [Header("References")] [SerializeField]
+    private CapsuleCollider _playerCollider;
+
     [SerializeField] private CapsuleCollider _playerRespawnCollider;
     [SerializeField] private MeshRenderer _pointer;
     [SerializeField] private Transform _pointerPivot;
@@ -25,10 +26,8 @@ public class PlayerMovementController : MonoBehaviour
     [SerializeField] private TMP_Text _respawnTimerVisuals;
     [SerializeField] private GameObject _respawnTimerObj;
 
-    [Header("Settings")]
-    [SerializeField] private float _minVelocityToMove;
-    [Range(0, 1)]
-    [SerializeField] private float _controllerDeadZone;
+    [Header("Settings")] [SerializeField] private float _minVelocityToMove;
+    [Range(0, 1)] [SerializeField] private float _controllerDeadZone;
     [SerializeField] private float _fireCooldown;
     [SerializeField] private bool _usingMouse;
 
@@ -40,8 +39,7 @@ public class PlayerMovementController : MonoBehaviour
 
     [SerializeField] private float _timeNeededToRespawn;
     [SerializeField] private int _maxCoinsLostOnPlayerImpact;
-    [Range(0.02f,1f)]
-    [SerializeField] private float _percentageOfCoinsLostOnPlayerImpact;
+    [Range(0.02f, 1f)] [SerializeField] private float _percentageOfCoinsLostOnPlayerImpact;
     [SerializeField] private float _maxExplosionRadius;
     [SerializeField] private float _minExplosionRadius;
 
@@ -68,11 +66,8 @@ public class PlayerMovementController : MonoBehaviour
     private bool _hasRecentlyFired;
 
 
-    [Header("Audio")]
-    [SerializeField]
-    private AudioClip _audioClipBonk;
-    [SerializeField]
-    private AudioClip _audioClipFall;
+    [Header("Audio")] [SerializeField] private AudioClip _audioClipBonk;
+    [SerializeField] private AudioClip _audioClipFall;
     private AudioSource _audioSource;
 
     [HideInInspector] public bool IsRespawning;
@@ -83,10 +78,12 @@ public class PlayerMovementController : MonoBehaviour
     [HideInInspector] public RotatingCarrier RotatingCarrier;
 
     private float _playerImpactCoinsDivider;
+    private float _startY;
+    private bool _isInCenter;
 
     void Awake()
     {
-        
+
         GameSettings.PlayersInGame.Add(_playerInput);
         _playerScript.PlayerName = $"Player{GameSettings.PlayersInGame.Count}";
         SetCameraLayerMask();
@@ -128,10 +125,16 @@ public class PlayerMovementController : MonoBehaviour
     {
         if (playerCount == 0)
         {
-            _playerGFX.rotation = Quaternion.LookRotation(new Vector3(0,90,0));
+            _playerGFX.rotation = Quaternion.LookRotation(new Vector3(0, 90, 0));
         }
+
         PlayerRigidbody.position = GameSettings.SpawnPointList[playerCount].position;
-        Debug.Log("setting player" + playerCount + " location to: " + GameSettings.SpawnPointList[playerCount].position);
+        Invoke(nameof(SetStartY), 1f);
+    }
+
+    private void SetStartY()
+    {
+        _startY = transform.position.y;
     }
 
     void OnDisable()
@@ -147,6 +150,7 @@ public class PlayerMovementController : MonoBehaviour
         _isHoldingDownFire = true;
 
     }
+
     public void OnFireStop(InputAction.CallbackContext ctx)
     {
         _isHoldingDownFire = false;
@@ -186,10 +190,11 @@ public class PlayerMovementController : MonoBehaviour
         Vector3 tempPosition = SetPlayerFacing();
 
         if (_usingMouse)
-        //TODO: remove mouse controls
+            //TODO: remove mouse controls
         {
             Vector3 centeredMousePos = Input.mousePosition - new Vector3(Screen.width / 2f, Screen.height / 2f, 0);
-            Vector3 pointerRotationMouse = new Vector3(0, Mathf.Atan2(centeredMousePos.x, centeredMousePos.y) * Mathf.Rad2Deg, 0);
+            Vector3 pointerRotationMouse =
+                new Vector3(0, Mathf.Atan2(centeredMousePos.x, centeredMousePos.y) * Mathf.Rad2Deg, 0);
             _pointerPivot.eulerAngles = pointerRotationMouse;
         }
 
@@ -204,9 +209,9 @@ public class PlayerMovementController : MonoBehaviour
         _previousPosition = tempPosition;
     }
 
-    private void FixedUpdate()
+    public void ForceQuitRespawn()
     {
-        
+        _respawningTimer = 0;
     }
 
     private void DuringRespawn()
@@ -222,7 +227,7 @@ public class PlayerMovementController : MonoBehaviour
         }
 
         float ratio = _respawningTimer / _timeNeededToRespawn;
-        _playerGFX.localScale = Vector3.Lerp(Vector3.one / 1000, Vector3.one, 1-ratio);
+        _playerGFX.localScale = Vector3.Lerp(Vector3.one / 1000, Vector3.one, 1 - ratio);
         float seconds = Mathf.CeilToInt(_respawningTimer % 60);
         _respawnTimerVisuals.text = "" + seconds;
     }
@@ -230,25 +235,40 @@ public class PlayerMovementController : MonoBehaviour
 
     private void SetPlayerScaleBasedOnHeight()
     {
-        if (!(transform.position.y < 0)) return;
-        bool hitFloor = Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit);
-        if (hitFloor)
-        {
-            if (hit.distance < 1) return;
-            _distanceFromOutOfBounds = hit.distance;
-            _playerGFX.localScale = Vector3.Lerp(Vector3.one, Vector3.one / 1000,
-                Mathf.Abs(transform.position.y) / _distanceFromOutOfBounds);
-        }
+        if (!(transform.position.y < 0f)) return;
+        Vector3 capsuleStart = transform.position +
+                               _playerGFX.forward * ((_playerCollider.height / 2) - _playerCollider.radius);
+        Vector3 capsuleEnd = transform.position -
+                             _playerGFX.forward * ((_playerCollider.height / 2) - _playerCollider.radius);
+        bool hitFloor = Physics.CapsuleCast(capsuleStart, capsuleEnd, _playerCollider.radius, Vector3.down,
+            out RaycastHit hit);
+        if (!hitFloor) return;
+        if (hit.transform.gameObject.tag != "OutOfBounds") return;
+        if (hit.collider.isTrigger) return;
+        _distanceFromOutOfBounds = hit.distance;
+        float yPos = Mathf.Abs(hit.transform.position.y);
+        // x co-ords being ratio 0-1 or 1-0, y co-ords being the value for going from a to b
+        // for x(A) < x(B) and declining (=> y(A) = 1, y(B) = 0)
+        //ratio = (y(B) - y(A)) / (x(B) - x(A)) x - (y(B) - y(A)) / (x(B) - x(A)) x(B) + y(B)
+        float ratio =
+            ((0 - 1) / (yPos + 1 + _playerCollider.radius - 0)) * _distanceFromOutOfBounds -
+            ((0 - 1) / (yPos + 1 + _playerCollider.radius - 0)) * (yPos + _playerCollider.radius) + 0;
+        _playerGFX.localScale = Vector3.Slerp(Vector3.one, Vector3.one / 1000,
+            ratio);
+        Debug.Log("ratio: " + ratio + ", distance from oob: " + _distanceFromOutOfBounds);
 
     }
 
-    private bool IsPointerActive => (PlayerRigidbody.velocity.magnitude < _minVelocityToMove || PointerActiveOnRotatingPlatform()) && !IsRespawning;
+    private bool IsPointerActive =>
+        (PlayerRigidbody.velocity.magnitude < _minVelocityToMove || PointerActiveOnRotatingPlatform()) && !IsRespawning;
 
     private bool PointerActiveOnRotatingPlatform()
     {
         if (RotatingCarrier == null) return false;
 
-        return (PlayerRigidbody.velocity.magnitude <= Mathf.Abs(0.054f * _minVelocityToMove * RotatingCarrier.transform.localScale.x * RotatingCarrier.RotationSpeed));
+        return (PlayerRigidbody.velocity.magnitude <= Mathf.Abs(0.056f * 2 * _minVelocityToMove *
+                                                                RotatingCarrier.transform.localScale.x *
+                                                                RotatingCarrier.RotationSpeed));
     }
 
     private void Fire()
@@ -272,6 +292,7 @@ public class PlayerMovementController : MonoBehaviour
             _pointer.enabled = false;
         }
     }
+
     private void ChargeFire()
     {
         if (_isHoldingDownFire && IsPointerActive)
@@ -297,7 +318,7 @@ public class PlayerMovementController : MonoBehaviour
         PlayerRigidbody.AddForce(_playerGFX.forward.normalized * PlayerRigidbody.velocity.magnitude, ForceMode.Impulse);
         Invoke(nameof(ResetFire), 0.25f);
         Invoke(nameof(ResetHasRecentlyFired), 0.10f);
-       
+
     }
 
     private void KeepOldInputIfNoInput()
@@ -345,7 +366,7 @@ public class PlayerMovementController : MonoBehaviour
         if (controller == null) return;
         controller.SetMotorSpeeds(lowFrequency, highFrequency);
         CancelInvoke(nameof(ResetMotorSpeeds));
-        Invoke(nameof(ResetMotorSpeeds),resetSpeed);
+        Invoke(nameof(ResetMotorSpeeds), resetSpeed);
     }
 
     private void ResetMotorSpeeds()
@@ -382,8 +403,10 @@ public class PlayerMovementController : MonoBehaviour
         {
             if (!HasGameStarted()) return;
             _playerScript.LoseUnclaimedLoot();
-            PlayAudioClip(_audioClipFall);
-            CancelInvoke(nameof(Respawn));
+            if (!IsInvoking(nameof(Respawn)))
+                PlayAudioClip(_audioClipFall);
+            else
+                CancelInvoke(nameof(Respawn));
             Invoke(nameof(Respawn), 0.5f);
             SetMotorSpeeds(0.4f, 0.5f, 0.5f);
         }
@@ -399,11 +422,11 @@ public class PlayerMovementController : MonoBehaviour
             //Coins explode
             int playerScore = _playerScript.UnclaimedLoot;
 
-                // Code for exploding a set amount of coins
-                //int coinsToLose = Math.Min(_maxCoinsLostOnPlayerImpact, playerScore);
-                // Code for exploding a percentage amount of coins
-                int coinsToLose = (int)((1 / _playerImpactCoinsDivider) * playerScore);
-                if (coinsToLose == 0 && playerScore != 0) coinsToLose = 1;
+            // Code for exploding a set amount of coins
+            //int coinsToLose = Math.Min(_maxCoinsLostOnPlayerImpact, playerScore);
+            // Code for exploding a percentage amount of coins
+            int coinsToLose = (int)((1 / _playerImpactCoinsDivider) * playerScore);
+            if (coinsToLose == 0 && playerScore != 0) coinsToLose = 1;
 
             _playerScript.UnclaimedLoot -= coinsToLose;
             ExplodeCoins(coinsToLose);
@@ -432,7 +455,8 @@ public class PlayerMovementController : MonoBehaviour
             do
             {
                 amountOfAttempts++;
-                Vector2 pos = UnityEngine.Random.insideUnitCircle.normalized * UnityEngine.Random.Range(_minExplosionRadius,_maxExplosionRadius);
+                Vector2 pos = UnityEngine.Random.insideUnitCircle.normalized *
+                              UnityEngine.Random.Range(_minExplosionRadius, _maxExplosionRadius);
                 targetPosition = transform.position + new Vector3(pos.x, 0, pos.y);
                 rayCastDir = targetPosition.normalized;
                 Debug.DrawLine(transform.position, targetPosition, Color.black, 20f);
@@ -444,7 +468,7 @@ public class PlayerMovementController : MonoBehaviour
             } while (Physics.Raycast(transform.position, rayCastDir, (targetPosition - transform.position).magnitude));
 
             Loot lootScript = coin.GetComponent<Loot>();
-            lootScript.LaunchFishToPos(targetPosition); 
+            lootScript.LaunchFishToPos(targetPosition);
         }
     }
 
@@ -549,7 +573,7 @@ public class PlayerMovementController : MonoBehaviour
         }
     }
 
-    private void StartRail(GuardRail guardRailScript)
+private void StartRail(GuardRail guardRailScript)
     {
         float entry1DistanceFromPlayer = Vector3.Distance(guardRailScript.EntryPoint1.position, transform.position);
         float entry2DistanceFromPlayer = Vector3.Distance(guardRailScript.EntryPoint2.position, transform.position);
