@@ -60,6 +60,5 @@ public class GuardRail : MonoBehaviour
                   Mathf.Cos(RailPivot.eulerAngles.y * Mathf.Deg2Rad))) * -_distanceDecider.localPosition.z * transform.localScale.x;
         newPlayerPos.y = PlayerStartPos.y + 1;
         PlayerRigidbody.position = newPlayerPos;
-        Debug.Log(newPlayerPos);
     }
 }

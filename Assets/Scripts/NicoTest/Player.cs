@@ -129,11 +129,12 @@ public class Player : MonoBehaviour
             _arrowToCentrePivot.GetChild(0).gameObject.SetActive(false);
     }
 
-    public void LoseUnclaimedLoot()
+    public int LoseUnclaimedLoot()
     {
-        if (HasLostPoints) return;
+        if (HasLostPoints) return 0;
         HasLostPoints = true;
         // Lose 20% of the unclaimedLoot
+        int current = UnclaimedLoot;
 
         if ((UnclaimedLoot / 5f) < 1f && (UnclaimedLoot / 5f) > 0)
         {
@@ -144,7 +145,9 @@ public class Player : MonoBehaviour
         {
             this.UnclaimedLoot -= this.UnclaimedLoot / 5;
             UnclaimedLoot = (int)Mathf.Round(UnclaimedLoot);
-        }        
+        }
+
+        return current - UnclaimedLoot;
     }
 
     private void OnCollisionEnter(Collision collision)

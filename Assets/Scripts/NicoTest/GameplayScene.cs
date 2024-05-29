@@ -44,7 +44,7 @@ public class GameplayScene : MonoBehaviour
         foreach (TextMeshProUGUI text in _scoresTexts)
         {
             if (text != null)
-            text.gameObject.SetActive(false);
+                text.gameObject.SetActive(false);
         }
 
         StartTime = TimeRemaining;

@@ -25,7 +25,7 @@ public class LootPickUp : MonoBehaviour
 
     public void DestroyObject()
     {
-        Debug.Log("Destroy Icon");
+        //Debug.Log("Destroy Icon");
         Destroy(this.gameObject);
     }
 }

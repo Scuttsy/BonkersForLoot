@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static Unity.VisualScripting.Member;
 
 public class Loot : MonoBehaviour
 {
@@ -76,7 +77,8 @@ public class Loot : MonoBehaviour
             {
                 player.UnclaimedLoot++;
                 //AudioSource.PlayClipAtPoint(_audioClip, transform.position);
-                _source.PlayOneShot(_audioClip);
+                if (_source != null)
+                    _source.PlayOneShot(_audioClip);
 
                 Debug.Log("Is " + player.UnclaimedLoot);
             }
@@ -84,9 +86,13 @@ public class Loot : MonoBehaviour
             if (otherParent.TryGetComponent(out Player parentPlayer))
             {
                 parentPlayer.UnclaimedLoot++;
-                _source.PlayOneShot(_audioClip);
+                if (_source == null)
+                    TryGetComponent(out _source);
+                if (_source != null)
+                    _source.PlayOneShot(_audioClip);
+                else Debug.LogError("WDYM ITS STILL NULL");
 
-                Debug.Log("Is " + parentPlayer.UnclaimedLoot);
+                //Debug.Log("Is " + parentPlayer.UnclaimedLoot);
 
                 if (parentPlayer.PlayerName == "Blue")
                 {

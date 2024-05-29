@@ -125,13 +125,13 @@ public class StartingGameScript : MonoBehaviour
     private void CountDown()
     {
         countdownTimer -= 1f;
-        Debug.Log("Countdown: " + countdownTimer.ToString("F0"));
+        //Debug.Log("Countdown: " + countdownTimer.ToString("F0"));
 
         _startTimerText.text = countdownTimer.ToString();
 
         if (countdownTimer <= 0f)
         {
-            Debug.Log("Countdown finished!");
+            //Debug.Log("Countdown finished!");
             // Reset countdown and player count
             countdownTimer = 5f;
             currentPlayerCount = 0;

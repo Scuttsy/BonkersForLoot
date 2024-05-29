@@ -1,19 +1,18 @@
 using System;
 using System.Collections;
-using System.Runtime.CompilerServices;
-using System.Xml.Linq;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UIElements;
+using Image = UnityEngine.UI.Image;
 using Vector2 = UnityEngine.Vector2;
 using Vector3 = UnityEngine.Vector3;
 
 public class PlayerMovementController : MonoBehaviour
 {
-    [Header("References")] [SerializeField]
-    private CapsuleCollider _playerCollider;
-
+    [Header("References")] public Transform debugcube;
+    [SerializeField] private CapsuleCollider _playerCollider;
     [SerializeField] private CapsuleCollider _playerRespawnCollider;
     [SerializeField] private MeshRenderer _pointer;
     [SerializeField] private Transform _pointerPivot;
@@ -25,6 +24,11 @@ public class PlayerMovementController : MonoBehaviour
     [SerializeField] private Player _playerScript;
     [SerializeField] private TMP_Text _respawnTimerVisuals;
     [SerializeField] private GameObject _respawnTimerObj;
+    [SerializeField] private GameObject _leftStickPrompt;
+    [SerializeField] private GameObject _buttonCrossPrompt;
+    [SerializeField] private GameObject _buttonAPrompt;
+    [SerializeField] private Image _buttonPromptRadial;
+
 
     [Header("Settings")] [SerializeField] private float _minVelocityToMove;
     [Range(0, 1)] [SerializeField] private float _controllerDeadZone;
@@ -78,12 +82,13 @@ public class PlayerMovementController : MonoBehaviour
     [HideInInspector] public RotatingCarrier RotatingCarrier;
 
     private float _playerImpactCoinsDivider;
-    private float _startY;
-    private bool _isInCenter;
+    private bool _isUsingDualShock;
+    private bool _hasShownLeftStickPrompt;
+    private bool _hasFinishedShowingFireButtonPrompt;
+    private IEnumerator _guardRailKickCoroutine;
 
     void Awake()
     {
-
         GameSettings.PlayersInGame.Add(_playerInput);
         _playerScript.PlayerName = $"Player{GameSettings.PlayersInGame.Count}";
         SetCameraLayerMask();
@@ -94,6 +99,19 @@ public class PlayerMovementController : MonoBehaviour
         _respawnTimerObj.SetActive(false);
         _audioSource = GetComponent<AudioSource>();
         _playerRespawnCollider.enabled = false;
+
+        var device = GetComponent<PlayerInput>().devices[0];
+        if (device.name.Contains("DualShock4GamepadHID") || device.name.Contains("DualSenseGamepadHID"))
+        {
+            _isUsingDualShock = true;
+        }
+        else
+            _isUsingDualShock = false;
+
+        _leftStickPrompt.SetActive(false);
+        _buttonAPrompt.SetActive(false);
+        _buttonCrossPrompt.SetActive(false);
+        _buttonPromptRadial.transform.parent.gameObject.SetActive(false);
     }
 
     private void SetCameraLayerMask()
@@ -129,13 +147,8 @@ public class PlayerMovementController : MonoBehaviour
         }
 
         PlayerRigidbody.position = GameSettings.SpawnPointList[playerCount].position;
-        Invoke(nameof(SetStartY), 1f);
     }
 
-    private void SetStartY()
-    {
-        _startY = transform.position.y;
-    }
 
     void OnDisable()
     {
@@ -235,27 +248,32 @@ public class PlayerMovementController : MonoBehaviour
 
     private void SetPlayerScaleBasedOnHeight()
     {
-        if (!(transform.position.y < 0f)) return;
-        Vector3 capsuleStart = transform.position +
-                               _playerGFX.forward * ((_playerCollider.height / 2) - _playerCollider.radius);
-        Vector3 capsuleEnd = transform.position -
-                             _playerGFX.forward * ((_playerCollider.height / 2) - _playerCollider.radius);
-        bool hitFloor = Physics.CapsuleCast(capsuleStart, capsuleEnd, _playerCollider.radius, Vector3.down,
-            out RaycastHit hit);
-        if (!hitFloor) return;
-        if (hit.transform.gameObject.tag != "OutOfBounds") return;
-        if (hit.collider.isTrigger) return;
-        _distanceFromOutOfBounds = hit.distance;
-        float yPos = Mathf.Abs(hit.transform.position.y);
-        // x co-ords being ratio 0-1 or 1-0, y co-ords being the value for going from a to b
-        // for x(A) < x(B) and declining (=> y(A) = 1, y(B) = 0)
-        //ratio = (y(B) - y(A)) / (x(B) - x(A)) x - (y(B) - y(A)) / (x(B) - x(A)) x(B) + y(B)
-        float ratio =
-            ((0 - 1) / (yPos + 1 + _playerCollider.radius - 0)) * _distanceFromOutOfBounds -
-            ((0 - 1) / (yPos + 1 + _playerCollider.radius - 0)) * (yPos + _playerCollider.radius) + 0;
-        _playerGFX.localScale = Vector3.Slerp(Vector3.one, Vector3.one / 1000,
-            ratio);
-        Debug.Log("ratio: " + ratio + ", distance from oob: " + _distanceFromOutOfBounds);
+        if ((transform.position.y < 0f))
+        {
+            Vector3 capsuleStart = transform.position +
+                                   _playerGFX.forward * ((_playerCollider.height / 2) - _playerCollider.radius);
+            Vector3 capsuleEnd = transform.position -
+                                 _playerGFX.forward * ((_playerCollider.height / 2) - _playerCollider.radius);
+            bool hitFloor = Physics.CapsuleCast(capsuleStart, capsuleEnd, _playerCollider.radius, Vector3.down,
+                out RaycastHit hit);
+            if (!hitFloor) return;
+            if (hit.transform.gameObject.tag != "OutOfBounds") return;
+            if (hit.collider.isTrigger) return;
+            _distanceFromOutOfBounds = hit.distance;
+            float yPos = Mathf.Abs(hit.transform.position.y);
+            // x co-ords being ratio 0-1 or 1-0, y co-ords being the value for going from a to b
+            // for x(A) < x(B) and declining (=> y(A) = 1, y(B) = 0)
+            //ratio = (y(B) - y(A)) / (x(B) - x(A)) x - (y(B) - y(A)) / (x(B) - x(A)) x(B) + y(B)
+            float ratio =
+                ((0 - 1) / (yPos + 1 + _playerCollider.radius - 0)) * _distanceFromOutOfBounds -
+                ((0 - 1) / (yPos + 1 + _playerCollider.radius - 0)) * (yPos + _playerCollider.radius) + 0;
+            _playerGFX.localScale = Vector3.Slerp(Vector3.one, Vector3.one / 1000,
+                ratio);
+        }
+        else
+        {
+            _playerGFX.localScale = Vector3.one;
+        }
 
     }
 
@@ -277,11 +295,21 @@ public class PlayerMovementController : MonoBehaviour
         {
             _pointer.enabled = true;
             if (!_readyToFire || !_shouldFire) return;
+
+            float ratio = _chargeTimer / _timeForMaxShot;
+            ratio = Mathf.Clamp01(ratio);
+            if (ratio > 0.5f)
+            {
+                if (IsInvoking(nameof(ShowFireButtonPrompt)))
+                    CancelInvoke(nameof(ShowFireButtonPrompt));
+                if (_buttonPromptRadial.transform.parent.gameObject.activeInHierarchy)
+                    HideFireButtonPrompt(true);
+                _hasFinishedShowingFireButtonPrompt = true;
+            }
+
             _readyToFire = false;
             _hasRecentlyFired = true;
             _playerGFX.forward = _pointerPivot.forward;
-            float ratio = _chargeTimer / _timeForMaxShot;
-            ratio = Mathf.Clamp01(ratio);
             float force = Mathf.Lerp(_minForceStrength, _maxForceStrength, ratio);
             PlayerRigidbody.AddForce(_playerGFX.forward.normalized * force, ForceMode.Impulse);
             Invoke(nameof(ResetFire), 0.25f);
@@ -290,6 +318,7 @@ public class PlayerMovementController : MonoBehaviour
         else
         {
             _pointer.enabled = false;
+            HideFireButtonPrompt(false);
         }
     }
 
@@ -300,6 +329,7 @@ public class PlayerMovementController : MonoBehaviour
             _chargeTimer += Time.deltaTime;
             float ratio = _chargeTimer / _timeForMaxShot;
             ratio = Mathf.Clamp01(ratio);
+            _buttonPromptRadial.fillAmount = ratio;
             _pointerScalePivot.localScale = Vector3.Lerp(_minPointerSize, _maxPointerSize, ratio);
         }
         else
@@ -348,6 +378,56 @@ public class PlayerMovementController : MonoBehaviour
     {
         _horizontalInput = _aim.ReadValue<Vector2>().x;
         _verticalInput = _aim.ReadValue<Vector2>().y;
+
+        ShowOrHideLeftStickPrompt();
+    }
+
+    private void ShowOrHideLeftStickPrompt()
+    {
+        if (_horizontalInput == 0 && _verticalInput == 0)
+        {
+            // showing left stick prompt if no input 1 second the very first time, and after 5 seconds every other time
+            if (!IsInvoking(nameof(ShowLeftStickPrompt)))
+                Invoke(nameof(ShowLeftStickPrompt), _hasShownLeftStickPrompt ? 5 : 1);
+        }
+        else
+        {
+            _hasShownLeftStickPrompt = true;
+            // if the prompt is currently showing, hide it after 0.5s of direction input
+            if (_leftStickPrompt.activeInHierarchy)
+                Invoke(nameof(HideLeftStickPrompt), 0.5f);
+            // or if it is attempting to show the prompt but then an input gets send, cancel invoke
+            if (IsInvoking(nameof(ShowLeftStickPrompt)))
+                CancelInvoke(nameof(ShowLeftStickPrompt));
+        }
+    }
+
+    private void ShowLeftStickPrompt()
+    {
+        _hasShownLeftStickPrompt = true;
+        _leftStickPrompt.SetActive(true);
+    }
+    private void HideLeftStickPrompt()
+    {
+        _leftStickPrompt.SetActive(false);
+        Invoke(nameof(ShowFireButtonPrompt), 0.5f);
+    }
+
+    private void ShowFireButtonPrompt()
+    {
+        GameObject fireButton = _isUsingDualShock ? _buttonCrossPrompt : _buttonAPrompt;
+        fireButton.SetActive(true);
+        _buttonPromptRadial.transform.parent.gameObject.SetActive(true);
+    }
+    private void HideFireButtonPrompt(bool setFinished)
+    {
+        GameObject fireButton = _isUsingDualShock ? _buttonCrossPrompt : _buttonAPrompt;
+        fireButton.SetActive(false);
+        _buttonPromptRadial.transform.parent.gameObject.SetActive(false);
+        if (setFinished)
+        {
+            _hasFinishedShowingFireButtonPrompt = true;
+        }
     }
 
     private void ResetFire()
@@ -402,10 +482,7 @@ public class PlayerMovementController : MonoBehaviour
         if (collision.gameObject.tag == "OutOfBounds")
         {
             if (!HasGameStarted()) return;
-            _playerScript.LoseUnclaimedLoot();
-            if (!IsInvoking(nameof(Respawn)))
-                PlayAudioClip(_audioClipFall);
-            else
+            if (IsInvoking(nameof(Respawn)))
                 CancelInvoke(nameof(Respawn));
             Invoke(nameof(Respawn), 0.5f);
             SetMotorSpeeds(0.4f, 0.5f, 0.5f);
@@ -446,18 +523,19 @@ public class PlayerMovementController : MonoBehaviour
         Vector3 targetPosition = Vector3.zero;
         GameObject coin;
         Vector3 rayCastDir = Vector3.zero;
+        bool raycast = false;
         int maxAmountOfAttempts = 10;
-        for (int i = 0; i < coinsToLose - 1; i++)
+        for (int i = 0; i < coinsToLose; i++)
         {
             int amountOfAttempts = 0;
             coin = Instantiate(_coinPrefab, transform.position, Quaternion.identity);
-            int loops = 0;
             do
             {
                 amountOfAttempts++;
                 Vector2 pos = UnityEngine.Random.insideUnitCircle.normalized *
                               UnityEngine.Random.Range(_minExplosionRadius, _maxExplosionRadius);
                 targetPosition = transform.position + new Vector3(pos.x, 0, pos.y);
+                targetPosition.y = 0.5f;
                 rayCastDir = targetPosition.normalized;
                 Debug.DrawLine(transform.position, targetPosition, Color.black, 20f);
                 if (amountOfAttempts > maxAmountOfAttempts)
@@ -465,7 +543,10 @@ public class PlayerMovementController : MonoBehaviour
                     Debug.LogWarning("Broke the loop");
                     break;
                 }
-            } while (Physics.Raycast(transform.position, rayCastDir, (targetPosition - transform.position).magnitude));
+
+                //raycast = Physics.Raycast(transform.position, rayCastDir,
+                //    (targetPosition - transform.position).magnitude);
+            } while (raycast);
 
             Loot lootScript = coin.GetComponent<Loot>();
             lootScript.LaunchFishToPos(targetPosition);
@@ -511,7 +592,7 @@ public class PlayerMovementController : MonoBehaviour
         }
 
         if (closestSpawnPoint.SpawnPointName == null)
-            throw new System.AccessViolationException("SpawnPoint was null");
+            return;
         transform.position = closestSpawnPoint.SpawnPointName.transform.position;
     }
 
@@ -556,6 +637,16 @@ public class PlayerMovementController : MonoBehaviour
             playerVelocity.y = 0f;
             PlayerRigidbody.velocity = playerVelocity;
         }
+
+        if (other.gameObject.tag == "LoseFish")
+        {
+            if (!HasGameStarted()) return;
+            if (Math.Abs(PlayerRigidbody.position.y) < 0.05f) return;
+
+            PlayAudioClip(_audioClipFall);
+            _playerScript.HasLostPoints = false;
+            ExplodeCoins(_playerScript.LoseUnclaimedLoot());
+        }
     }
 
     // Added OnTriggerStay to be 100% sure it fires off.
@@ -573,7 +664,7 @@ public class PlayerMovementController : MonoBehaviour
         }
     }
 
-private void StartRail(GuardRail guardRailScript)
+    private void StartRail(GuardRail guardRailScript)
     {
         float entry1DistanceFromPlayer = Vector3.Distance(guardRailScript.EntryPoint1.position, transform.position);
         float entry2DistanceFromPlayer = Vector3.Distance(guardRailScript.EntryPoint2.position, transform.position);
@@ -586,6 +677,16 @@ private void StartRail(GuardRail guardRailScript)
         guardRailScript.PlayerRigidbody = PlayerRigidbody;
         guardRailScript.PlayerStartPos = transform.position;
         _playerCollider.isTrigger = true;
+        _guardRailKickCoroutine = KickPlayerOffGuardRail(guardRailScript);
+        StartCoroutine(_guardRailKickCoroutine);
+    }
+
+    private IEnumerator KickPlayerOffGuardRail(GuardRail guardRailScript)
+    {
+        yield return new WaitForSeconds(0.5f);
+        PlayerRigidbody.position += Vector3.up;
+        Debug.LogWarning("kicked player off rail, took too long");
+        StopRail(guardRailScript);
     }
 
     private void StopRail(GuardRail guardRailScript)
@@ -594,6 +695,7 @@ private void StartRail(GuardRail guardRailScript)
         guardRailScript.StartAnimation = false;
         guardRailScript.PlayerRigidbody = null;
         Invoke(nameof(DelayedColliderReactivation), 0.11f);
+        StopCoroutine(_guardRailKickCoroutine);
     }
 
     private void DelayedColliderReactivation()

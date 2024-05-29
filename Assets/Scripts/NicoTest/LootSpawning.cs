@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 //using Unity.VisualScripting;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class LootSpawning : MonoBehaviour
 {
@@ -62,8 +63,9 @@ public class LootSpawning : MonoBehaviour
 
         // Instantiate Loot on random valid potition and parent it to the spawnpotition
         index = random.Next(0, validSpawnPoint.Count);
+        float randomYRotation = Random.Range(0, 360);
         Instantiate(_loot, validSpawnPoint[index].transform.position, 
-            Quaternion.identity, validSpawnPoint[index].transform);
+            Quaternion.Euler(0,randomYRotation,0), validSpawnPoint[index].transform);
 
         validSpawnPoint.Clear();
     }

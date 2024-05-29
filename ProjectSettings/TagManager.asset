@@ -12,6 +12,7 @@ TagManager:
   - RotatingCenter
   - LobbyOutOfBounds
   - GroundPlane
+  - LoseFish
   layers:
   - Default
   - TransparentFX

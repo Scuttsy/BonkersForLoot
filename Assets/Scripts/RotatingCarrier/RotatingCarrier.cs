@@ -91,14 +91,20 @@ public class RotatingCarrier : MonoBehaviour
     {
         if (Rigidbodies.Contains(rb)) return;
         Rigidbodies.Add(rb);
-        rb.gameObject.GetComponent<PlayerMovementController>().RotatingCarrier = this;
+        if (rb.gameObject.TryGetComponent<PlayerMovementController>(out var playerMovementScript))
+        {
+            playerMovementScript.RotatingCarrier = this;
+        }
     }
 
     public void Remove(Rigidbody rb)
     {
         if (!Rigidbodies.Contains(rb)) return;
         Rigidbodies.Remove(rb);
-        rb.gameObject.GetComponent<PlayerMovementController>().RotatingCarrier = null;
+        if (rb.gameObject.TryGetComponent<PlayerMovementController>(out var playerMovementScript))
+        {
+            playerMovementScript.RotatingCarrier = null;
+        }
     }
 
     public bool TryRemoveBasedOnSensors(Rigidbody rb)
@@ -112,7 +118,10 @@ public class RotatingCarrier : MonoBehaviour
         }
 
         Remove(rb);
-        rb.gameObject.GetComponent<PlayerMovementController>().RotatingCarrier = null;
+        if (rb.gameObject.TryGetComponent<PlayerMovementController>(out var playerMovementScript))
+        {
+            playerMovementScript.RotatingCarrier = null;
+        }
         //PlayerMovementControllers.Remove(rb.gameObject.GetComponent<PlayerMovementController>());
         return true;
     }
