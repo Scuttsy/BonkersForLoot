@@ -1,7 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static Unity.VisualScripting.Member;
+//using static Unity.VisualScripting.Member;
 
 public class Loot : MonoBehaviour
 {
@@ -16,7 +17,9 @@ public class Loot : MonoBehaviour
 
     [SerializeField]
     private AudioClip _audioClip;
+    [SerializeField]
     private AudioSource _source;
+    //public string audioSourceObjectName = "LootAudioSource";
 
     [SerializeField] private GameObject _lootPickupBlueIcon;
     [SerializeField] private GameObject _lootPickupGreenIcon;
@@ -27,9 +30,9 @@ public class Loot : MonoBehaviour
     private Rigidbody _fishRigidbody;
     private BoxCollider _fishBoxCollider;
 
-    void Start()
+    public void SetAudioSource(AudioSource source)
     {
-        _source = FindAnyObjectByType<AudioSource>();
+        _source = source;
     }
 
     private void Awake()
@@ -76,9 +79,8 @@ public class Loot : MonoBehaviour
             if (other.gameObject.TryGetComponent(out Player player))
             {
                 player.UnclaimedLoot++;
-                //AudioSource.PlayClipAtPoint(_audioClip, transform.position);
                 if (_source != null)
-                    _source.PlayOneShot(_audioClip);
+                _source.PlayOneShot(_audioClip);
 
                 Debug.Log("Is " + player.UnclaimedLoot);
             }
@@ -141,6 +143,16 @@ public class Loot : MonoBehaviour
         //    transform.position += velocity * speed * Time.deltaTime;
 
         //}
+
+        if (_source == null)
+        {
+            //AssignAudioSource();
+        }
+    }
+
+    private void AssignAudioSource()
+    {
+        _source = FindAnyObjectByType<AudioSource>();
     }
 
     private void DelayedEnable()

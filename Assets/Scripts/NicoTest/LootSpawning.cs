@@ -13,6 +13,7 @@ public class LootSpawning : MonoBehaviour
     private float _timer;
 
     [SerializeField] private GameObject _loot;
+    [SerializeField] private GameObject _audioSourceManager;
 
     private System.Random random = new System.Random();
 
@@ -64,8 +65,16 @@ public class LootSpawning : MonoBehaviour
         // Instantiate Loot on random valid potition and parent it to the spawnpotition
         index = random.Next(0, validSpawnPoint.Count);
         float randomYRotation = Random.Range(0, 360);
-        Instantiate(_loot, validSpawnPoint[index].transform.position, 
+        GameObject lootInstance = Instantiate(_loot, validSpawnPoint[index].transform.position, 
             Quaternion.Euler(0,randomYRotation,0), validSpawnPoint[index].transform);
+
+        Loot lootScript = lootInstance.GetComponent<Loot>();
+        if (lootScript != null && _audioSourceManager != null)
+        {
+            Debug.Log("Set audiosource");
+            AudioSource audioSource = _audioSourceManager.GetComponent<AudioSource>();
+            lootScript.SetAudioSource(audioSource);
+        }
 
         validSpawnPoint.Clear();
     }
