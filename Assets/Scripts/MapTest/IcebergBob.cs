@@ -4,11 +4,12 @@ using UnityEngine;
 
 public class IcebergBob : MonoBehaviour
 {
-    [SerializeField] private float speed;
-    [SerializeField] private float offset;
+    [SerializeField] private float Amplitude;
+    [SerializeField] private float frequency;
+    [SerializeField] private float shift;
 
     void Update()
     {
-            transform.position += transform.up * Mathf.Sin(Time.time + offset)/(speed);
+            transform.position += (transform.up * Amplitude * Mathf.Sin(frequency* (Time.time + shift))) * Time.deltaTime;
     }
 }

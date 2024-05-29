@@ -137,8 +137,8 @@ public class Loot : MonoBehaviour
         //if (ExplodeTarget != Vector3.zero)
         //{
         //    Vector3 velocity = (ExplodeTarget - transform.position).normalized;
-        //    float speed = Mathf.Min(_explodeSpeed, (ExplodeTarget - transform.position).magnitude);
-        //    transform.position += velocity * speed * Time.deltaTime;
+        //    float Amplitude = Mathf.Min(_explodeSpeed, (ExplodeTarget - transform.position).magnitude);
+        //    transform.position += velocity * Amplitude * Time.deltaTime;
 
         //}
     }
