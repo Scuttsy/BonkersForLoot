@@ -58,7 +58,6 @@ public class Loot : MonoBehaviour
 
     private void OnDestroy()
     {
-        _source.PlayOneShot(_audioClip);
         GameSettings.LootOnMap--; // Substract 1 from loot on map when Destroyed
         if (!_isForceSpawned)
             _parent.GetComponent<LootSpawnPoint>().HasSpawnedLoot = false;                                                                                                                                                                                                                                                       
@@ -70,9 +69,6 @@ public class Loot : MonoBehaviour
         if (other.tag == "Player")
         // and if so add 1 UnclaimedLoot of that player and destroy loot.
         {
-            Debug.Log("Player entered trigger, playing audio.");
-            _source.PlayOneShot(_audioClip);
-
             if (!IsActive) return;
             GameObject otherParent = other.gameObject.transform.parent.gameObject;
 
@@ -88,7 +84,6 @@ public class Loot : MonoBehaviour
             if (otherParent.TryGetComponent(out Player parentPlayer))
             {
                 parentPlayer.UnclaimedLoot++;
-                //AudioSource.PlayClipAtPoint(_audioClip, transform.position);
                 _source.PlayOneShot(_audioClip);
 
                 Debug.Log("Is " + parentPlayer.UnclaimedLoot);
