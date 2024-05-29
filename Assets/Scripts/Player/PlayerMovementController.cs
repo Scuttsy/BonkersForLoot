@@ -86,6 +86,7 @@ public class PlayerMovementController : MonoBehaviour
     private bool _hasShownLeftStickPrompt;
     private bool _hasFinishedShowingFireButtonPrompt;
     private IEnumerator _guardRailKickCoroutine;
+    private bool _canEndGame;
 
     void Awake()
     {
@@ -133,6 +134,8 @@ public class PlayerMovementController : MonoBehaviour
         _player.FindAction("Fire").started += OnFireStart;
         _player.FindAction("Fire").canceled += OnFireStop;
         _player.FindAction("Stop").started += OnStopPressed;
+        _player.FindAction("RestartGame").started += OnRestartGamePressed;
+        _player.FindAction("QuitGame").started += OnQuitGamePressed;
         _aim = _player.FindAction("Aim");
         _player.Enable();
 
@@ -155,7 +158,28 @@ public class PlayerMovementController : MonoBehaviour
         _player.FindAction("Fire").started -= OnFireStart;
         _player.FindAction("Fire").canceled -= OnFireStop;
         _player.FindAction("Stop").started -= OnStopPressed;
+        _player.FindAction("RestartGame").started -= OnRestartGamePressed;
+        _player.FindAction("QuitGame").started -= OnQuitGamePressed;
         _player.Disable();
+    }
+
+    public void OnRestartGamePressed(InputAction.CallbackContext ctx)
+    {
+        if (!_canEndGame) return;
+        _canEndGame = false;
+        GameSettings.DestroyAllPlayers();
+        GameSettings.ToggleDontDestroyOnLoadForPlayers();
+        UnityEngine.SceneManagement.SceneManager.LoadScene("Lobby");
+    }
+
+    public void OnQuitGamePressed(InputAction.CallbackContext ctx)
+    {
+        if (!_canEndGame) return;
+        _canEndGame = false;
+        Application.Quit();
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#endif
     }
 
     public void OnFireStart(InputAction.CallbackContext ctx)
@@ -701,6 +725,11 @@ public class PlayerMovementController : MonoBehaviour
     private void DelayedColliderReactivation()
     {
         _playerCollider.isTrigger = false;
+    }
+
+    public void CanEndGame()
+    {
+        _canEndGame = true;
     }
 }
 

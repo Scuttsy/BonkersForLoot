@@ -80,6 +80,24 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""RestartGame"",
+                    ""type"": ""Button"",
+                    ""id"": ""590e0196-f940-4c44-a65c-4ac880a43127"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""QuitGame"",
+                    ""type"": ""Button"",
+                    ""id"": ""d169c177-a1fb-4e31-a3e1-485480ca1d59"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -135,6 +153,28 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""SetPosition"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4361fcb8-aee8-4e6d-8a5a-abd3365b102a"",
+                    ""path"": ""<Gamepad>/buttonWest"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""RestartGame"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ad7abd3d-03d4-49f0-878f-87d7d1f6a280"",
+                    ""path"": ""<Gamepad>/buttonEast"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""QuitGame"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -436,6 +476,8 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
         m_Player_Stop = m_Player.FindAction("Stop", throwIfNotFound: true);
         m_Player_Join = m_Player.FindAction("Join", throwIfNotFound: true);
         m_Player_SetPosition = m_Player.FindAction("SetPosition", throwIfNotFound: true);
+        m_Player_RestartGame = m_Player.FindAction("RestartGame", throwIfNotFound: true);
+        m_Player_QuitGame = m_Player.FindAction("QuitGame", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -515,6 +557,8 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Stop;
     private readonly InputAction m_Player_Join;
     private readonly InputAction m_Player_SetPosition;
+    private readonly InputAction m_Player_RestartGame;
+    private readonly InputAction m_Player_QuitGame;
     public struct PlayerActions
     {
         private @PlayerInputs m_Wrapper;
@@ -525,6 +569,8 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
         public InputAction @Stop => m_Wrapper.m_Player_Stop;
         public InputAction @Join => m_Wrapper.m_Player_Join;
         public InputAction @SetPosition => m_Wrapper.m_Player_SetPosition;
+        public InputAction @RestartGame => m_Wrapper.m_Player_RestartGame;
+        public InputAction @QuitGame => m_Wrapper.m_Player_QuitGame;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -552,6 +598,12 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
             @SetPosition.started += instance.OnSetPosition;
             @SetPosition.performed += instance.OnSetPosition;
             @SetPosition.canceled += instance.OnSetPosition;
+            @RestartGame.started += instance.OnRestartGame;
+            @RestartGame.performed += instance.OnRestartGame;
+            @RestartGame.canceled += instance.OnRestartGame;
+            @QuitGame.started += instance.OnQuitGame;
+            @QuitGame.performed += instance.OnQuitGame;
+            @QuitGame.canceled += instance.OnQuitGame;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -574,6 +626,12 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
             @SetPosition.started -= instance.OnSetPosition;
             @SetPosition.performed -= instance.OnSetPosition;
             @SetPosition.canceled -= instance.OnSetPosition;
+            @RestartGame.started -= instance.OnRestartGame;
+            @RestartGame.performed -= instance.OnRestartGame;
+            @RestartGame.canceled -= instance.OnRestartGame;
+            @QuitGame.started -= instance.OnQuitGame;
+            @QuitGame.performed -= instance.OnQuitGame;
+            @QuitGame.canceled -= instance.OnQuitGame;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -717,6 +775,8 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
         void OnStop(InputAction.CallbackContext context);
         void OnJoin(InputAction.CallbackContext context);
         void OnSetPosition(InputAction.CallbackContext context);
+        void OnRestartGame(InputAction.CallbackContext context);
+        void OnQuitGame(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

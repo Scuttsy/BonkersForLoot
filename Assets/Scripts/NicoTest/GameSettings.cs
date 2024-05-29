@@ -63,8 +63,6 @@ public class GameSettings : MonoBehaviour
         }
     }
 
-
-
     void Awake()
     {
         SpawnPointList = new List<Transform>
@@ -74,5 +72,29 @@ public class GameSettings : MonoBehaviour
             SpawnPointC,
             SpawnPointD
         };
+    }
+
+    public static void CanEndGame()
+    {
+        foreach (var player in PlayersInGame)
+        {
+            player.GetComponent<PlayerMovementController>().CanEndGame();
+        }
+    }
+
+    public static void ToggleDontDestroyOnLoadForPlayers()
+    {
+        foreach (PlayerInput player in PlayersInGame)
+        {
+            DontDestroyOnLoad(player);
+        }
+    }
+
+    public static void DestroyAllPlayers()
+    {
+        foreach (PlayerInput player in PlayersInGame)
+        {
+            Destroy(player.gameObject);
+        }
     }
 }

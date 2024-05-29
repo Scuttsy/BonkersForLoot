@@ -1,19 +1,7 @@
 fileFormatVersion: 2
-guid: c87bb10950c82c14d8f343c4685d38be
+guid: 07d6141edf9daae47b9062f292484441
 TextureImporter:
-  internalIDToNameTable:
-  - first:
-      213: 21300000
-    second: Back
-  - first:
-      213: 21300002
-    second: Trigger
-  - first:
-      213: 21300004
-    second: Touchpad
-  - first:
-      213: 21300006
-    second: Touchpad Press
+  internalIDToNameTable: []
   externalObjects: {}
   serializedVersion: 12
   mipmaps:
@@ -60,7 +48,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 600
+  spritePixelsToUnits: 100
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -75,9 +63,9 @@ TextureImporter:
   compressionQualitySet: 0
   textureFormatSet: 0
   ignorePngGamma: 0
-  applyGammaDecoding: 1
+  applyGammaDecoding: 0
   swizzle: 50462976
-  cookieLightType: 1
+  cookieLightType: 0
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
@@ -91,7 +79,7 @@ TextureImporter:
     overridden: 0
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 1
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
     buildTarget: Standalone
     maxTextureSize: 2048
@@ -104,20 +92,7 @@ TextureImporter:
     overridden: 0
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 1
-  - serializedVersion: 3
-    buildTarget: Android
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 1
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
     buildTarget: Windows Store Apps
     maxTextureSize: 2048
@@ -130,103 +105,90 @@ TextureImporter:
     overridden: 0
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 1
-  - serializedVersion: 3
-    buildTarget: WebGL
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 1
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Back
+      name: ButtonB
       rect:
         serializedVersion: 2
         x: 0
         y: 128
         width: 128
         height: 128
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 9
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: b4ea054c1d1ad184ba332e9544249e36
-      internalID: 21300000
+      spriteID: ecba8ad3f6597a3479861f4ac3f2ed7f
+      internalID: 32605974
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Trigger
+      name: ButtonCircle
       rect:
         serializedVersion: 2
         x: 128
         y: 128
         width: 128
         height: 128
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 1c7c262c82080ae498b17dbd7740c081
-      internalID: 21300002
+      spriteID: 39439a75cc3f6bb499a067290e075566
+      internalID: -1366760114
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Touchpad
+      name: ButtonSquare
       rect:
         serializedVersion: 2
         x: 0
         y: 0
         width: 128
         height: 128
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 2343b5c18417731488ae3aed7e005681
-      internalID: 21300004
+      spriteID: d1ca226f1fa1e9349a461b9cfb998198
+      internalID: -2000802574
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Touchpad Press
+      name: ButtonX
       rect:
         serializedVersion: 2
         x: 128
         y: 0
         width: 128
         height: 128
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 5adc44b53b6e8d049ae1d9e451314a72
-      internalID: 21300006
+      spriteID: b2e5628957a248c42a5d24b69ba1b587
+      internalID: 285380425
       vertices: []
       indices: 
       edges: []
@@ -234,7 +196,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: f25782f4047c0764dacb467e89a50389
+    spriteID: 5f956c9b9241dd4459d54dfaf16359e5
     internalID: 0
     vertices: []
     indices: 
@@ -242,10 +204,10 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      Back: 21300000
-      Touchpad: 21300004
-      Touchpad Press: 21300006
-      Trigger: 21300002
+      ButtonB: 32605974
+      ButtonCircle: -1366760114
+      ButtonSquare: -2000802574
+      ButtonX: 285380425
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
