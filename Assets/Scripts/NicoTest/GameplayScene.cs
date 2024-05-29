@@ -75,11 +75,11 @@ public class GameplayScene : MonoBehaviour
         //DisplayScores();
         SetUIStartOfGame();
 
-        if (TimeRemaining < 10 && !_hasIncreasedPitch)
-        {
-            _audioSource.pitch *= _newPitch;
-            _hasIncreasedPitch = true;
-        }
+        //if (TimeRemaining < 10 && !_hasIncreasedPitch)
+        //{
+        //    _audioSource.pitch *= _newPitch;
+        //    _hasIncreasedPitch = true;
+        //}
 
         // Check if time has run out
         if (TimeRemaining < 0)
@@ -117,8 +117,8 @@ public class GameplayScene : MonoBehaviour
                 playerMovementScript.ForceQuitRespawn();
             }
 
-            _audioSource.pitch /= _newPitch;
-            _hasIncreasedPitch = false;
+            //_audioSource.pitch /= _newPitch;
+            //_hasIncreasedPitch = false;
             SceneManager.LoadScene("GameOverScene");
         }
         else

@@ -3574,7 +3574,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 064e23b0b6963894f8b9509ab9a2aa6f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TimeRemaining: 90
+  TimeRemaining: 15
   _timerImage: {fileID: 1680039127}
   _timerText: {fileID: 1669622123}
   StartTime: 0

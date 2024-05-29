@@ -41,7 +41,7 @@ public class WinnerDecider
             }
 
             // If the next player has a higher score than the current first place.
-            if (player.GetComponent<Player>().Score > _currentFirstPlace.GetComponent<Player>().Score)
+            if (player.GetComponent<Player>().Score >= _currentFirstPlace.GetComponent<Player>().Score)
             {
                 _currentSecondPlace = _currentFirstPlace;
                 _currentFirstPlace = player.gameObject;
