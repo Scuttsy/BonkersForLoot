@@ -28,7 +28,7 @@ public class Loot : MonoBehaviour
 
     void Start()
     {
-        _source = GetComponent<AudioSource>();
+        _source = FindAnyObjectByType<AudioSource>();
     }
 
     private void Awake()
@@ -58,6 +58,7 @@ public class Loot : MonoBehaviour
 
     private void OnDestroy()
     {
+        _source.PlayOneShot(_audioClip);
         GameSettings.LootOnMap--; // Substract 1 from loot on map when Destroyed
         if (!_isForceSpawned)
             _parent.GetComponent<LootSpawnPoint>().HasSpawnedLoot = false;                                                                                                                                                                                                                                                       
