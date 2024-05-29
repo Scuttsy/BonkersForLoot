@@ -69,6 +69,7 @@ public class Loot : MonoBehaviour
         if (other.tag == "Player")
         // and if so add 1 UnclaimedLoot of that player and destroy loot.
         {
+            Debug.Log("Player entered trigger, playing audio.");
             _source.PlayOneShot(_audioClip);
 
             if (!IsActive) return;
