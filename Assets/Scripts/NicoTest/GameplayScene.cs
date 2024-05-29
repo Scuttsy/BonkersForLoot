@@ -67,6 +67,10 @@ public class GameplayScene : MonoBehaviour
         DisplayTime();
         //DisplayScores();
         SetUIStartOfGame();
+
+        if (TimeRemaining < 10)
+
+
         // Check if time has run out
         if (TimeRemaining < 0)
         {

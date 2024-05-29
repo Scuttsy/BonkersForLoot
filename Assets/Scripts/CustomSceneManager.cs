@@ -10,6 +10,8 @@ public class CustomSceneManager : MonoBehaviour
     private void Start()
     {
         StartingGameScript.OnCountdownFinished += SwitchScene;
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     private void OnDestroy()
