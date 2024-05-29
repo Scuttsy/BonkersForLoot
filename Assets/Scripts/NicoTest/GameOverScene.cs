@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 // !!! There should be an empty object in the GameOverScene with this script attached. !!!
 // !!! There should be an empty object in the GameOverScene with this script attached. !!!
@@ -16,8 +17,9 @@ public class GameOverScene : MonoBehaviour
     [SerializeField] private Transform _secondPos;
     [SerializeField] private Transform _thirdPos;
 
-    [SerializeField] private List<TMP_Text> _leaderBoardNames = new List<TMP_Text>();
-    [SerializeField] private List<TMP_Text> _leaderBoardScores = new List<TMP_Text>();
+
+    [SerializeField] private GameObject _LeaderboardPrefab;
+    [SerializeField] private Transform _leaderboardLayoutGroup;
 
     private AudioSource audioSource;
 
@@ -49,8 +51,10 @@ public class GameOverScene : MonoBehaviour
     {
         for (int i = 0; i < GameSettings.PlayersInGame.Count; i++)
         {
-            _leaderBoardNames[i].text = WinnerDecider.Leaderboard[i].PlayerName;
-            _leaderBoardScores[i].text = WinnerDecider.Leaderboard[i].Score.ToString();
+            GameObject dog = Instantiate(_LeaderboardPrefab, _leaderboardLayoutGroup);
+            TMP_Text[] texties = dog.GetComponentsInChildren<TMP_Text>();
+            texties[0].text = WinnerDecider.Leaderboard[i].PlayerName;
+            texties[1].text = WinnerDecider.Leaderboard[i].Score.ToString();
         }
     }
 
