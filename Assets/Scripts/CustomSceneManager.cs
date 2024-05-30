@@ -15,8 +15,13 @@ public class CustomSceneManager : MonoBehaviour
         _inputSystemUIInputModule = GetComponent<InputSystemUIInputModule>();
 
         StartingGameScript.OnCountdownFinished += SwitchScene;
+
+
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+
+        Screen.fullScreen = true;
+        Screen.SetResolution(1920,1080,FullScreenMode.FullScreenWindow);
     }
 
     private void OnDestroy()
