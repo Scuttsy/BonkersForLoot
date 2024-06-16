@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 public class StartingGameScript : MonoBehaviour
 {
-    public PlayerInput PlayerInput;
+    //public PlayerInput PlayerInput;
 
     //public int requiredPlayerCount = 5;
     private int currentPlayerCount = 0;
@@ -93,7 +93,7 @@ public class StartingGameScript : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             currentPlayerCount++;
-            if (currentPlayerCount == GameSettings.PlayersInGame.Count && currentPlayerCount != GameSettings.PlayersRequiredToStart && !countingDown)
+            if (currentPlayerCount == GameSettings.PlayersInGame.Count && !countingDown)
             {
                 _timerImage.gameObject.SetActive(true);
                 countingDown = true;
