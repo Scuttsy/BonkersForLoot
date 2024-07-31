@@ -16,9 +16,7 @@ public class CustomSceneManager : MonoBehaviour
 
         StartingGameScript.OnCountdownFinished += SwitchScene;
 
-
-        /*Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;*/
+        Cursor.lockState = CursorLockMode.Confined;
 
         Screen.fullScreen = true;
         Screen.SetResolution(1920,1080,FullScreenMode.FullScreenWindow);
@@ -37,6 +35,7 @@ public class CustomSceneManager : MonoBehaviour
 
     public void PlayGame()
     {
+        Cursor.visible = false;
         SceneManager.LoadScene("Lobby");
     }
 

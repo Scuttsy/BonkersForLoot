@@ -301,7 +301,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dccd188866445fb4e815f2faa09f7f30, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PlayerInput: {fileID: 0}
   _startTimerText: {fileID: 794593430}
   _startTimerImage: {fileID: 676226758}
   _timerImage: {fileID: 1454804241}

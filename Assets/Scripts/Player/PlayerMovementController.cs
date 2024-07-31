@@ -4,7 +4,6 @@ using TMPro;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.UIElements;
 using Image = UnityEngine.UI.Image;
 using Vector2 = UnityEngine.Vector2;
 using Vector3 = UnityEngine.Vector3;
@@ -14,6 +13,7 @@ public class PlayerMovementController : MonoBehaviour
     [Header("References")]
     [SerializeField] private CapsuleCollider _playerCollider;
     [SerializeField] private CapsuleCollider _playerRespawnCollider;
+    [SerializeField] private Camera _playerCamera;
     [SerializeField] private MeshRenderer _pointer;
     [SerializeField] private Transform _pointerPivot;
     [SerializeField] private Transform _pointerScalePivot;
@@ -27,13 +27,15 @@ public class PlayerMovementController : MonoBehaviour
     [SerializeField] private GameObject _leftStickPrompt;
     [SerializeField] private GameObject _buttonCrossPrompt;
     [SerializeField] private GameObject _buttonAPrompt;
+    [SerializeField] private GameObject _mouseMovePrompt;
+    [SerializeField] private GameObject _mouseLeftButtonPrompt;
     [SerializeField] private Image _buttonPromptRadial;
 
 
-    [Header("Settings")] [SerializeField] private float _minVelocityToMove;
+    [Header("Settings")] 
+    [SerializeField] private float _minVelocityToMove;
     [Range(0, 1)] [SerializeField] private float _controllerDeadZone;
     [SerializeField] private float _fireCooldown;
-    [SerializeField] private bool _usingMouse;
 
     [SerializeField] private Vector3 _minPointerSize;
     [SerializeField] private Vector3 _maxPointerSize;
@@ -70,7 +72,8 @@ public class PlayerMovementController : MonoBehaviour
     private bool _hasRecentlyFired;
 
 
-    [Header("Audio")] [SerializeField] private AudioClip _audioClipBonk;
+    [Header("Audio")] 
+    [SerializeField] private AudioClip _audioClipBonk;
     [SerializeField] private AudioClip _audioClipFall;
     private AudioSource _audioSource;
 
@@ -83,11 +86,16 @@ public class PlayerMovementController : MonoBehaviour
 
     private float _playerImpactCoinsDivider;
     private bool _isUsingDualShock;
+    private bool _isUsingMouse;
     private bool _hasShownLeftStickPrompt;
     private bool _wantsToShowFirePrompt;
     private bool _hasFinishedShowingFireButtonPrompt;
     private IEnumerator _guardRailKickCoroutine;
     private bool _canEndGame;
+
+
+    private Vector3 _lastMouseInput;
+
 
     void Awake()
     {
@@ -102,18 +110,33 @@ public class PlayerMovementController : MonoBehaviour
         _audioSource = GetComponent<AudioSource>();
         _playerRespawnCollider.enabled = false;
 
-        var device = GetComponent<PlayerInput>().devices[0];
-        if (device.name.Contains("DualShock4GamepadHID") || device.name.Contains("DualSenseGamepadHID"))
+        var device = GetComponent<PlayerInput>().devices[0]; 
+        _isUsingDualShock = IsUsingDualShock(device);
+        _isUsingMouse = !IsUsingController(device);
+
+        if (_isUsingMouse)
         {
-            _isUsingDualShock = true;
+            Cursor.visible = true;
         }
-        else
-            _isUsingDualShock = false;
 
         _leftStickPrompt.SetActive(false);
         _buttonAPrompt.SetActive(false);
         _buttonCrossPrompt.SetActive(false);
+        _mouseLeftButtonPrompt.SetActive(false);
+        _mouseMovePrompt.SetActive(false);
         _buttonPromptRadial.transform.parent.gameObject.SetActive(false);
+    }
+
+    private bool IsUsingController(InputDevice device)
+    {
+        if (IsUsingDualShock(device)) return true;
+
+        return device is Gamepad;
+    }
+
+    private static bool IsUsingDualShock(InputDevice device)
+    {
+        return device.name.Contains("DualShock4GamepadHID") || device.name.Contains("DualSenseGamepadHID");
     }
 
     private void SetCameraLayerMask()
@@ -204,6 +227,7 @@ public class PlayerMovementController : MonoBehaviour
 
     public static void StartGame()
     {
+
         for (int i = 0; i < GameSettings.PlayersInGame.Count; i++)
         {
             var player = GameSettings.PlayersInGame[i];
@@ -227,10 +251,10 @@ public class PlayerMovementController : MonoBehaviour
         GetAimingInput();
         Vector3 tempPosition = SetPlayerFacing();
 
-        if (_usingMouse)
-            //TODO: remove mouse controls
+        if (_isUsingMouse)
         {
-            Vector3 centeredMousePos = Input.mousePosition - new Vector3(Screen.width / 2f, Screen.height / 2f, 0);
+            Vector3 centeredMousePos = _playerCamera.ScreenToViewportPoint(Input.mousePosition) - new Vector3(0.5f, 0.5f, 0);
+            centeredMousePos.Normalize();
             Vector3 pointerRotationMouse =
                 new Vector3(0, Mathf.Atan2(centeredMousePos.x, centeredMousePos.y) * Mathf.Rad2Deg, 0);
             _pointerPivot.eulerAngles = pointerRotationMouse;
@@ -245,6 +269,12 @@ public class PlayerMovementController : MonoBehaviour
 
         _shouldFire = false;
         _previousPosition = tempPosition;
+    }
+
+    void LateUpdate()
+    {
+        if (!_isUsingMouse) return;
+        _lastMouseInput = Input.mousePosition;
     }
 
     public void ForceQuitRespawn()
@@ -378,6 +408,7 @@ public class PlayerMovementController : MonoBehaviour
 
     private void KeepOldInputIfNoInput()
     {
+        if (_isUsingMouse) return;
         // Checking if the input is non-zero, if it isn't we keep the old input direction.
         if (Mathf.Abs(_horizontalInput) > _controllerDeadZone || Mathf.Abs(_verticalInput) > _controllerDeadZone)
         {
@@ -401,8 +432,16 @@ public class PlayerMovementController : MonoBehaviour
 
     private void GetAimingInput()
     {
-        _horizontalInput = _aim.ReadValue<Vector2>().x;
-        _verticalInput = _aim.ReadValue<Vector2>().y;
+        if (!_isUsingMouse)
+        {
+            _horizontalInput = _aim.ReadValue<Vector2>().x;
+            _verticalInput = _aim.ReadValue<Vector2>().y;
+        }
+        else
+        {
+            _horizontalInput = Input.mousePosition.x;
+            _verticalInput = Input.mousePosition.y;
+        }
 
         ShowOrHideLeftStickPrompt();
 
@@ -413,17 +452,20 @@ public class PlayerMovementController : MonoBehaviour
 
     private void ShowOrHideLeftStickPrompt()
     {
-        if (_horizontalInput == 0 && _verticalInput == 0)
+        if (_horizontalInput - _lastMouseInput.x == 0 && _verticalInput - _lastMouseInput.y == 0)
         {
+            Debug.Log("zero");
             // showing left stick prompt if no input 1 second the very first time, and after 5 seconds every other time
             if (!IsInvoking(nameof(ShowLeftStickPrompt)))
                 Invoke(nameof(ShowLeftStickPrompt), _hasShownLeftStickPrompt ? 5 : 1);
         }
         else
         {
+            Debug.Log("not zero");
             _hasShownLeftStickPrompt = true;
             // if the prompt is currently showing, hide it after 0.5s of direction input
-            if (_leftStickPrompt.activeInHierarchy)
+            GameObject movePrompt = _isUsingMouse ? _mouseMovePrompt : _leftStickPrompt;
+            if (movePrompt.activeInHierarchy)
                 Invoke(nameof(HideLeftStickPrompt), 0.5f);
             // or if it is attempting to show the prompt but then an input gets send, cancel invoke
             if (IsInvoking(nameof(ShowLeftStickPrompt)))
@@ -434,11 +476,13 @@ public class PlayerMovementController : MonoBehaviour
     private void ShowLeftStickPrompt()
     {
         _hasShownLeftStickPrompt = true;
-        _leftStickPrompt.SetActive(true);
+        GameObject movePrompt = _isUsingMouse ? _mouseMovePrompt : _leftStickPrompt;
+        movePrompt.SetActive(true);
     }
     private void HideLeftStickPrompt()
     {
-        _leftStickPrompt.SetActive(false);
+        GameObject movePrompt = _isUsingMouse ? _mouseMovePrompt : _leftStickPrompt;
+        movePrompt.SetActive(false);
         Invoke(nameof(ShowFireButtonPrompt), 0.5f);
     }
 
@@ -449,6 +493,7 @@ public class PlayerMovementController : MonoBehaviour
         else
         {
             GameObject fireButton = _isUsingDualShock ? _buttonCrossPrompt : _buttonAPrompt;
+            fireButton = _isUsingMouse ? _mouseLeftButtonPrompt : fireButton; 
             fireButton.SetActive(true);
             _buttonPromptRadial.transform.parent.gameObject.SetActive(true);
 
@@ -457,6 +502,7 @@ public class PlayerMovementController : MonoBehaviour
     private void HideFireButtonPrompt(bool setFinished)
     {
         GameObject fireButton = _isUsingDualShock ? _buttonCrossPrompt : _buttonAPrompt;
+        fireButton = _isUsingMouse ? _mouseLeftButtonPrompt : fireButton;
         fireButton.SetActive(false);
         _buttonPromptRadial.transform.parent.gameObject.SetActive(false);
         if (setFinished)
