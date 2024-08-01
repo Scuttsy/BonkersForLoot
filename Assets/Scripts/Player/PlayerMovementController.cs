@@ -254,6 +254,8 @@ public class PlayerMovementController : MonoBehaviour
         if (_isUsingMouse)
         {
             Vector3 centeredMousePos = _playerCamera.ScreenToViewportPoint(Input.mousePosition) - new Vector3(0.5f, 0.5f, 0);
+            centeredMousePos.x *= Screen.width / (float)Screen.height;
+            Debug.Log(Screen.width / (float)Screen.height);
             centeredMousePos.Normalize();
             Vector3 pointerRotationMouse =
                 new Vector3(0, Mathf.Atan2(centeredMousePos.x, centeredMousePos.y) * Mathf.Rad2Deg, 0);
@@ -454,14 +456,12 @@ public class PlayerMovementController : MonoBehaviour
     {
         if (_horizontalInput - _lastMouseInput.x == 0 && _verticalInput - _lastMouseInput.y == 0)
         {
-            Debug.Log("zero");
             // showing left stick prompt if no input 1 second the very first time, and after 5 seconds every other time
             if (!IsInvoking(nameof(ShowLeftStickPrompt)))
                 Invoke(nameof(ShowLeftStickPrompt), _hasShownLeftStickPrompt ? 5 : 1);
         }
         else
         {
-            Debug.Log("not zero");
             _hasShownLeftStickPrompt = true;
             // if the prompt is currently showing, hide it after 0.5s of direction input
             GameObject movePrompt = _isUsingMouse ? _mouseMovePrompt : _leftStickPrompt;
